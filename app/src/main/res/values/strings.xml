@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Movies</string>
+    <string name="API_key">cf302f54886739895a2c28626d65e40d</string>
+    <string name="API_key_append">api_key=</string>
+    <string name="pop_desc">popularity.desc</string>
+    <string name="Top_Rated">Top Rated</string>
+    <string name="Most_Popular">Most Popular</string>
+    <string name="API_Query_TopRated_Desc">https://api.themoviedb.org/3/movie/top_rated?api_key=cf302f54886739895a2c28626d65e40d</string>
+    <string name="API_Query_MostPop">https://api.themoviedb.org/3/movie/popular?api_key=cf302f54886739895a2c28626d65e40d</string>
+    <string name="API_Query_Videos_Start">https://api.themoviedb.org/3/movie/</string>
+    <string name="API_Query_Videos_Mid">/videos?api_key=</string>
+    <string name="API_Query_Videos_End">language=en-US</string>
+    <string name="Movie_Name">MovieName</string>
+    <string name="Movie_Img_Url">MovieImgUrl</string>
+    <string name="Movie_Synopsis">MovieSnyopsis</string>
+    <string name="Movie_Rating">MovieRating</string>
+    <string name="Movie_Release_Date">MovieReleaseDate</string>
+    <string name="API_Img_URL_185">http://image.tmdb.org/t/p/w185//</string>
+    <string name="API_IMG_URL_BASE_342">http://image.tmdb.org/t/p/w342//</string>
+    <string name="JSON_Title">title</string>
+    <string name="Youtube_Base_URL">https://www.youtube.com/watch?v=</string>
+    <string name="Movie_ID_URL">MovieIdURL</string>
+    <string name="Movie_ID">MovieID</string>
+</resources>
