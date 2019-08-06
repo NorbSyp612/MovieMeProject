@@ -1,5 +1,7 @@
 package com.example.android.movies.Items;
 
+
+
 public class Movie {
 
     private String movieName;

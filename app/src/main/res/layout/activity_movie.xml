@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:background="@color/background">
 
     <android.support.constraint.ConstraintLayout
@@ -31,10 +31,9 @@
         <ImageView
             android:id="@+id/movie_poster"
             android:layout_width="160dp"
-            android:layout_height="wrap_content"
+            android:layout_height="240dp"
             android:layout_gravity="center"
             android:layout_marginStart="35dp"
-            android:layout_marginLeft="35dp"
             android:layout_marginTop="10dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
@@ -46,9 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="235dp"
-            android:layout_marginLeft="235dp"
             android:layout_marginTop="10dp"
-            android:text="TextView"
             android:textSize="25dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movie_title"
@@ -59,7 +56,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="TextView"
             android:textSize="23dp"
             android:textStyle="italic"
             app:layout_constraintStart_toStartOf="@+id/movie_Year"
@@ -71,7 +67,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="TextView"
             android:textSize="15dp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/movie_RunTime"
@@ -83,7 +78,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Mark as favorite"
+            tools:text="Mark as favorite"
+            android:onClick="onFavoriteClicked"
             app:layout_constraintStart_toStartOf="@+id/movie_rating"
             app:layout_constraintTop_toBottomOf="@+id/movie_rating" />
 
@@ -91,12 +87,13 @@
             android:id="@+id/movie_summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:paddingHorizontal="25dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
             android:textSize="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button"
+            app:layout_constraintTop_toBottomOf="@+id/movie_poster"
             tools:text="Summary of new movie. Chappie is a robot who does robotic things in a robotic world. Here's a bit more text to make it three lines." />
 
 
@@ -120,9 +117,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
             android:layout_marginTop="8dp"
-            android:text="Trailers:"
+            android:text="@string/Trailers"
             android:textSize="22dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageBar1" />
@@ -142,7 +138,6 @@
             android:layout_width="66dp"
             android:layout_height="64dp"
             android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
             android:layout_marginTop="8dp"
             android:onClick="Second_Trailer_Button"
             android:background="@android:drawable/ic_media_play"
@@ -185,28 +180,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="68dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:textSize="18dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/movie_Play_First_Trailer"
             app:layout_constraintTop_toBottomOf="@+id/imageBar1"
-            android:text="Trailer 1" />
+            android:text="@string/Trailer_One" />
 
         <TextView
             android:id="@+id/player_trailer_second_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="28dp"
             android:textSize="18dp"
-            android:text="Trailer 2"
+            android:text="@string/Trailer_Two"
             app:layout_constraintStart_toEndOf="@+id/movie_Play_Second_Trailer"
             app:layout_constraintTop_toBottomOf="@+id/imageBar2" />
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/activity_movie_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageBar3" />
 
 
     </android.support.constraint.ConstraintLayout>

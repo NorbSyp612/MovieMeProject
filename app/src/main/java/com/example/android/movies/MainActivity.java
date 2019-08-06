@@ -1,32 +1,51 @@
 package com.example.android.movies;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.os.AsyncTask;
 
 import com.example.android.movies.Items.Movie;
+import com.example.android.movies.database.AppDatabase;
+import com.example.android.movies.database.FavEntry;
 import com.example.android.movies.utilities.JsonUtils;
 import com.example.android.movies.utilities.NetworkUtils;
 import com.example.android.movies.utilities.moviesAdapter;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinWorkerThread;
 
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener {
 
-    private ArrayList<Movie> movies = new ArrayList<Movie>();
+    private ArrayList<Movie> movies = new ArrayList();
     private RecyclerView moviesGrid;
     private moviesAdapter mAdapter;
-    private int menuCounter;
     private static final int NUM_LIST_MOVIES = 100;
+    private String isFavorite;
+    private AppDatabase mDb;
+    List<FavEntry> favorites;
+    private int resumeCode;
+    private String movieID;
+    private String INSTANCE_RESUME_CODE = "RESUME_CODE";
+    private String INSTANCE_VIEW_POSITION_CODE = "POSITION CODE";
+    private int viewHolderPosition;
+    int NUM_LIST_MOVIES_FAVORITES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,19 +54,60 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         Context context = this;
 
-        setMoviesMostPop();
-        setTitle(R.string.Most_Popular);
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
+            resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
+            viewHolderPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CODE);
+        } else {
+            resumeCode = 1;
+        }
 
-        menuCounter = 2;
 
         moviesGrid = (RecyclerView) findViewById(R.id.movie_items);
         GridLayoutManager layoutManager = new GridLayoutManager(context, 2);
         moviesGrid.setLayoutManager(layoutManager);
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
+
         moviesGrid.setAdapter(mAdapter);
         moviesGrid.setHasFixedSize(true);
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
 
+        if (resumeCode == 0) {
+            setMoviesMostPop();
+        }
+
+        setupViewModel();
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(INSTANCE_RESUME_CODE, resumeCode);
+        outState.putInt(INSTANCE_VIEW_POSITION_CODE, viewHolderPosition);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void setupViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<FavEntry> favEntries) {
+                favorites = favEntries;
+
+                if (resumeCode == 3) {
+                    populateUIFavorites();
+                    scrollToPosition();
+                } else if (resumeCode == 2) {
+                    populateUITopRated();
+                    scrollToPosition();
+                } else if (resumeCode == 1) {
+                    populateUIMostPop();
+                    scrollToPosition();
+                } else {
+                    populateUIMostPop();
+                }
+            }
+        });
     }
 
     @Override
@@ -56,38 +116,97 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return true;
     }
 
+    public void populateUIMostPop() {
+        setMoviesMostPop();
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
+        moviesGrid.setAdapter(mAdapter);
+        setTitle(R.string.Most_Popular);
+    }
+
+    public void populateUITopRated() {
+        setMoviesTopRated();
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
+        moviesGrid.setAdapter(mAdapter);
+        setTitle(R.string.Top_Rated);
+    }
+
+    public void populateUIFavorites() {
+        setMoviesFavorites();
+        NUM_LIST_MOVIES_FAVORITES = movies.size();
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES_FAVORITES, this, movies);
+        moviesGrid.setAdapter(mAdapter);
+        setTitle(R.string.Set_Title_Favorite);
+    }
+
+    private void scrollToPosition() {
+        if (resumeCode > 0) {
+            if (resumeCode == 3 && viewHolderPosition == NUM_LIST_MOVIES_FAVORITES) {
+                viewHolderPosition--;
+            }
+            moviesGrid.scrollToPosition(viewHolderPosition);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int itemId = item.getItemId();
 
         switch (itemId) {
+            case R.id.sort_pop:
+                populateUIMostPop();
+                return true;
 
-            case R.id.sort_view:
+            case R.id.sort_rated:
+                populateUITopRated();
+                return true;
 
-                if (menuCounter % 2 == 0) {
-                    setMoviesTopRated();
-                    mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
-                    moviesGrid.setAdapter(mAdapter);
-                    setTitle(R.string.Top_Rated);
-                    menuCounter++;
-                    return true;
-                } else {
-                    setMoviesMostPop();
-                    mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
-                    moviesGrid.setAdapter(mAdapter);
-                    setTitle(R.string.Most_Popular);
-                    menuCounter++;
-                    return true;
-                }
+            case R.id.sort_favorites:
+                populateUIFavorites();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void setMoviesMostPop() {
 
-        movies = new ArrayList<Movie>();
+    public void setMoviesFavorites() {
+        resumeCode = 3;
+        movies = new ArrayList();
+        String resultsString = "";
+
+
+        for (FavEntry a : favorites) {
+            String favID = a.getId() + "?";
+
+            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + favID + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
+
+            try {
+                URL movieURL = new URL(movieIDQuery);
+                resultsString = new apiCall().execute(movieURL).get();
+                Movie movieAdd;
+
+                movieAdd = JsonUtils.parseFavoriteMovie(resultsString);
+
+                if (movieAdd != null) {
+                    movies.add(movieAdd);
+                }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void setMoviesMostPop() {
+        resumeCode = 1;
+
+        movies = new ArrayList();
 
         String resultsString = "";
 
@@ -106,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 e.printStackTrace();
             }
 
-            ArrayList<Movie> moviesAdd = new ArrayList<Movie>();
+            ArrayList<Movie> moviesAdd;
             moviesAdd = JsonUtils.parseApiResult(resultsString);
 
             for (Movie movie : moviesAdd) {
@@ -116,9 +235,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void setMoviesTopRated() {
+        resumeCode = 2;
         String resultsString = "";
 
-        movies = new ArrayList<Movie>();
+        movies = new ArrayList();
 
         for (int i = 1; i < 6; i++) {
 
@@ -135,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 e.printStackTrace();
             }
 
-            ArrayList<Movie> moviesAdd = new ArrayList<Movie>();
+            ArrayList<Movie> moviesAdd;
             moviesAdd = JsonUtils.parseApiResult(resultsString);
 
             for (Movie movie : moviesAdd) {
@@ -148,7 +268,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Context context = MainActivity.this;
         Class destination = movieActivity.class;
 
-        Intent goToMovieActivity = new Intent(context, destination);
+        viewHolderPosition = clickedItemIndex;
+
+        final Intent goToMovieActivity = new Intent(context, destination);
 
         goToMovieActivity.putExtra(getString(R.string.Movie_Name), movies.get(clickedItemIndex).getMovieName());
         goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movies.get(clickedItemIndex).getImageURL());
@@ -158,8 +280,20 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
         goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
 
+        movieID = movies.get(clickedItemIndex).getId();
+        isFavorite = getString(R.string.No);
+
+        for (FavEntry a : favorites) {
+            if (a.getId().equals(movieID)) {
+                isFavorite = getString(R.string.Yes);
+            }
+        }
+
+        goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
+
         startActivity(goToMovieActivity);
     }
+
 
     public static class apiCall extends AsyncTask<URL, Void, String> {
 

@@ -7,28 +7,13 @@
 
     <ImageView
         android:id="@+id/movie_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:background="@android:color/black"
-        android:scaleType="fitEnd"
-        app:layout_widthPercent="100%"/>
-
-    <TextView
-        android:id="@+id/item_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center"
-        android:background="@color/colorPrimary"
-        android:fontFamily="monospace"
-        android:padding="8dp"
-        android:text="Harry Potter and the Sorc"
-        android:textColor="@android:color/white"
-        android:textSize="25sp"
-        app:layout_heightPercent="100%"
-        app:layout_widthPercent="100%" />
+        android:scaleType="fitXY"
+       />
 
 </android.support.percent.PercentRelativeLayout>

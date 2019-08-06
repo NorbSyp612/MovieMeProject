@@ -9,6 +9,7 @@
     <string name="API_Query_MostPop">https://api.themoviedb.org/3/movie/popular?api_key=cf302f54886739895a2c28626d65e40d</string>
     <string name="API_Query_Videos_Start">https://api.themoviedb.org/3/movie/</string>
     <string name="API_Query_Videos_Mid">/videos?api_key=</string>
+    <string name="API_Query_Reviews_Mid">/reviews?api_key=</string>
     <string name="API_Query_Videos_End">language=en-US</string>
     <string name="Movie_Name">MovieName</string>
     <string name="Movie_Img_Url">MovieImgUrl</string>
@@ -21,4 +22,17 @@
     <string name="Youtube_Base_URL">https://www.youtube.com/watch?v=</string>
     <string name="Movie_ID_URL">MovieIdURL</string>
     <string name="Movie_ID">MovieID</string>
+    <string name="Min">min</string>
+    <string name="Remove_Fav">Remove Favorite</string>
+    <string name="Mark_Fav">Mark as Favorite</string>
+    <string name="Is_Fav">IsFavorite</string>
+    <string name="API_Query_Fav_Base">https://api.themoviedb.org/3/movie/</string>
+    <string name="Set_Title_Favorite">Favorites</string>
+    <string name="No">no</string>
+    <string name="Yes">yes</string>
+    <string name="Is_Fav_Key">FAV</string>
+    <string name="Reviews">Reviews</string>
+    <string name="Trailers">Trailers</string>
+    <string name="Trailer_One">Trailer 1</string>
+    <string name="Trailer_Two">Trailer 2</string>
 </resources>

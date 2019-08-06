@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.MainActivity;
 import com.example.android.movies.R;
+import com.example.android.movies.database.AppDatabase;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -38,17 +39,20 @@ public class JsonUtils {
 
             JSONArray jResults = jResult.getJSONArray("results");
 
+            if (jResults == null) {
+                return trailerLinks;
+            }
+
             for (int i = 0; i < jResults.length(); i++) {
                 JSONObject trailerResult = jResults.getJSONObject(i);
 
                 String trailerType = trailerResult.getString("type");
+                String site = trailerResult.getString("site");
 
-                if (trailerType.equals("Trailer")) {
+                if (trailerType.equals("Trailer") && site.equals("YouTube")) {
 
                     String trailerKey = trailerResult.getString("key");
-
-                    String trailerURL = trailerKey;
-                    trailerLinks.add(trailerURL);
+                    trailerLinks.add(trailerKey);
                 }
             }
         } catch (JSONException e) {
@@ -56,6 +60,33 @@ public class JsonUtils {
         }
 
         return trailerLinks;
+    }
+
+    public static ArrayList<String> getReviews(String apiResult) {
+
+        ArrayList<String> movieReviews = new ArrayList<String>();
+
+        try {
+
+            if (apiResult == null) {
+                return movieReviews;
+            }
+
+            JSONObject jResult = new JSONObject(apiResult);
+
+            JSONArray jResults = jResult.getJSONArray("results");
+
+            for (int i = 0; i < jResults.length(); i++) {
+                JSONObject reviewsResult = jResults.getJSONObject(i);
+                String reviewContent = reviewsResult.getString("content");
+                movieReviews.add(reviewContent);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return movieReviews;
     }
 
     public static String movieIDtest(String apiResult) {
@@ -83,6 +114,42 @@ public class JsonUtils {
         return movieRunTime;
     }
 
+    public static Movie parseFavoriteMovie(String apiResult) {
+        Movie movie = new Movie();
+
+        try {
+
+            if (apiResult == null) {
+                movie = null;
+                return movie;
+            }
+
+
+            JSONObject jResult = new JSONObject(apiResult);
+
+
+            String movieName = jResult.getString("title");
+            String movieImageURL = jResult.getString("poster_path");
+            String movieSynopsis = jResult.getString("overview");
+            String movieUserRating = jResult.getString("vote_average");
+            String movieReleaseDate = jResult.getString("release_date");
+            String movieId = jResult.getString("id");
+
+            movie.setMovieName(movieName);
+            movie.setImageURL(movieImageURL);
+            movie.setSynopsis(movieSynopsis);
+            movie.setUserRating(movieUserRating);
+            movie.setReleaseDate(movieReleaseDate);
+            movie.setId(movieId);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return movie;
+    }
+
     public static ArrayList<Movie> parseApiResult(String apiResult) {
 
         ArrayList<Movie> parsedResults = new ArrayList<Movie>();
@@ -106,17 +173,7 @@ public class JsonUtils {
                 String movieSynopsis = movie.getString("overview");
                 String movieUserRating = movie.getString("vote_average");
                 String movieReleaseDate = movie.getString("release_date");
-
-
                 String movieId = movie.getString("id");
-                //  String movieURLstart = "https://api.themoviedb.org/3/movie/";
-                // String movieURLend = "?api_key=cf302f54886739895a2c28626d65e40d&language=en-US";
-                //  String movieURLstring = movieURLstart + movieId + movieURLend;
-
-
-                //    URL movieURL = new URL(movieURLstring);
-
-                //    String movieResults = new MainActivity.apiCall().execute(movieURL).get();
 
                 addMovie.setMovieName(movieName);
                 addMovie.setImageURL(movieImageURL);
@@ -130,12 +187,6 @@ public class JsonUtils {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //    } catch (MalformedURLException e) {
-            //        e.printStackTrace();
-            //    } catch (ExecutionException e) {
-            //        e.printStackTrace();
-            //    } catch (InterruptedException e) {
-            //        e.printStackTrace();
         }
 
         return parsedResults;

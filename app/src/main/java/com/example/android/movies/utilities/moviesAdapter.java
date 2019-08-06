@@ -1,11 +1,7 @@
 package com.example.android.movies.utilities;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,14 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.movies.Items.Movie;
-import com.example.android.movies.MainActivity;
 import com.example.android.movies.R;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberViewHolder> {
 
@@ -76,7 +68,6 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
 
             movieItemView = (ImageView) itemView.findViewById(R.id.movie_item);
-            movieNumber = (TextView) itemView.findViewById(R.id.item_number);
             itemView.setOnClickListener(this);
 
         }
@@ -90,14 +81,6 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         void bind(int listIndex) {
             Context context = itemView.getContext();
             if (!movies.isEmpty()) {
-                if (movies.get(listIndex).getImageURL().equals("null")) {
-                    movieNumber.setText(movies.get(listIndex).getMovieName());
-                    movieNumber.setVisibility(View.VISIBLE);
-                } else {
-                    movieNumber.setVisibility(View.INVISIBLE);
-                }
-
-
                 String imgURL = context.getString(R.string.API_Img_URL_185) + movies.get(listIndex).getImageURL();
                 Picasso.with(context).load(imgURL).into(movieItemView);
             }
