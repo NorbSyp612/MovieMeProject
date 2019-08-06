@@ -3,8 +3,14 @@
     <string name="API_key">cf302f54886739895a2c28626d65e40d</string>
     <string name="API_key_append">api_key=</string>
     <string name="pop_desc">popularity.desc</string>
+
     <string name="Top_Rated">Top Rated</string>
     <string name="Most_Popular">Most Popular</string>
+    <string name="Action">Action</string>
+    <string name="Adventure">Adventure</string>
+    <string name="History">History</string>
+    <string name="Horror">Horror</string>
+
     <string name="API_Query_TopRated_Desc">https://api.themoviedb.org/3/movie/top_rated?api_key=cf302f54886739895a2c28626d65e40d</string>
     <string name="API_Query_MostPop">https://api.themoviedb.org/3/movie/popular?api_key=cf302f54886739895a2c28626d65e40d</string>
     <string name="API_Query_Genre_Action">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=28</string>
@@ -15,11 +21,13 @@
     <string name="API_Query_Videos_Mid">/videos?api_key=</string>
     <string name="API_Query_Reviews_Mid">/reviews?api_key=</string>
     <string name="API_Query_Videos_End">language=en-US</string>
+
     <string name="Movie_Name">MovieName</string>
     <string name="Movie_Img_Url">MovieImgUrl</string>
     <string name="Movie_Synopsis">MovieSnyopsis</string>
     <string name="Movie_Rating">MovieRating</string>
     <string name="Movie_Release_Date">MovieReleaseDate</string>
+
     <string name="API_Img_URL_185">http://image.tmdb.org/t/p/w185//</string>
     <string name="API_IMG_URL_BASE_342">http://image.tmdb.org/t/p/w342//</string>
     <string name="JSON_Title">title</string>
