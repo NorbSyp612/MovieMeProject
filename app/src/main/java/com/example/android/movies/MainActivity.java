@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
         if (resumeCode == 0) {
-            setMoviesMostPop();
+            setMoviesFromCategory("Pop");
         }
 
         setupViewModel();
@@ -117,14 +117,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void populateUIMostPop() {
-        setMoviesMostPop();
+        setMoviesFromCategory("Pop");
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
         moviesGrid.setAdapter(mAdapter);
         setTitle(R.string.Most_Popular);
     }
 
     public void populateUITopRated() {
-        setMoviesTopRated();
+        setMoviesFromCategory("Top");
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
         moviesGrid.setAdapter(mAdapter);
         setTitle(R.string.Top_Rated);
@@ -169,6 +169,45 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return super.onOptionsItemSelected(item);
     }
 
+    public void setMoviesFromCategory(String category) {
+        resumeCode = 1;
+
+        movies = new ArrayList();
+
+        String resultsString = "";
+        String MoviesCategory = category;
+        String sortedBy = "";
+
+        if (MoviesCategory.equals("Top")) {
+            sortedBy = getString(R.string.API_Query_TopRated_Desc);
+        } else if (MoviesCategory.equals("Pop")) {
+            sortedBy = getString(R.string.API_Query_MostPop);
+        }
+
+        for (int i = 1; i < 6; i++) {
+
+            String pageNum = Integer.toString(i);
+
+            URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
+
+
+            try {
+                resultsString = new apiCall().execute(testURL).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            ArrayList<Movie> moviesAdd;
+            moviesAdd = JsonUtils.parseApiResult(resultsString);
+
+            for (Movie movie : moviesAdd) {
+                movies.add(movie);
+            }
+        }
+    }
+
 
     public void setMoviesFavorites() {
         resumeCode = 3;
@@ -203,66 +242,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     }
 
-    public void setMoviesMostPop() {
-        resumeCode = 1;
-
-        movies = new ArrayList();
-
-        String resultsString = "";
-
-        for (int i = 1; i < 6; i++) {
-
-            String pageNum = Integer.toString(i);
-
-            URL testURL = NetworkUtils.jsonRequest(getString(R.string.API_Query_MostPop), pageNum);
-
-
-            try {
-                resultsString = new apiCall().execute(testURL).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            ArrayList<Movie> moviesAdd;
-            moviesAdd = JsonUtils.parseApiResult(resultsString);
-
-            for (Movie movie : moviesAdd) {
-                movies.add(movie);
-            }
-        }
-    }
-
-    public void setMoviesTopRated() {
-        resumeCode = 2;
-        String resultsString = "";
-
-        movies = new ArrayList();
-
-        for (int i = 1; i < 6; i++) {
-
-            String pageNum = Integer.toString(i);
-
-            URL testURL = NetworkUtils.jsonRequest(getString(R.string.API_Query_TopRated_Desc), pageNum);
-
-
-            try {
-                resultsString = new apiCall().execute(testURL).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            ArrayList<Movie> moviesAdd;
-            moviesAdd = JsonUtils.parseApiResult(resultsString);
-
-            for (Movie movie : moviesAdd) {
-                movies.add(movie);
-            }
-        }
-    }
 
     public void onListItemClick(int clickedItemIndex) {
         Context context = MainActivity.this;
