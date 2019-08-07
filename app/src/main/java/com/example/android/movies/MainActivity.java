@@ -107,6 +107,39 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 } else if (resumeCode == 4) {
                     populateUI(getString(R.string.Action));
                     scrollToPosition();
+                } else if (resumeCode == 5) {
+                    populateUI(getString(R.string.Adventure));
+                    scrollToPosition();
+                } else if (resumeCode == 6) {
+                    populateUI(getString(R.string.Comedy));
+                    scrollToPosition();
+                } else if (resumeCode == 7) {
+                    populateUI(getString(R.string.History));
+                    scrollToPosition();
+                } else if (resumeCode == 8) {
+                    populateUI(getString(R.string.Horror));
+                    scrollToPosition();
+                } else if (resumeCode == 9) {
+                    populateUI(getString(R.string.Drama));
+                    scrollToPosition();
+                } else if (resumeCode == 10) {
+                    populateUI(getString(R.string.Fantasy));
+                    scrollToPosition();
+                } else if (resumeCode == 11) {
+                    populateUI(getString(R.string.Mystery));
+                    scrollToPosition();
+                } else if (resumeCode == 12) {
+                    populateUI(getString(R.string.Romance));
+                    scrollToPosition();
+                } else if (resumeCode == 13) {
+                    populateUI(getString(R.string.Science_Fiction));
+                    scrollToPosition();
+                } else if (resumeCode == 14) {
+                    populateUI(getString(R.string.Science_Fiction));
+                    scrollToPosition();
+                } else if (resumeCode == 15) {
+                    populateUI(getString(R.string.Western));
+                    scrollToPosition();
                 } else {
                     populateUI(getString(R.string.Most_Popular));
                 }
@@ -114,11 +147,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 
     public void populateUI(String category) {
         if (category.equals(getString(R.string.Most_Popular))) {
@@ -133,6 +161,39 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (category.equals(getString(R.string.Action))) {
             setMoviesFromCategory(getString(R.string.Action));
             setTitle(getString(R.string.Action));
+        } else if (category.equals(getString(R.string.Adventure))) {
+            setMoviesFromCategory(getString(R.string.Adventure));
+            setTitle(getString(R.string.Adventure));
+        } else if (category.equals(getString(R.string.Comedy))) {
+            setMoviesFromCategory(getString(R.string.Comedy));
+            setTitle(getString(R.string.Comedy));
+        } else if (category.equals(getString(R.string.History))) {
+            setMoviesFromCategory(getString(R.string.History));
+            setTitle(getString(R.string.History));
+        } else if (category.equals(getString(R.string.Horror))) {
+            setMoviesFromCategory(getString(R.string.Horror));
+            setTitle(getString(R.string.Horror));
+        } else if (category.equals(getString(R.string.Drama))) {
+            setMoviesFromCategory(getString(R.string.Drama));
+            setTitle(getString(R.string.Drama));
+        } else if (category.equals(getString(R.string.Fantasy))) {
+            setMoviesFromCategory(getString(R.string.Fantasy));
+            setTitle(getString(R.string.Fantasy));
+        } else if (category.equals(getString(R.string.Mystery))) {
+            setMoviesFromCategory(getString(R.string.Mystery));
+            setTitle(getString(R.string.Mystery));
+        } else if (category.equals(getString(R.string.Romance))) {
+            setMoviesFromCategory(getString(R.string.Romance));
+            setTitle(getString(R.string.Romance));
+        } else if (category.equals(getString(R.string.Science_Fiction))) {
+            setMoviesFromCategory(getString(R.string.Science_Fiction));
+            setTitle(getString(R.string.Science_Fiction));
+        } else if (category.equals(getString(R.string.Thriller))) {
+            setMoviesFromCategory(getString(R.string.Thriller));
+            setTitle(getString(R.string.Thriller));
+        } else if (category.equals(getString(R.string.Western))) {
+            setMoviesFromCategory(getString(R.string.Western));
+            setTitle(getString(R.string.Western));
         }
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
         moviesGrid.setAdapter(mAdapter);
@@ -155,29 +216,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int itemId = item.getItemId();
-
-        switch (itemId) {
-            case R.id.sort_pop:
-                populateUI(getString(R.string.Most_Popular));
-                return true;
-
-            case R.id.sort_rated:
-                populateUI(getString(R.string.Top_Rated));
-                return true;
-
-            case R.id.sort_favorites:
-                populateUIFavorites();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void MostPopClick(View view){
+    public void MostPopClick(View view) {
         populateUI(getString(R.string.Most_Popular));
     }
 
@@ -193,8 +232,51 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         populateUI(getString(R.string.Action));
     }
 
-    public void setMoviesFromCategory(String category) {
+    public void AdventureClick(View view) {
+        populateUI(getString(R.string.Adventure));
+    }
 
+    public void ComedyClick(View view) {
+        populateUI(getString(R.string.Comedy));
+    }
+
+    public void HistoryClick(View view) {
+        populateUI(getString(R.string.History));
+    }
+
+    public void HorrorClick(View view) {
+        populateUI(getString(R.string.Horror));
+    }
+
+    public void DramaClick(View view) {
+        populateUI(getString(R.string.Drama));
+    }
+
+    public void FantasyClick(View view) {
+        populateUI(getString(R.string.Fantasy));
+    }
+
+    public void MysteryClick(View view) {
+        populateUI(getString(R.string.Mystery));
+    }
+
+    public void RomanceClick(View view) {
+        populateUI(getString(R.string.Romance));
+    }
+
+    public void ScifiClick(View view) {
+        populateUI(getString(R.string.Science_Fiction));
+    }
+
+    public void ThrillerClick(View view) {
+        populateUI(getString(R.string.Thriller));
+    }
+
+    public void WesternClick(View view) {
+        populateUI(getString(R.string.Western));
+    }
+
+    public void setMoviesFromCategory(String category) {
 
         movies = new ArrayList();
 
@@ -211,6 +293,39 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (MoviesCategory.equals(getString(R.string.Action))) {
             resumeCode = 4;
             sortedBy = getString(R.string.API_Query_Genre_Action);
+        } else if (MoviesCategory.equals(getString(R.string.Adventure))) {
+            resumeCode = 5;
+            sortedBy = getString(R.string.API_Query_Genre_Adventure);
+        } else if (MoviesCategory.equals(getString(R.string.Comedy))) {
+            resumeCode = 6;
+            sortedBy = getString(R.string.API_Query_Genre_Comedy);
+        } else if (MoviesCategory.equals(getString(R.string.History))) {
+            resumeCode = 7;
+            sortedBy = getString(R.string.API_Query_Genre_History);
+        } else if (MoviesCategory.equals(getString(R.string.Horror))) {
+            resumeCode = 8;
+            sortedBy = getString(R.string.API_Query_Genre_Horror);
+        } else if (MoviesCategory.equals(getString(R.string.Drama))) {
+            resumeCode = 9;
+            sortedBy = getString(R.string.API_Query_Genre_Drama);
+        } else if (MoviesCategory.equals(getString(R.string.Fantasy))) {
+            resumeCode = 10;
+            sortedBy = getString(R.string.API_Query_Genre_Fantasy);
+        } else if (MoviesCategory.equals(getString(R.string.Mystery))) {
+            resumeCode = 11;
+            sortedBy = getString(R.string.API_Query_Genre_Mystery);
+        } else if (MoviesCategory.equals(getString(R.string.Romance))) {
+            resumeCode = 12;
+            sortedBy = getString(R.string.API_Query_Genre_Romance);
+        } else if (MoviesCategory.equals(getString(R.string.Science_Fiction))) {
+            resumeCode = 13;
+            sortedBy = getString(R.string.API_Query_Genre_Science_Fiction);
+        } else if (MoviesCategory.equals(getString(R.string.Thriller))) {
+            resumeCode = 14;
+            sortedBy = getString(R.string.API_Query_Genre_Thriller);
+        } else if (MoviesCategory.equals(getString(R.string.Western))) {
+            resumeCode = 15;
+            sortedBy = getString(R.string.API_Query_Genre_Western);
         }
 
         for (int i = 1; i < 6; i++) {

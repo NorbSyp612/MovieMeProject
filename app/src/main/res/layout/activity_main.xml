@@ -59,6 +59,15 @@
                 android:textSize="25sp" />
 
             <TextView
+                android:id="@+id/Comedy"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="ComedyClick"
+                android:text="@string/Comedy"
+                android:textSize="25sp" />
+
+            <TextView
                 android:id="@+id/History"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -74,15 +83,6 @@
                 android:layout_marginLeft="10dp"
                 android:onClick="HorrorClick"
                 android:text="@string/Horror"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/Comedy"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:onClick="ComedyClick"
-                android:text="@string/Comedy"
                 android:textSize="25sp" />
 
             <TextView
