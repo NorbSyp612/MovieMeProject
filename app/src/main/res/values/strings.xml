@@ -17,6 +17,11 @@
     <string name="API_Query_Genre_Adventure">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=12</string>
     <string name="API_Query_Genre_History">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=36</string>
     <string name="API_Query_Genre_Horror">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=27</string>
+    <string name="API_Query_Genre_Comedy">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=35</string>
+    <string name="API_Query_Genre_Drama">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=18</string>
+    <string name="API_Query_Genre_Fantasy">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=14</string>
+    <string name="API_Query_Genre_Mystery">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=9648</string>
+    <string name="API_Query_Genre_Romance">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=10749</string>
     <string name="API_Query_Videos_Start">https://api.themoviedb.org/3/movie/</string>
     <string name="API_Query_Videos_Mid">/videos?api_key=</string>
     <string name="API_Query_Reviews_Mid">/reviews?api_key=</string>

@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
         if (resumeCode == 0) {
-            setMoviesFromCategory("Pop");
+            setMoviesFromCategory(getString(R.string.Most_Popular));
         }
 
         setupViewModel();
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     populateUIMostPop();
                     scrollToPosition();
                 } else {
-                    populateUIMostPop();
+                    populateUI(getString(R.string.Most_Popular));
                 }
             }
         });
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void populateUIMostPop() {
-        setMoviesFromCategory("Pop");
+        setMoviesFromCategory(getString(R.string.Most_Popular));
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
         moviesGrid.setAdapter(mAdapter);
         setTitle(R.string.Most_Popular);
@@ -128,6 +128,17 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
         moviesGrid.setAdapter(mAdapter);
         setTitle(R.string.Top_Rated);
+    }
+
+    public void populateUI(String category) {
+
+        if (category.equals(getString(R.string.Most_Popular))) {
+            setMoviesFromCategory(getString(R.string.Most_Popular));
+            setTitle(getString(R.string.Most_Popular));
+        }
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
+        moviesGrid.setAdapter(mAdapter);
+
     }
 
     public void populateUIFavorites() {
@@ -180,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (MoviesCategory.equals("Top")) {
             sortedBy = getString(R.string.API_Query_TopRated_Desc);
-        } else if (MoviesCategory.equals("Pop")) {
+        } else if (MoviesCategory.equals(getString(R.string.Most_Popular))) {
             sortedBy = getString(R.string.API_Query_MostPop);
         }
 
