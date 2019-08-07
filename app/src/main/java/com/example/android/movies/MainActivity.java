@@ -402,6 +402,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movies.get(clickedItemIndex).getReleaseDate());
         goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
         goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
+        goToMovieActivity.putExtra("TESTFORNOW", movies.get(clickedItemIndex).getBackdropURL());
 
         movieID = movies.get(clickedItemIndex).getId();
         isFavorite = getString(R.string.No);

@@ -7,8 +7,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,6 +54,8 @@ public class movieActivity extends AppCompatActivity {
     private Button mFavButton;
     private String favorite;
     private FavEntry movieEntry;
+    private ImageView mToolbarPoster;
+    private CollapsingToolbarLayout mCollapseLayout;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -142,7 +146,10 @@ public class movieActivity extends AppCompatActivity {
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
 
         String imgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Img_Url));
+        String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra("TESTFORNOW");
+        Log.d("TEST", backdropImgURL);
         Picasso.with(this).load(imgURL).into(mPoster);
+        Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
 
         mTrailerBottomBar.setVisibility(View.GONE);
         setTrailersVisibilityAndContent();
@@ -156,6 +163,8 @@ public class movieActivity extends AppCompatActivity {
             favorite = savedInstanceState.getString(INSTANCE_FAV);
         }
         setupViewModel();
+
+        mCollapseLayout.setTitle(fromMain.getStringExtra(movieName));
     }
 
     private void setupViewModel() {
@@ -190,6 +199,8 @@ public class movieActivity extends AppCompatActivity {
         mTrailer1PlayButton = (ImageView) findViewById(R.id.movie_Play_First_Trailer);
         mTrailer1Text = (TextView) findViewById(R.id.play_trailer_first_text);
         mTopImageBar = (ImageView) findViewById(R.id.imageBar1);
+        mToolbarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
+        mCollapseLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
     }
 
     @Override

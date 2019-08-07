@@ -170,6 +170,7 @@ public class JsonUtils {
 
                 String movieName = movie.getString("title");
                 String movieImageURL = movie.getString("poster_path");
+                String movieBackdropURL = movie.getString("backdrop_path");
                 String movieSynopsis = movie.getString("overview");
                 String movieUserRating = movie.getString("vote_average");
                 String movieReleaseDate = movie.getString("release_date");
@@ -181,6 +182,7 @@ public class JsonUtils {
                 addMovie.setUserRating(movieUserRating);
                 addMovie.setReleaseDate(movieReleaseDate);
                 addMovie.setId(movieId);
+                addMovie.setBackdropURL(movieBackdropURL);
 
                 parsedResults.add(addMovie);
             }

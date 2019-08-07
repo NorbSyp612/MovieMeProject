@@ -12,6 +12,7 @@ public class Movie {
     private String id;
     private String runtime;
     private String movieIdURL;
+    private String backdropURL;
 
     public Movie() {
     }
@@ -58,6 +59,14 @@ public class Movie {
 
     public String getImageURL() {
         return this.imageURL;
+    }
+
+    public void setBackdropURL(String dpURL) {
+        this.backdropURL = dpURL;
+    }
+
+    public String getBackdropURL() {
+        return this.backdropURL;
     }
 
     public void setSynopsis(String synopsis) {
