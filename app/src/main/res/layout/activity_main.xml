@@ -1,8 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Favs"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="FavsClick"
+                android:text="@string/Favorites"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/MostPop"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="MostPopClick"
+                android:text="@string/Most_Popular"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/TopRated"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="TopRatedClick"
+                android:text="@string/Top_Rated"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Action"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="AcitonClick"
+                android:text="@string/Action"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Adventure"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="AdventureClick"
+                android:text="@string/Adventure"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/History"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="HistoryClick"
+                android:text="@string/History"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Horror"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="HorrorClick"
+                android:text="@string/Horror"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Comedy"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="ComedyClick"
+                android:text="@string/Comedy"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Drama"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="DramaClick"
+                android:text="@string/Drama"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Fantasy"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="FantasyClick"
+                android:text="@string/Fantasy"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Mystery"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="MysteryClick"
+                android:text="@string/Mystery"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Romance"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="RomanceClick"
+                android:text="@string/Romance"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/SciFi"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="ScifiClick"
+                android:text="@string/Science_Fiction"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Thriller"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="ThrillerClick"
+                android:text="@string/Thriller"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/Western"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:onClick="WesternClick"
+                android:text="@string/Western"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movie_items"
@@ -10,4 +158,4 @@
         android:layout_height="match_parent" />
 
 
-</FrameLayout>
+</LinearLayout>

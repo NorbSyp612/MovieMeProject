@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.os.AsyncTask;
+import android.view.View;
 
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.database.AppDatabase;
@@ -98,10 +99,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     populateUIFavorites();
                     scrollToPosition();
                 } else if (resumeCode == 2) {
-                    populateUITopRated();
+                    populateUI(getString(R.string.Top_Rated));
                     scrollToPosition();
                 } else if (resumeCode == 1) {
-                    populateUIMostPop();
+                    populateUI(getString(R.string.Most_Popular));
+                    scrollToPosition();
+                } else if (resumeCode == 4) {
+                    populateUI(getString(R.string.Action));
                     scrollToPosition();
                 } else {
                     populateUI(getString(R.string.Most_Popular));
@@ -116,29 +120,22 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return true;
     }
 
-    public void populateUIMostPop() {
-        setMoviesFromCategory(getString(R.string.Most_Popular));
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
-        moviesGrid.setAdapter(mAdapter);
-        setTitle(R.string.Most_Popular);
-    }
-
-    public void populateUITopRated() {
-        setMoviesFromCategory("Top");
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
-        moviesGrid.setAdapter(mAdapter);
-        setTitle(R.string.Top_Rated);
-    }
-
     public void populateUI(String category) {
-
         if (category.equals(getString(R.string.Most_Popular))) {
             setMoviesFromCategory(getString(R.string.Most_Popular));
             setTitle(getString(R.string.Most_Popular));
+        } else if (category.equals(getString(R.string.Top_Rated))) {
+            setMoviesFromCategory(getString(R.string.Top_Rated));
+            setTitle(getString(R.string.Top_Rated));
+        } else if (category.equals(getString(R.string.Favorites))) {
+            setMoviesFavorites();
+            setTitle(getString(R.string.Favorites));
+        } else if (category.equals(getString(R.string.Action))) {
+            setMoviesFromCategory(getString(R.string.Action));
+            setTitle(getString(R.string.Action));
         }
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
         moviesGrid.setAdapter(mAdapter);
-
     }
 
     public void populateUIFavorites() {
@@ -165,11 +162,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         switch (itemId) {
             case R.id.sort_pop:
-                populateUIMostPop();
+                populateUI(getString(R.string.Most_Popular));
                 return true;
 
             case R.id.sort_rated:
-                populateUITopRated();
+                populateUI(getString(R.string.Top_Rated));
                 return true;
 
             case R.id.sort_favorites:
@@ -180,8 +177,24 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return super.onOptionsItemSelected(item);
     }
 
+    public void MostPopClick(View view){
+        populateUI(getString(R.string.Most_Popular));
+    }
+
+    public void FavsClick(View view) {
+        populateUIFavorites();
+    }
+
+    public void TopRatedClick(View view) {
+        populateUI(getString(R.string.Top_Rated));
+    }
+
+    public void AcitonClick(View view) {
+        populateUI(getString(R.string.Action));
+    }
+
     public void setMoviesFromCategory(String category) {
-        resumeCode = 1;
+
 
         movies = new ArrayList();
 
@@ -189,10 +202,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         String MoviesCategory = category;
         String sortedBy = "";
 
-        if (MoviesCategory.equals("Top")) {
+        if (MoviesCategory.equals(getString(R.string.Top_Rated))) {
+            resumeCode = 2;
             sortedBy = getString(R.string.API_Query_TopRated_Desc);
         } else if (MoviesCategory.equals(getString(R.string.Most_Popular))) {
+            resumeCode = 1;
             sortedBy = getString(R.string.API_Query_MostPop);
+        } else if (MoviesCategory.equals(getString(R.string.Action))) {
+            resumeCode = 4;
+            sortedBy = getString(R.string.API_Query_Genre_Action);
         }
 
         for (int i = 1; i < 6; i++) {
