@@ -35,6 +35,7 @@ import java.util.concurrent.ForkJoinWorkerThread;
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
 
     private ArrayList<Movie> movies = new ArrayList();
+    private ArrayList<Movie> favMovies = new ArrayList();
     private RecyclerView moviesGrid;
     private moviesAdapter mAdapter;
     private static final int NUM_LIST_MOVIES = 100;
@@ -66,16 +67,16 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         moviesGrid = (RecyclerView) findViewById(R.id.movie_items);
         GridLayoutManager layoutManager = new GridLayoutManager(context, 2);
         moviesGrid.setLayoutManager(layoutManager);
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies);
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies,favMovies);
 
         moviesGrid.setAdapter(mAdapter);
         moviesGrid.setHasFixedSize(true);
         mDb = AppDatabase.getInstance(getApplicationContext());
 
 
-        if (resumeCode == 0) {
-            setMoviesFromCategory(getString(R.string.Most_Popular));
-        }
+    //    if (resumeCode == 0) {
+     //       setMoviesFromCategory(getString(R.string.Most_Popular));
+     //   }
 
         setupViewModel();
 
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 favorites = favEntries;
+                getFavs();
 
                 if (resumeCode == 3) {
                     populateUIFavorites();
@@ -199,14 +201,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             setMoviesFromCategory(getString(R.string.Western));
             setTitle(getString(R.string.Western));
         }
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies);
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
         moviesGrid.setAdapter(mAdapter);
     }
 
     public void populateUIFavorites() {
         setMoviesFavorites();
         NUM_LIST_MOVIES_FAVORITES = movies.size();
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES_FAVORITES, this, this, movies);
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES_FAVORITES, this, this, movies, favMovies);
         moviesGrid.setAdapter(mAdapter);
         setTitle(R.string.Set_Title_Favorite);
     }
@@ -356,6 +358,36 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
+    public void getFavs() {
+        favMovies = new ArrayList();
+        String resultsString = "";
+
+
+        for (FavEntry a : favorites) {
+            String favID = a.getId() + "?";
+
+            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + favID + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
+
+            try {
+                URL movieURL = new URL(movieIDQuery);
+                resultsString = new apiCall().execute(movieURL).get();
+                Movie movieAdd;
+
+                movieAdd = JsonUtils.parseFavoriteMovie(resultsString);
+
+                if (movieAdd != null) {
+                    favMovies.add(movieAdd);
+                }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void setMoviesFavorites() {
         resumeCode = 3;

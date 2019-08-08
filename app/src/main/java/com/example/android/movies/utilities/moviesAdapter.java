@@ -1,6 +1,11 @@
 package com.example.android.movies.utilities;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.media.Image;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,11 +17,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.movies.AddFavViewModel;
+import com.example.android.movies.AddFavViewModelFactory;
 import com.example.android.movies.Items.Movie;
+import com.example.android.movies.MainViewModel;
 import com.example.android.movies.R;
+import com.example.android.movies.database.AppDatabase;
+import com.example.android.movies.database.FavEntry;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberViewHolder> {
 
@@ -26,6 +37,8 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
     private static int viewHolderCount;
     private int numberMovies;
     private ArrayList<Movie> movies;
+    private ArrayList<Movie> favMovies;
+
 
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex);
@@ -35,13 +48,16 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         void onButtonClick(int clickedItemIndex);
     }
 
-    public moviesAdapter(int movies, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray) {
+    public moviesAdapter(int movies, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray, ArrayList<Movie> favoritesArray) {
         numberMovies = movies;
         onClickListener = onclick;
         onButtonClickListener = buttonOnClick;
         viewHolderCount = 0;
         this.movies = moviesArray;
+        favMovies = favoritesArray;
     }
+
+
 
     @Override
     public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -70,12 +86,17 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
     class NumberViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         ImageView movieItemView;
         ImageButton favButton;
-        TextView movieNumber;
+        ImageView star_white;
+        ImageView star_yellow;
+
 
         public NumberViewHolder(View itemView) {
             super(itemView);
             movieItemView = (ImageView) itemView.findViewById(R.id.movie_item);
             favButton = (ImageButton) itemView.findViewById(R.id.star_button);
+            star_white = (ImageView) itemView.findViewById(R.id.star_background_white);
+            star_yellow = (ImageView) itemView.findViewById(R.id.star_background_yellow);
+            star_yellow.setVisibility(View.INVISIBLE);
             favButton.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
@@ -99,6 +120,17 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
             Context context = itemView.getContext();
             if (!movies.isEmpty()) {
                 String imgURL = context.getString(R.string.API_Img_URL_185) + movies.get(listIndex).getImageURL();
+
+                Movie test = movies.get(listIndex);
+
+                for (Movie a : favMovies) {
+                    if (test.getMovieName().equals(a.getMovieName())) {
+                        Log.d("TEST", "FAVORITE FOUND: " + test.getMovieName());
+                        star_yellow.setVisibility(View.VISIBLE);
+                    }
+                }
+
+
                 Picasso.with(context).load(imgURL).into(movieItemView);
             }
         }
