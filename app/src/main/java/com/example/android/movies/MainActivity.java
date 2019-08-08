@@ -81,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     }
 
+    public void starClick(View view) {
+        Log.d("TEST", "CLICKED: ");
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(INSTANCE_RESUME_CODE, resumeCode);

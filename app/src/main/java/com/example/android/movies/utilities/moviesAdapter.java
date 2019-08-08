@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -63,13 +64,9 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         TextView movieNumber;
 
         public NumberViewHolder(View itemView) {
-
             super(itemView);
-
-
             movieItemView = (ImageView) itemView.findViewById(R.id.movie_item);
             itemView.setOnClickListener(this);
-
         }
 
         @Override
