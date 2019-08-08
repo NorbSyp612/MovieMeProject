@@ -44,6 +44,7 @@
     <string name="Movie_Synopsis">MovieSnyopsis</string>
     <string name="Movie_Rating">MovieRating</string>
     <string name="Movie_Release_Date">MovieReleaseDate</string>
+    <string name="Movie_Backdrop">MovieBackdrop</string>
 
     <string name="API_Img_URL_185">http://image.tmdb.org/t/p/w185//</string>
     <string name="API_IMG_URL_BASE_342">http://image.tmdb.org/t/p/w342//</string>

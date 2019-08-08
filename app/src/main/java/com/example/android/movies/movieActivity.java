@@ -146,7 +146,7 @@ public class movieActivity extends AppCompatActivity {
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
 
         String imgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Img_Url));
-        String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra("TESTFORNOW");
+        String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Backdrop));
         Log.d("TEST", backdropImgURL);
         Picasso.with(this).load(imgURL).into(mPoster);
         Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);

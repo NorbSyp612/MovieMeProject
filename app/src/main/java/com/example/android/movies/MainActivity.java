@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private String INSTANCE_VIEW_POSITION_CODE = "POSITION CODE";
     private int viewHolderPosition;
     int NUM_LIST_MOVIES_FAVORITES;
+    private String favorite;
+    private FavEntry movieEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,24 +69,16 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         moviesGrid = (RecyclerView) findViewById(R.id.movie_items);
         GridLayoutManager layoutManager = new GridLayoutManager(context, 2);
         moviesGrid.setLayoutManager(layoutManager);
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies,favMovies);
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
 
         moviesGrid.setAdapter(mAdapter);
         moviesGrid.setHasFixedSize(true);
         mDb = AppDatabase.getInstance(getApplicationContext());
 
-
-    //    if (resumeCode == 0) {
-     //       setMoviesFromCategory(getString(R.string.Most_Popular));
-     //   }
-
         setupViewModel();
 
     }
 
-    public void starClick(View view) {
-        Log.d("TEST", "CLICKED: ");
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -111,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     populateUI(getString(R.string.Most_Popular));
                     scrollToPosition();
                 } else if (resumeCode == 4) {
-                    populateUI(getString(R.string.Action));
-                    scrollToPosition();
+                 //   populateUI(getString(R.string.Action));
+                 //   scrollToPosition();
                 } else if (resumeCode == 5) {
                     populateUI(getString(R.string.Adventure));
                     scrollToPosition();
@@ -438,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movies.get(clickedItemIndex).getReleaseDate());
         goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
         goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
-        goToMovieActivity.putExtra("TESTFORNOW", movies.get(clickedItemIndex).getBackdropURL());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
 
         movieID = movies.get(clickedItemIndex).getId();
         isFavorite = getString(R.string.No);
@@ -455,8 +449,33 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     @Override
-    public void onButtonClick(int clickedItemIndex) {
+    public void onButtonClick(final int clickedItemIndex) {
         Log.d("TEST", "PLEASE: " + clickedItemIndex);
+
+        favorite = getString(R.string.No);
+
+        for (FavEntry a : favorites) {
+            if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
+                favorite = getString(R.string.Yes);
+                movieEntry = a;
+                Log.d("TEST", "Movie is a favorite");
+            }
+        }
+
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (favorite.equals(getString(R.string.Yes))) {
+                    mDb.favDao().deleteFav(movieEntry);
+                    favorite=getString(R.string.No);
+                } else {
+                    FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName());
+                    mDb.favDao().insertFav(enterNewFavorite);
+                    favorite=getString(R.string.Yes);
+                }
+            }
+        });
+
     }
 
 
