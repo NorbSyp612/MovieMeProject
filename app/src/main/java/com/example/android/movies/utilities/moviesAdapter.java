@@ -107,6 +107,11 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
             if (favButton.isPressed()) {
                 Log.d("TEST", "ACTIVIATED");
+                if (star_yellow.getVisibility() == View.INVISIBLE) {
+                    star_yellow.setVisibility(View.INVISIBLE);
+                } else if (star_yellow.getVisibility() == View.VISIBLE) {
+                    star_yellow.setVisibility(View.INVISIBLE);
+                }
                 onButtonClickListener.onButtonClick(clickedPosition);
             } else {
                 onClickListener.onListItemClick(clickedPosition);
