@@ -96,7 +96,6 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
             favButton = (ImageButton) itemView.findViewById(R.id.star_button);
             star_white = (ImageView) itemView.findViewById(R.id.star_background_white);
             star_yellow = (ImageView) itemView.findViewById(R.id.star_background_yellow);
-            star_yellow.setVisibility(View.INVISIBLE);
             favButton.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
@@ -118,6 +117,8 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
         void bind(int listIndex) {
             Context context = itemView.getContext();
+            star_yellow.setVisibility(View.INVISIBLE);
+
             if (!movies.isEmpty()) {
                 String imgURL = context.getString(R.string.API_Img_URL_185) + movies.get(listIndex).getImageURL();
 
