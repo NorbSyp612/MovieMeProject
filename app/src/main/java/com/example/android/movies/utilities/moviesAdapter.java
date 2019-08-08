@@ -2,10 +2,12 @@ package com.example.android.movies.utilities;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
 
     private ListItemClickListener onClickListener;
+    private ButtonItemClickListener onButtonClickListener;
     private static int viewHolderCount;
     private int numberMovies;
     private ArrayList<Movie> movies;
@@ -28,9 +31,14 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         void onListItemClick(int clickedItemIndex);
     }
 
-    public moviesAdapter(int movies, ListItemClickListener onclick, ArrayList<Movie> moviesArray) {
+    public interface ButtonItemClickListener {
+        void onButtonClick(int clickedItemIndex);
+    }
+
+    public moviesAdapter(int movies, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray) {
         numberMovies = movies;
         onClickListener = onclick;
+        onButtonClickListener = buttonOnClick;
         viewHolderCount = 0;
         this.movies = moviesArray;
     }
@@ -61,19 +69,31 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
     class NumberViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         ImageView movieItemView;
+        ImageButton favButton;
         TextView movieNumber;
 
         public NumberViewHolder(View itemView) {
             super(itemView);
             movieItemView = (ImageView) itemView.findViewById(R.id.movie_item);
+            favButton = (ImageButton) itemView.findViewById(R.id.star_button);
+            favButton.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
+
 
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            onClickListener.onListItemClick(clickedPosition);
+
+            if (favButton.isPressed()) {
+                Log.d("TEST", "ACTIVIATED");
+                onButtonClickListener.onButtonClick(clickedPosition);
+            } else {
+                onClickListener.onListItemClick(clickedPosition);
+            }
+
         }
+
 
         void bind(int listIndex) {
             Context context = itemView.getContext();

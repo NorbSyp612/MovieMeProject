@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinWorkerThread;
 
-public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener {
+public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
 
     private ArrayList<Movie> movies = new ArrayList();
     private RecyclerView moviesGrid;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         moviesGrid = (RecyclerView) findViewById(R.id.movie_items);
         GridLayoutManager layoutManager = new GridLayoutManager(context, 2);
         moviesGrid.setLayoutManager(layoutManager);
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies);
 
         moviesGrid.setAdapter(mAdapter);
         moviesGrid.setHasFixedSize(true);
@@ -199,14 +199,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             setMoviesFromCategory(getString(R.string.Western));
             setTitle(getString(R.string.Western));
         }
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, movies);
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies);
         moviesGrid.setAdapter(mAdapter);
     }
 
     public void populateUIFavorites() {
         setMoviesFavorites();
         NUM_LIST_MOVIES_FAVORITES = movies.size();
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES_FAVORITES, this, movies);
+        mAdapter = new moviesAdapter(NUM_LIST_MOVIES_FAVORITES, this, this, movies);
         moviesGrid.setAdapter(mAdapter);
         setTitle(R.string.Set_Title_Favorite);
     }
@@ -420,6 +420,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
 
         startActivity(goToMovieActivity);
+    }
+
+    @Override
+    public void onButtonClick(int clickedItemIndex) {
+        Log.d("TEST", "PLEASE: " + clickedItemIndex);
     }
 
 
