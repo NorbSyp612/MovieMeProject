@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private String favorite;
     private FavEntry movieEntry;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
 
+    public static void execute(String apiresults) {
+
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(INSTANCE_RESUME_CODE, resumeCode);
@@ -94,59 +99,64 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 favorites = favEntries;
                 getFavs();
-
-                if (resumeCode == 3) {
-                    populateUIFavorites();
-                    scrollToPosition();
-                } else if (resumeCode == 2) {
-                    populateUI(getString(R.string.Top_Rated));
-                    scrollToPosition();
-                } else if (resumeCode == 1) {
-                    populateUI(getString(R.string.Most_Popular));
-                    scrollToPosition();
-                } else if (resumeCode == 4) {
-                 //   populateUI(getString(R.string.Action));
-                 //   scrollToPosition();
-                } else if (resumeCode == 5) {
-                    populateUI(getString(R.string.Adventure));
-                    scrollToPosition();
-                } else if (resumeCode == 6) {
-                    populateUI(getString(R.string.Comedy));
-                    scrollToPosition();
-                } else if (resumeCode == 7) {
-                    populateUI(getString(R.string.History));
-                    scrollToPosition();
-                } else if (resumeCode == 8) {
-                    populateUI(getString(R.string.Horror));
-                    scrollToPosition();
-                } else if (resumeCode == 9) {
-                    populateUI(getString(R.string.Drama));
-                    scrollToPosition();
-                } else if (resumeCode == 10) {
-                    populateUI(getString(R.string.Fantasy));
-                    scrollToPosition();
-                } else if (resumeCode == 11) {
-                    populateUI(getString(R.string.Mystery));
-                    scrollToPosition();
-                } else if (resumeCode == 12) {
-                    populateUI(getString(R.string.Romance));
-                    scrollToPosition();
-                } else if (resumeCode == 13) {
-                    populateUI(getString(R.string.Science_Fiction));
-                    scrollToPosition();
-                } else if (resumeCode == 14) {
-                    populateUI(getString(R.string.Science_Fiction));
-                    scrollToPosition();
-                } else if (resumeCode == 15) {
-                    populateUI(getString(R.string.Western));
-                    scrollToPosition();
-                } else {
-                    populateUI(getString(R.string.Most_Popular));
-                }
             }
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (resumeCode == 3) {
+            populateUIFavorites();
+            scrollToPosition();
+        } else if (resumeCode == 2) {
+            populateUI(getString(R.string.Top_Rated));
+            scrollToPosition();
+        } else if (resumeCode == 1) {
+            Log.d("FAV", "Populating most pop");
+            populateUI(getString(R.string.Most_Popular));
+            scrollToPosition();
+        } else if (resumeCode == 4) {
+            populateUI(getString(R.string.Action));
+            scrollToPosition();
+        } else if (resumeCode == 5) {
+            populateUI(getString(R.string.Adventure));
+            scrollToPosition();
+        } else if (resumeCode == 6) {
+            populateUI(getString(R.string.Comedy));
+            scrollToPosition();
+        } else if (resumeCode == 7) {
+            populateUI(getString(R.string.History));
+            scrollToPosition();
+        } else if (resumeCode == 8) {
+            populateUI(getString(R.string.Horror));
+            scrollToPosition();
+        } else if (resumeCode == 9) {
+            populateUI(getString(R.string.Drama));
+            scrollToPosition();
+        } else if (resumeCode == 10) {
+            populateUI(getString(R.string.Fantasy));
+            scrollToPosition();
+        } else if (resumeCode == 11) {
+            populateUI(getString(R.string.Mystery));
+            scrollToPosition();
+        } else if (resumeCode == 12) {
+            populateUI(getString(R.string.Romance));
+            scrollToPosition();
+        } else if (resumeCode == 13) {
+            populateUI(getString(R.string.Science_Fiction));
+            scrollToPosition();
+        } else if (resumeCode == 14) {
+            populateUI(getString(R.string.Science_Fiction));
+            scrollToPosition();
+        } else if (resumeCode == 15) {
+            populateUI(getString(R.string.Western));
+            scrollToPosition();
+        } else {
+            populateUI(getString(R.string.Most_Popular));
+        }
+    }
 
     public void populateUI(String category) {
         if (category.equals(getString(R.string.Most_Popular))) {
@@ -353,6 +363,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void getFavs() {
+        Log.d("Fav", "Getting Favs");
         favMovies = new ArrayList();
         String resultsString = "";
 
@@ -467,11 +478,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void run() {
                 if (favorite.equals(getString(R.string.Yes))) {
                     mDb.favDao().deleteFav(movieEntry);
-                    favorite=getString(R.string.No);
+                    favorite = getString(R.string.No);
                 } else {
                     FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName());
                     mDb.favDao().insertFav(enterNewFavorite);
-                    favorite=getString(R.string.Yes);
+                    favorite = getString(R.string.Yes);
                 }
             }
         });
@@ -497,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected void onPostExecute(String apiResults) {
-
+            MainActivity.execute(apiResults);
         }
     }
 }
