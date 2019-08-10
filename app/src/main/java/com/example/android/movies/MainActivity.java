@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private String favorite;
     private FavEntry movieEntry;
     private static int asyncCount;
+    private int buttonClick;
 
 
     @Override
@@ -65,10 +66,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             viewHolderPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CODE);
             Log.d("TEST", "Resume code: " + resumeCode);
         } else {
-            resumeCode = 0;
+            resumeCode = 1;
         }
 
-        context = MainActivity.this;
+        buttonClick = 0;
 
 
         moviesGrid = (RecyclerView) findViewById(R.id.movie_items);
@@ -120,7 +121,35 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 favorites = favEntries;
 
-                populateUI(getString(R.string.Most_Popular));
+                if (buttonClick == 0 && resumeCode == 1) {
+                    populateUI(getString(R.string.Most_Popular));
+                } else if (buttonClick == 0 && resumeCode == 2) {
+                    populateUI(getString(R.string.Top_Rated));
+                } else if (buttonClick == 0 && resumeCode == 4) {
+                    populateUI(getString(R.string.Action));
+                } else if (buttonClick == 0 && resumeCode == 5) {
+                    populateUI(getString(R.string.Adventure));
+                } else if (buttonClick == 0 && resumeCode == 6) {
+                    populateUI(getString(R.string.Comedy));
+                } else if (buttonClick == 0 && resumeCode == 7) {
+                    populateUI(getString(R.string.History));
+                } else if (buttonClick == 0 && resumeCode == 8) {
+                    populateUI(getString(R.string.Horror));
+                } else if (buttonClick == 0 && resumeCode == 9) {
+                    populateUI(getString(R.string.Drama));
+                } else if (buttonClick == 0 && resumeCode == 10) {
+                    populateUI(getString(R.string.Fantasy));
+                } else if (buttonClick == 0 && resumeCode == 11) {
+                    populateUI(getString(R.string.Mystery));
+                } else if (buttonClick == 0 && resumeCode == 12) {
+                    populateUI(getString(R.string.Romance));
+                } else if (buttonClick == 0 && resumeCode == 13) {
+                    populateUI(getString(R.string.Science_Fiction));
+                } else if (buttonClick == 0 && resumeCode == 14) {
+                    populateUI(getString(R.string.Thriller));
+                } else if (buttonClick == 0 && resumeCode == 15) {
+                    populateUI(getString(R.string.Western));
+                }
 
             }
         });
@@ -129,13 +158,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     @Override
     protected void onResume() {
         super.onResume();
-
         asyncCount = 0;
-        Log.d("TEST", "Resume code: " + resumeCode);
-
-        if (resumeCode == 0) {
-
-        }
+        buttonClick = 0;
     }
 
     public void populateUI(String category) {
@@ -426,6 +450,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Log.d("TEST", "PLEASE: " + clickedItemIndex);
 
         favorite = getString(R.string.No);
+        buttonClick = 1;
 
         for (FavEntry a : favorites) {
             if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
