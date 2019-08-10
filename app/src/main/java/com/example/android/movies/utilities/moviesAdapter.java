@@ -68,7 +68,6 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
             Log.d("FAV2", "Movies is clear");
         }
         movies = moviesArray;
-        Log.d("FAV2", movies.get(1).getFav());
     }
 
 

@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.database.AppDatabase;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private FavEntry movieEntry;
     private static int asyncCount;
     private int buttonClick;
+    private ImageButton imgButtonPop;
 
 
     @Override
@@ -60,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         setContentView(R.layout.activity_main);
 
         Context context = this;
+
+        imgButtonPop = (ImageButton) findViewById(R.id.imageButton_Pop);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
@@ -236,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void MostPopClick(View view) {
         populateUI(getString(R.string.Most_Popular));
+        imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_red));
     }
 
     public void FavsClick(View view) {
