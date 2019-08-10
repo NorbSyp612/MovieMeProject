@@ -13,8 +13,10 @@ public class Movie {
     private String runtime;
     private String movieIdURL;
     private String backdropURL;
+    private String isFav;
 
     public Movie() {
+        isFav = "no";
     }
 
     public void setId(String movieId) {
@@ -91,5 +93,13 @@ public class Movie {
 
     public String getReleaseDate() {
         return this.releaseDate;
+    }
+
+    public void setFav(String Fav){
+        isFav = Fav;
+    }
+
+    public String getFav() {
+        return isFav;
     }
 }

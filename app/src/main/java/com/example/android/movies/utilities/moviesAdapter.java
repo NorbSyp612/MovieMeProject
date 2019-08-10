@@ -58,18 +58,19 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
     }
 
     public void setNumberMovies(int movies) {
-        numberMovies = 0;
         numberMovies = movies;
     }
 
     public void setMovies(ArrayList<Movie> moviesArray) {
-        this.movies.clear();
+        movies.clear();
         Log.d("FAV2", "Cleaing movies array");
-        if (this.movies.isEmpty()) {
+        if (movies.isEmpty()) {
             Log.d("FAV2", "Movies is clear");
         }
-        this.movies = moviesArray;
+        movies = moviesArray;
+        Log.d("FAV2", movies.get(1).getFav());
     }
+
 
 
     @Override
@@ -142,11 +143,17 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
                 Movie test = movies.get(listIndex);
 
+                Log.d("T4", "TEST " + test.getFav());
+
                 for (Movie a : favMovies) {
                     if (test.getMovieName().equals(a.getMovieName())) {
                         Log.d("TEST", "FAVORITE FOUND: " + test.getMovieName());
                         star_yellow.setVisibility(View.VISIBLE);
                     }
+                }
+
+                if (test.getFav().equals("yes")) {
+                    star_yellow.setVisibility(View.VISIBLE);
                 }
 
 

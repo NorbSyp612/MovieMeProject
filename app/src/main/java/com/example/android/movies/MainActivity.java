@@ -94,9 +94,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (asyncCount == 5) {
 
-            for (Movie a : favMovies) {
-                Log.d("FAV", a.getMovieName());
-            }
 
             Log.d("FAV2", "is empty: " + favMovies.isEmpty());
 
@@ -123,15 +120,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 favorites = favEntries;
 
-                Log.d("TEST", "creating favMovies");
-
-                for (FavEntry a : favorites) {
-                    Movie movieEntry = new Movie();
-                    movieEntry.setId(a.getId());
-                    movieEntry.setMovieName(a.getName());
-                    Log.d("TEST", "Adding to favMovies: " + movieEntry.getMovieName());
-                    favMovies.add(movieEntry);
-                }
+                populateUI(getString(R.string.Most_Popular));
 
             }
         });
@@ -145,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Log.d("TEST", "Resume code: " + resumeCode);
 
         if (resumeCode == 0) {
-            populateUI(getString(R.string.Most_Popular));
+
         }
     }
 
@@ -351,6 +340,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             moviesAdd = JsonUtils.parseApiResult(resultsString);
 
             for (Movie movie : moviesAdd) {
+
+                for (FavEntry a : favorites) {
+                    if (a.getName().equals(movie.getMovieName())) {
+                        Log.d("T4", "YES");
+                        movie.setFav(getString(R.string.Yes));
+                    }
+                }
                 movies.add(movie);
             }
         }
@@ -375,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 movieAdd = JsonUtils.parseFavoriteMovie(resultsString);
 
                 if (movieAdd != null) {
+                    movieAdd.setFav(getString(R.string.Yes));
                     movies.add(movieAdd);
                 }
 
