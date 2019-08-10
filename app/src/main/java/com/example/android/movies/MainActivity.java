@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             viewHolderPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CODE);
             Log.d("TEST", "Resume code: " + resumeCode);
         } else {
-            resumeCode = 1;
+            resumeCode = 0;
         }
 
         context = MainActivity.this;
@@ -81,57 +81,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mDb = AppDatabase.getInstance(getApplicationContext());
 
         setupViewModel();
-
-        if (resumeCode == 3) {
-            populateUIFavorites();
-            scrollToPosition();
-        } else if (resumeCode == 2) {
-            populateUI(getString(R.string.Top_Rated));
-            scrollToPosition();
-        } else if (resumeCode == 1) {
-            Log.d("FAV", "Populating most pop");
-            populateUI(getString(R.string.Most_Popular));
-            Log.d("TEST", "Just populated. View position is: " + viewHolderPosition);
-            scrollToPosition();
-        } else if (resumeCode == 4) {
-            populateUI(getString(R.string.Action));
-            scrollToPosition();
-        } else if (resumeCode == 5) {
-            populateUI(getString(R.string.Adventure));
-            scrollToPosition();
-        } else if (resumeCode == 6) {
-            populateUI(getString(R.string.Comedy));
-            scrollToPosition();
-        } else if (resumeCode == 7) {
-            populateUI(getString(R.string.History));
-            scrollToPosition();
-        } else if (resumeCode == 8) {
-            populateUI(getString(R.string.Horror));
-            scrollToPosition();
-        } else if (resumeCode == 9) {
-            populateUI(getString(R.string.Drama));
-            scrollToPosition();
-        } else if (resumeCode == 10) {
-            populateUI(getString(R.string.Fantasy));
-            scrollToPosition();
-        } else if (resumeCode == 11) {
-            populateUI(getString(R.string.Mystery));
-            scrollToPosition();
-        } else if (resumeCode == 12) {
-            populateUI(getString(R.string.Romance));
-            scrollToPosition();
-        } else if (resumeCode == 13) {
-            populateUI(getString(R.string.Science_Fiction));
-            scrollToPosition();
-        } else if (resumeCode == 14) {
-            populateUI(getString(R.string.Science_Fiction));
-            scrollToPosition();
-        } else if (resumeCode == 15) {
-            populateUI(getString(R.string.Western));
-            scrollToPosition();
-        } else {
-            populateUI(getString(R.string.Most_Popular));
-        }
 
     }
 
@@ -195,7 +144,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         asyncCount = 0;
         Log.d("TEST", "Resume code: " + resumeCode);
 
-
+        if (resumeCode == 0) {
+            populateUI(getString(R.string.Most_Popular));
+        }
     }
 
     public void populateUI(String category) {
