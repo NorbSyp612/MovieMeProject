@@ -42,12 +42,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private String isFavorite;
     private AppDatabase mDb;
     List<FavEntry> favorites;
-    private int resumeCode;
+    private static int resumeCode;
     private String movieID;
     private String INSTANCE_RESUME_CODE = "RESUME_CODE";
     private String INSTANCE_VIEW_POSITION_CODE = "POSITION CODE";
     private int viewHolderPosition;
-    int NUM_LIST_MOVIES_FAVORITES;
+    private int NUM_LIST_MOVIES_FAVORITES;
     private String favorite;
     private FavEntry movieEntry;
     private static int asyncCount;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
             viewHolderPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CODE);
-            Log.d("TEST", "Resume code: "+ resumeCode);
+            Log.d("TEST", "Resume code: " + resumeCode);
         } else {
             resumeCode = 1;
         }
@@ -82,13 +82,65 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         setupViewModel();
 
-
+        if (resumeCode == 3) {
+            populateUIFavorites();
+            scrollToPosition();
+        } else if (resumeCode == 2) {
+            populateUI(getString(R.string.Top_Rated));
+            scrollToPosition();
+        } else if (resumeCode == 1) {
+            Log.d("FAV", "Populating most pop");
+            populateUI(getString(R.string.Most_Popular));
+            Log.d("TEST", "Just populated. View position is: " + viewHolderPosition);
+            scrollToPosition();
+        } else if (resumeCode == 4) {
+            populateUI(getString(R.string.Action));
+            scrollToPosition();
+        } else if (resumeCode == 5) {
+            populateUI(getString(R.string.Adventure));
+            scrollToPosition();
+        } else if (resumeCode == 6) {
+            populateUI(getString(R.string.Comedy));
+            scrollToPosition();
+        } else if (resumeCode == 7) {
+            populateUI(getString(R.string.History));
+            scrollToPosition();
+        } else if (resumeCode == 8) {
+            populateUI(getString(R.string.Horror));
+            scrollToPosition();
+        } else if (resumeCode == 9) {
+            populateUI(getString(R.string.Drama));
+            scrollToPosition();
+        } else if (resumeCode == 10) {
+            populateUI(getString(R.string.Fantasy));
+            scrollToPosition();
+        } else if (resumeCode == 11) {
+            populateUI(getString(R.string.Mystery));
+            scrollToPosition();
+        } else if (resumeCode == 12) {
+            populateUI(getString(R.string.Romance));
+            scrollToPosition();
+        } else if (resumeCode == 13) {
+            populateUI(getString(R.string.Science_Fiction));
+            scrollToPosition();
+        } else if (resumeCode == 14) {
+            populateUI(getString(R.string.Science_Fiction));
+            scrollToPosition();
+        } else if (resumeCode == 15) {
+            populateUI(getString(R.string.Western));
+            scrollToPosition();
+        } else {
+            populateUI(getString(R.string.Most_Popular));
+        }
 
     }
 
 
     public static void execute() {
-        asyncCount++;
+
+        if (resumeCode != 3) {
+            asyncCount++;
+        }
         Log.d("async", "Count is: " + asyncCount);
 
         if (asyncCount == 5) {
@@ -102,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             asyncCount = 0;
             mAdapter.setNumberMovies(NUM_LIST_MOVIES);
             mAdapter.setMovies(movies);
-            mAdapter.setFavorites(favMovies);
             moviesGrid.setAdapter(mAdapter);
         }
 
@@ -133,56 +184,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     favMovies.add(movieEntry);
                 }
 
-                if (resumeCode == 3) {
-                    populateUIFavorites();
-                    scrollToPosition();
-                } else if (resumeCode == 2) {
-                    populateUI(getString(R.string.Top_Rated));
-                    scrollToPosition();
-                } else if (resumeCode == 1) {
-                    Log.d("FAV", "Populating most pop");
-                    populateUI(getString(R.string.Most_Popular));
-                    Log.d("TEST", "Just populated. View position is: " + viewHolderPosition);
-                    scrollToPosition();
-                } else if (resumeCode == 4) {
-                    populateUI(getString(R.string.Action));
-                    scrollToPosition();
-                } else if (resumeCode == 5) {
-                    populateUI(getString(R.string.Adventure));
-                    scrollToPosition();
-                } else if (resumeCode == 6) {
-                    populateUI(getString(R.string.Comedy));
-                    scrollToPosition();
-                } else if (resumeCode == 7) {
-                    populateUI(getString(R.string.History));
-                    scrollToPosition();
-                } else if (resumeCode == 8) {
-                    populateUI(getString(R.string.Horror));
-                    scrollToPosition();
-                } else if (resumeCode == 9) {
-                    populateUI(getString(R.string.Drama));
-                    scrollToPosition();
-                } else if (resumeCode == 10) {
-                    populateUI(getString(R.string.Fantasy));
-                    scrollToPosition();
-                } else if (resumeCode == 11) {
-                    populateUI(getString(R.string.Mystery));
-                    scrollToPosition();
-                } else if (resumeCode == 12) {
-                    populateUI(getString(R.string.Romance));
-                    scrollToPosition();
-                } else if (resumeCode == 13) {
-                    populateUI(getString(R.string.Science_Fiction));
-                    scrollToPosition();
-                } else if (resumeCode == 14) {
-                    populateUI(getString(R.string.Science_Fiction));
-                    scrollToPosition();
-                } else if (resumeCode == 15) {
-                    populateUI(getString(R.string.Western));
-                    scrollToPosition();
-                } else {
-                    populateUI(getString(R.string.Most_Popular));
-                }
             }
         });
     }
@@ -193,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         asyncCount = 0;
         Log.d("TEST", "Resume code: " + resumeCode);
+
 
     }
 
@@ -247,9 +249,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void populateUIFavorites() {
+        asyncCount = 0;
+
         setMoviesFavorites();
         NUM_LIST_MOVIES_FAVORITES = movies.size();
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES_FAVORITES, this, this, movies, favMovies);
+        mAdapter.setNumberMovies(NUM_LIST_MOVIES_FAVORITES);
+        mAdapter.setMovies(movies);
         moviesGrid.setAdapter(mAdapter);
         setTitle(R.string.Set_Title_Favorite);
     }

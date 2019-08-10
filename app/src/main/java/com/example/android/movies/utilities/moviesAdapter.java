@@ -71,18 +71,6 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         this.movies = moviesArray;
     }
 
-    public void setFavorites(ArrayList<Movie> favoritesArray) {
-        this.favMovies.clear();
-        this.favMovies = favoritesArray;
-
-        if (favoritesArray.isEmpty()) {
-            Log.d("FAV2", "EMPTY");
-        }
-        for (Movie a : favMovies) {
-            Log.d("FAV2", a.getMovieName());
-        }
-    }
-
 
     @Override
     public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
