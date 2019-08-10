@@ -34,10 +34,10 @@ import java.util.concurrent.ForkJoinWorkerThread;
 
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
 
-    private ArrayList<Movie> movies = new ArrayList();
-    private ArrayList<Movie> favMovies = new ArrayList();
-    private RecyclerView moviesGrid;
-    private moviesAdapter mAdapter;
+    private static ArrayList<Movie> movies = new ArrayList();
+    private static ArrayList<Movie> favMovies = new ArrayList();
+    private static RecyclerView moviesGrid;
+    private static moviesAdapter mAdapter;
     private static final int NUM_LIST_MOVIES = 100;
     private String isFavorite;
     private AppDatabase mDb;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     int NUM_LIST_MOVIES_FAVORITES;
     private String favorite;
     private FavEntry movieEntry;
-    private LiveData<List<FavEntry>> allFavs;
+    private static int asyncCount;
 
 
     @Override
@@ -63,9 +63,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
             viewHolderPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CODE);
+            Log.d("TEST", "Resume code: "+ resumeCode);
         } else {
             resumeCode = 1;
         }
+
+        context = MainActivity.this;
 
 
         moviesGrid = (RecyclerView) findViewById(R.id.movie_items);
@@ -79,12 +82,32 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         setupViewModel();
 
+
+
     }
 
 
-    public static void execute(String apiresults) {
+    public static void execute() {
+        asyncCount++;
+        Log.d("async", "Count is: " + asyncCount);
+
+        if (asyncCount == 5) {
+
+            for (Movie a : favMovies) {
+                Log.d("FAV", a.getMovieName());
+            }
+
+            Log.d("FAV2", "is empty: " + favMovies.isEmpty());
+
+            asyncCount = 0;
+            mAdapter.setNumberMovies(NUM_LIST_MOVIES);
+            mAdapter.setMovies(movies);
+            mAdapter.setFavorites(favMovies);
+            moviesGrid.setAdapter(mAdapter);
+        }
 
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -106,7 +129,59 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     Movie movieEntry = new Movie();
                     movieEntry.setId(a.getId());
                     movieEntry.setMovieName(a.getName());
+                    Log.d("TEST", "Adding to favMovies: " + movieEntry.getMovieName());
                     favMovies.add(movieEntry);
+                }
+
+                if (resumeCode == 3) {
+                    populateUIFavorites();
+                    scrollToPosition();
+                } else if (resumeCode == 2) {
+                    populateUI(getString(R.string.Top_Rated));
+                    scrollToPosition();
+                } else if (resumeCode == 1) {
+                    Log.d("FAV", "Populating most pop");
+                    populateUI(getString(R.string.Most_Popular));
+                    Log.d("TEST", "Just populated. View position is: " + viewHolderPosition);
+                    scrollToPosition();
+                } else if (resumeCode == 4) {
+                    populateUI(getString(R.string.Action));
+                    scrollToPosition();
+                } else if (resumeCode == 5) {
+                    populateUI(getString(R.string.Adventure));
+                    scrollToPosition();
+                } else if (resumeCode == 6) {
+                    populateUI(getString(R.string.Comedy));
+                    scrollToPosition();
+                } else if (resumeCode == 7) {
+                    populateUI(getString(R.string.History));
+                    scrollToPosition();
+                } else if (resumeCode == 8) {
+                    populateUI(getString(R.string.Horror));
+                    scrollToPosition();
+                } else if (resumeCode == 9) {
+                    populateUI(getString(R.string.Drama));
+                    scrollToPosition();
+                } else if (resumeCode == 10) {
+                    populateUI(getString(R.string.Fantasy));
+                    scrollToPosition();
+                } else if (resumeCode == 11) {
+                    populateUI(getString(R.string.Mystery));
+                    scrollToPosition();
+                } else if (resumeCode == 12) {
+                    populateUI(getString(R.string.Romance));
+                    scrollToPosition();
+                } else if (resumeCode == 13) {
+                    populateUI(getString(R.string.Science_Fiction));
+                    scrollToPosition();
+                } else if (resumeCode == 14) {
+                    populateUI(getString(R.string.Science_Fiction));
+                    scrollToPosition();
+                } else if (resumeCode == 15) {
+                    populateUI(getString(R.string.Western));
+                    scrollToPosition();
+                } else {
+                    populateUI(getString(R.string.Most_Popular));
                 }
             }
         });
@@ -116,55 +191,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     protected void onResume() {
         super.onResume();
 
-        if (resumeCode == 3) {
-            populateUIFavorites();
-            scrollToPosition();
-        } else if (resumeCode == 2) {
-            populateUI(getString(R.string.Top_Rated));
-            scrollToPosition();
-        } else if (resumeCode == 1) {
-            Log.d("FAV", "Populating most pop");
-            populateUI(getString(R.string.Most_Popular));
-            scrollToPosition();
-        } else if (resumeCode == 4) {
-            populateUI(getString(R.string.Action));
-            scrollToPosition();
-        } else if (resumeCode == 5) {
-            populateUI(getString(R.string.Adventure));
-            scrollToPosition();
-        } else if (resumeCode == 6) {
-            populateUI(getString(R.string.Comedy));
-            scrollToPosition();
-        } else if (resumeCode == 7) {
-            populateUI(getString(R.string.History));
-            scrollToPosition();
-        } else if (resumeCode == 8) {
-            populateUI(getString(R.string.Horror));
-            scrollToPosition();
-        } else if (resumeCode == 9) {
-            populateUI(getString(R.string.Drama));
-            scrollToPosition();
-        } else if (resumeCode == 10) {
-            populateUI(getString(R.string.Fantasy));
-            scrollToPosition();
-        } else if (resumeCode == 11) {
-            populateUI(getString(R.string.Mystery));
-            scrollToPosition();
-        } else if (resumeCode == 12) {
-            populateUI(getString(R.string.Romance));
-            scrollToPosition();
-        } else if (resumeCode == 13) {
-            populateUI(getString(R.string.Science_Fiction));
-            scrollToPosition();
-        } else if (resumeCode == 14) {
-            populateUI(getString(R.string.Science_Fiction));
-            scrollToPosition();
-        } else if (resumeCode == 15) {
-            populateUI(getString(R.string.Western));
-            scrollToPosition();
-        } else {
-            populateUI(getString(R.string.Most_Popular));
-        }
+        asyncCount = 0;
+        Log.d("TEST", "Resume code: " + resumeCode);
 
     }
 
@@ -216,9 +244,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             setTitle(getString(R.string.Western));
         }
 
-
-        mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
-        moviesGrid.setAdapter(mAdapter);
     }
 
     public void populateUIFavorites() {
@@ -234,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             if (resumeCode == 3 && viewHolderPosition == NUM_LIST_MOVIES_FAVORITES) {
                 viewHolderPosition--;
             }
+            Log.d("TEST", "Scrolling to: " + viewHolderPosition);
             moviesGrid.scrollToPosition(viewHolderPosition);
         }
     }
@@ -358,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
             try {
-                new apiCall().execute(testURL).get();
+                resultsString = new apiCall().execute(testURL).get();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -413,6 +439,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Class destination = movieActivity.class;
 
         viewHolderPosition = clickedItemIndex;
+
+        Log.d("TEST", "Viewholder position is: " + viewHolderPosition);
 
         final Intent goToMovieActivity = new Intent(context, destination);
 
@@ -489,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected void onPostExecute(String apiResults) {
-            MainActivity.execute(apiResults);
+            MainActivity.execute();
         }
     }
 }

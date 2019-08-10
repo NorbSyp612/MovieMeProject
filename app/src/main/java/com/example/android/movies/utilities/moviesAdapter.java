@@ -54,9 +54,34 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         onButtonClickListener = buttonOnClick;
         viewHolderCount = 0;
         this.movies = moviesArray;
-        favMovies = favoritesArray;
+        this.favMovies = favoritesArray;
     }
 
+    public void setNumberMovies(int movies) {
+        numberMovies = 0;
+        numberMovies = movies;
+    }
+
+    public void setMovies(ArrayList<Movie> moviesArray) {
+        this.movies.clear();
+        Log.d("FAV2", "Cleaing movies array");
+        if (this.movies.isEmpty()) {
+            Log.d("FAV2", "Movies is clear");
+        }
+        this.movies = moviesArray;
+    }
+
+    public void setFavorites(ArrayList<Movie> favoritesArray) {
+        this.favMovies.clear();
+        this.favMovies = favoritesArray;
+
+        if (favoritesArray.isEmpty()) {
+            Log.d("FAV2", "EMPTY");
+        }
+        for (Movie a : favMovies) {
+            Log.d("FAV2", a.getMovieName());
+        }
+    }
 
 
     @Override
