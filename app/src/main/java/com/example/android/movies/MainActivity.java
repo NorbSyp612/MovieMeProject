@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     int NUM_LIST_MOVIES_FAVORITES;
     private String favorite;
     private FavEntry movieEntry;
+    private LiveData<List<FavEntry>> allFavs;
 
 
     @Override
@@ -98,7 +99,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 favorites = favEntries;
-                getFavs();
+
+                Log.d("TEST", "creating favMovies");
+
+                for (FavEntry a : favorites) {
+                    Movie movieEntry = new Movie();
+                    movieEntry.setId(a.getId());
+                    movieEntry.setMovieName(a.getName());
+                    favMovies.add(movieEntry);
+                }
             }
         });
     }
@@ -156,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else {
             populateUI(getString(R.string.Most_Popular));
         }
+
     }
 
     public void populateUI(String category) {
@@ -205,6 +215,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             setMoviesFromCategory(getString(R.string.Western));
             setTitle(getString(R.string.Western));
         }
+
+
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
         moviesGrid.setAdapter(mAdapter);
     }
@@ -346,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
             try {
-                resultsString = new apiCall().execute(testURL).get();
+                new apiCall().execute(testURL).get();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -358,38 +370,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             for (Movie movie : moviesAdd) {
                 movies.add(movie);
-            }
-        }
-    }
-
-    public void getFavs() {
-        Log.d("Fav", "Getting Favs");
-        favMovies = new ArrayList();
-        String resultsString = "";
-
-
-        for (FavEntry a : favorites) {
-            String favID = a.getId() + "?";
-
-            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + favID + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
-
-            try {
-                URL movieURL = new URL(movieIDQuery);
-                resultsString = new apiCall().execute(movieURL).get();
-                Movie movieAdd;
-
-                movieAdd = JsonUtils.parseFavoriteMovie(resultsString);
-
-                if (movieAdd != null) {
-                    favMovies.add(movieAdd);
-                }
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -451,6 +431,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         for (FavEntry a : favorites) {
             if (a.getId().equals(movieID)) {
                 isFavorite = getString(R.string.Yes);
+                Log.d("TEST", "onListItemClick marking favorite as YES");
             }
         }
 
