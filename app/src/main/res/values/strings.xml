@@ -1,4 +1,9 @@
 <resources>
+    <string name="MovieMe">MovieMe</string>
+    <string name="Pop">Pop</string>
+    <string name="Top">Top</string>
+    <string name="SciFi">SciFi</string>
+
     <string name="app_name">Movies</string>
     <string name="API_key">cf302f54886739895a2c28626d65e40d</string>
     <string name="API_key_append">api_key=</string>

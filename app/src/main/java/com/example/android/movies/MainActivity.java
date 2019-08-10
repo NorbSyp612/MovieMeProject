@@ -54,7 +54,22 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private FavEntry movieEntry;
     private static int asyncCount;
     private int buttonClick;
+    private int category;
     private ImageButton imgButtonPop;
+    private ImageButton imgButtonFav;
+    private ImageButton imgButtonTop;
+    private ImageButton imgButtonAction;
+    private ImageButton imgButtonAdventure;
+    private ImageButton imgButtonComedy;
+    private ImageButton imgButtonHistory;
+    private ImageButton imgButtonHorror;
+    private ImageButton imgButtonDrama;
+    private ImageButton imgButtonFantasy;
+    private ImageButton imgButtonMystery;
+    private ImageButton imgButtonRomance;
+    private ImageButton imgButtonScifi;
+    private ImageButton imgButtonThriller;
+    private ImageButton imgButtonWestern;
 
 
     @Override
@@ -64,7 +79,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         Context context = this;
 
-        imgButtonPop = (ImageButton) findViewById(R.id.imageButton_Pop);
+        imgButtonPop = (ImageButton) findViewById(R.id.imageButton_pop);
+        imgButtonFav = (ImageButton) findViewById(R.id.imageButton_favorites);
+        imgButtonTop = (ImageButton) findViewById(R.id.imageButton_top);
+        imgButtonAction = (ImageButton) findViewById(R.id.imageButton_action);
+        imgButtonAdventure = (ImageButton) findViewById(R.id.imageButton_adventure);
+        imgButtonComedy = (ImageButton) findViewById(R.id.imageButton_comedy);
+        imgButtonHistory = (ImageButton) findViewById(R.id.imageButton_history);
+        imgButtonHorror = (ImageButton) findViewById(R.id.imageButton_horror);
+        imgButtonDrama = (ImageButton) findViewById(R.id.imageButton_drama);
+        imgButtonFantasy = (ImageButton) findViewById(R.id.imageButton_fantasy);
+        imgButtonMystery = (ImageButton) findViewById(R.id.imageButton_mystery);
+        imgButtonRomance = (ImageButton) findViewById(R.id.imageButton_romance);
+        imgButtonScifi = (ImageButton) findViewById(R.id.imageButton_scifi);
+        imgButtonThriller = (ImageButton) findViewById(R.id.imageButton_thriller);
+        imgButtonWestern = (ImageButton) findViewById(R.id.imageButton_western);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
@@ -168,7 +197,62 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         buttonClick = 0;
     }
 
+    public void setCategoryButtonsColor() {
+
+        imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonFav.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonTop.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonAction.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonAdventure.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonComedy.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonHistory.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonHorror.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonDrama.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonFantasy.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonMystery.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonRomance.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonScifi.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonThriller.setBackground(getDrawable(R.drawable.circle_border_black));
+        imgButtonWestern.setBackground(getDrawable(R.drawable.circle_border_black));
+
+        if (resumeCode == 1) {
+            imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 2) {
+            imgButtonTop.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 3) {
+            imgButtonFav.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 4) {
+            imgButtonAction.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 5) {
+            imgButtonAdventure.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 6) {
+            imgButtonComedy.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 7) {
+            imgButtonHistory.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 8) {
+            imgButtonHorror.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 9) {
+            imgButtonDrama.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 10) {
+            imgButtonFantasy.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 11) {
+            imgButtonMystery.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 12) {
+            imgButtonRomance.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 13) {
+            imgButtonScifi.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 14) {
+            imgButtonThriller.setBackground(getDrawable(R.drawable.circle_border_red));
+        } else if (resumeCode == 15) {
+            imgButtonWestern.setBackground(getDrawable(R.drawable.circle_border_red));
+        }
+
+    }
+
     public void populateUI(String category) {
+
+
+
         if (category.equals(getString(R.string.Most_Popular))) {
             setMoviesFromCategory(getString(R.string.Most_Popular));
             setTitle(getString(R.string.Most_Popular));
@@ -216,6 +300,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             setTitle(getString(R.string.Western));
         }
 
+        setCategoryButtonsColor();
+
     }
 
     public void populateUIFavorites() {
@@ -227,6 +313,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mAdapter.setMovies(movies);
         moviesGrid.setAdapter(mAdapter);
         setTitle(R.string.Set_Title_Favorite);
+
+        setCategoryButtonsColor();
     }
 
     private static void scrollToPosition() {
@@ -240,63 +328,77 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void MostPopClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Most_Popular));
-        imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_red));
     }
 
     public void FavsClick(View view) {
+        viewHolderPosition = 0;
         populateUIFavorites();
     }
 
     public void TopRatedClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Top_Rated));
     }
 
     public void AcitonClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Action));
     }
 
     public void AdventureClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Adventure));
     }
 
     public void ComedyClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Comedy));
     }
 
     public void HistoryClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.History));
     }
 
     public void HorrorClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Horror));
     }
 
     public void DramaClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Drama));
     }
 
     public void FantasyClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Fantasy));
     }
 
     public void MysteryClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Mystery));
     }
 
     public void RomanceClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Romance));
     }
 
     public void ScifiClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Science_Fiction));
     }
 
     public void ThrillerClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Thriller));
     }
 
     public void WesternClick(View view) {
+        viewHolderPosition = 0;
         populateUI(getString(R.string.Western));
     }
 
