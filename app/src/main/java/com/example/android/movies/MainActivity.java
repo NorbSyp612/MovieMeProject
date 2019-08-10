@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private String movieID;
     private String INSTANCE_RESUME_CODE = "RESUME_CODE";
     private String INSTANCE_VIEW_POSITION_CODE = "POSITION CODE";
-    private int viewHolderPosition;
-    private int NUM_LIST_MOVIES_FAVORITES;
+    private static int viewHolderPosition;
+    private static int NUM_LIST_MOVIES_FAVORITES;
     private String favorite;
     private FavEntry movieEntry;
     private static int asyncCount;
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mAdapter.setNumberMovies(NUM_LIST_MOVIES);
             mAdapter.setMovies(movies);
             moviesGrid.setAdapter(mAdapter);
+            scrollToPosition();
         }
 
     }
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         setTitle(R.string.Set_Title_Favorite);
     }
 
-    private void scrollToPosition() {
+    private static void scrollToPosition() {
         if (resumeCode > 0) {
             if (resumeCode == 3 && viewHolderPosition == NUM_LIST_MOVIES_FAVORITES) {
                 viewHolderPosition--;
