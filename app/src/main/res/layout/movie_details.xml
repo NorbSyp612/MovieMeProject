@@ -12,64 +12,17 @@
         android:layout_height="match_parent"
         android:background="@color/background">
 
-
-        <TextView
-            android:id="@+id/movie_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:gravity="center_vertical"
-            android:padding="25dp"
-            android:textColor="@color/color_text_primary"
-            android:textSize="45dp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Chappie" />
-
-        <ImageView
-            android:id="@+id/movie_poster"
-            android:layout_width="160dp"
-            android:layout_height="240dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="10dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_title" />
-
-        <TextView
-            android:id="@+id/movie_Year"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="235dp"
-            android:layout_marginTop="10dp"
-            android:textSize="25dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_title"
-            tools:text="2015" />
-
-        <TextView
-            android:id="@+id/movie_RunTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="23dp"
-            android:textStyle="italic"
-            app:layout_constraintStart_toStartOf="@+id/movie_Year"
-            app:layout_constraintTop_toBottomOf="@+id/movie_Year"
-            tools:text="120min" />
-
         <TextView
             android:id="@+id/movie_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="15dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="17dp"
+            android:textSize="40dp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/movie_RunTime"
-            app:layout_constraintTop_toBottomOf="@+id/movie_RunTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="8.5/10" />
 
         <Button
@@ -92,7 +45,7 @@
             android:textSize="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_poster"
+            app:layout_constraintTop_toBottomOf="@+id/button"
             tools:text="Summary of new movie. Chappie is a robot who does robotic things in a robotic world. Here's a bit more text to make it three lines." />
 
 
@@ -125,7 +78,7 @@
         <fragment
             android:id="@+id/movie_Play_First_Trailer"
             android:name="com.google.android.youtube.player.YouTubePlayerFragment"
-            android:layout_width="360dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"

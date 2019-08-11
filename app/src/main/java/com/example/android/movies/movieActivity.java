@@ -34,15 +34,8 @@ import java.util.concurrent.ExecutionException;
 
 public class movieActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
-    private TextView mName;
-    private TextView mYear;
-    private ImageView mPoster;
     private TextView mDate_Rating;
     private TextView mSynopsis;
-    private TextView mRunTime;
-    private ImageView mTrailer2TopBar;
-    private ImageView mTrailer2PlayButton;
-    private TextView mTrailer2Text;
     private View mReviewSection;
     private TextView mFirstReview;
     private TextView mSecondreview;
@@ -143,16 +136,12 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         String runTime = movieRunTime + getString(R.string.Min);
         mMovieName = fromMain.getStringExtra(movieName);
 
-        mName.setText(fromMain.getStringExtra(movieName));
-        mYear.setText(movieYear);
-        mRunTime.setText(runTime);
         mDate_Rating.setText(movieRatingOutOfTen);
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
 
         String imgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Img_Url));
         String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Backdrop));
         Log.d("TEST", backdropImgURL);
-        Picasso.with(this).load(imgURL).into(mPoster);
         Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
 
         mTrailerBottomBar.setVisibility(View.GONE);
@@ -217,12 +206,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
     private void intiViews() {
         mFavButton = (Button) findViewById(R.id.button);
-        mName = (TextView) findViewById(R.id.movie_title);
-        mYear = (TextView) findViewById(R.id.movie_Year);
-        mPoster = (ImageView) findViewById(R.id.movie_poster);
         mDate_Rating = (TextView) findViewById(R.id.movie_rating);
         mSynopsis = (TextView) findViewById(R.id.movie_summary);
-        mRunTime = (TextView) findViewById(R.id.movie_RunTime);
         mReviewSection = (View) findViewById(R.id.include);
         mFirstReview = (TextView) findViewById(R.id.movie_first_review);
         mSecondreview = (TextView) findViewById(R.id.movie_second_review);
