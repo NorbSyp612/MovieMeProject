@@ -72,7 +72,7 @@
     <string name="Yes">yes</string>
     <string name="Is_Fav_Key">FAV</string>
     <string name="Reviews">Reviews</string>
-    <string name="Trailers">Trailers</string>
+    <string name="Trailers">Trailer</string>
     <string name="Trailer_One">Trailer 1</string>
     <string name="Trailer_Two">Trailer 2</string>
 </resources>

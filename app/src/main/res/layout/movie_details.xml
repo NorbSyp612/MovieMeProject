@@ -125,78 +125,30 @@
         <fragment
             android:id="@+id/movie_Play_First_Trailer"
             android:name="com.google.android.youtube.player.YouTubePlayerFragment"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-        <ImageView
-            android:id="@+id/movie_Play_Second_Trailer"
-            android:layout_width="66dp"
-            android:layout_height="64dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:onClick="Second_Trailer_Button"
-            android:background="@android:drawable/ic_media_play"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageBar2" />
-
-        <ImageView
-            android:id="@+id/imageBar2"
-            android:layout_width="325dp"
-            android:layout_height="1dp"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@android:drawable/bottom_bar"
-            android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_Play_First_Trailer" />
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
 
         <ImageView
             android:id="@+id/imageBar3"
             android:layout_width="325dp"
             android:layout_height="2dp"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:background="@android:drawable/bottom_bar"
             android:paddingBottom="10dp"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_Play_Second_Trailer" />
-
-        <TextView
-            android:id="@+id/play_trailer_first_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="68dp"
-            android:layout_marginEnd="8dp"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/movie_Play_First_Trailer"
-            app:layout_constraintTop_toBottomOf="@+id/imageBar1"
-            android:text="@string/Trailer_One" />
-
-        <TextView
-            android:id="@+id/player_trailer_second_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="28dp"
-            android:textSize="18dp"
-            android:text="@string/Trailer_Two"
-            app:layout_constraintStart_toEndOf="@+id/movie_Play_Second_Trailer"
-            app:layout_constraintTop_toBottomOf="@+id/imageBar2" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_Play_First_Trailer" />
 
         <include
             android:id="@+id/include"

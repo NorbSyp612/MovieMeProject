@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.movies.database.AppDatabase;
 import com.example.android.movies.database.FavEntry;
@@ -48,8 +49,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private ImageView mReviewSeparator;
     private ImageView mTrailerBottomBar;
     private TextView mTrailerText;
-    private ImageView mTrailer1PlayButton;
-    private TextView mTrailer1Text;
     private ImageView mTopImageBar;
     private AppDatabase mDb;
     private String mMovieName;
@@ -173,6 +172,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
         playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
 
+
     }
 
     private void setupViewModel() {
@@ -202,8 +202,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
 
         if (!wasRestored) {
-            //player.cueVideo("9rLZYyMbJic");
-            mPlayer.loadVideo("9rLZYyMbJic");
+            player.cueVideo(movieTrailerURLS.get(0));
+           // mPlayer.loadVideo("9rLZYyMbJic");
         } else {
             mPlayer.play();
         }
@@ -223,9 +223,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mDate_Rating = (TextView) findViewById(R.id.movie_rating);
         mSynopsis = (TextView) findViewById(R.id.movie_summary);
         mRunTime = (TextView) findViewById(R.id.movie_RunTime);
-        mTrailer2TopBar = (ImageView) findViewById(R.id.imageBar2);
-        mTrailer2PlayButton = (ImageView) findViewById(R.id.movie_Play_Second_Trailer);
-        mTrailer2Text = (TextView) findViewById(R.id.player_trailer_second_text);
         mReviewSection = (View) findViewById(R.id.include);
         mFirstReview = (TextView) findViewById(R.id.movie_first_review);
         mSecondreview = (TextView) findViewById(R.id.movie_second_review);
@@ -233,7 +230,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mTrailerBottomBar = (ImageView) findViewById(R.id.imageBar3);
         mTrailerText = (TextView) findViewById(R.id.textView);
         //  mTrailer1PlayButton = (ImageView) findViewById(R.id.movie_Play_First_Trailer);
-        mTrailer1Text = (TextView) findViewById(R.id.play_trailer_first_text);
         mTopImageBar = (ImageView) findViewById(R.id.imageBar1);
         mToolbarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
         mCollapseLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
@@ -262,23 +258,21 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
         if (i == 0) {
             mTopImageBar.setVisibility(View.GONE);
-            mTrailer1Text.setVisibility(View.GONE);
             mTrailerText.setVisibility(View.GONE);
          //   mTrailer1PlayButton.setVisibility(View.GONE);
-            mTrailer2TopBar.setVisibility(View.GONE);
-            mTrailer2PlayButton.setVisibility(View.GONE);
-            mTrailer2Text.setVisibility(View.GONE);
+         //   mTrailer2TopBar.setVisibility(View.GONE);
+         //   mTrailer2PlayButton.setVisibility(View.GONE);
+          //  mTrailer2Text.setVisibility(View.GONE);
         } else if (i == 1) {
-            mTrailer2TopBar.setVisibility(View.GONE);
-            mTrailer2PlayButton.setVisibility(View.GONE);
-            mTrailer2Text.setVisibility(View.GONE);
+        //    mTrailer2TopBar.setVisibility(View.GONE);
+        //    mTrailer2PlayButton.setVisibility(View.GONE);
+         //   mTrailer2Text.setVisibility(View.GONE);
         } else {
-            mTrailer1Text.setVisibility(View.VISIBLE);
             mTrailerText.setVisibility(View.VISIBLE);
           //  mTrailer1PlayButton.setVisibility(View.VISIBLE);
-            mTrailer2TopBar.setVisibility(View.VISIBLE);
-            mTrailer2PlayButton.setVisibility(View.VISIBLE);
-            mTrailer2Text.setVisibility(View.VISIBLE);
+       //     mTrailer2TopBar.setVisibility(View.VISIBLE);
+        //    mTrailer2PlayButton.setVisibility(View.VISIBLE);
+        //    mTrailer2Text.setVisibility(View.VISIBLE);
         }
     }
 
