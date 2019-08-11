@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +47,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private AppDatabase mDb;
     private String mMovieName;
     private String mMovieID;
-    private Button mFavButton;
+    private ImageButton mFavButton;
+    private ImageView mFavButtonBackground;
     private String favorite;
     private FavEntry movieEntry;
     private ImageView mToolbarPoster;
@@ -205,7 +207,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
 
     private void intiViews() {
-        mFavButton = (Button) findViewById(R.id.button);
+        mFavButton = (ImageButton) findViewById(R.id.button);
+        mFavButtonBackground = (ImageView) findViewById(R.id.button_background);
         mDate_Rating = (TextView) findViewById(R.id.movie_rating);
         mSynopsis = (TextView) findViewById(R.id.movie_summary);
         mReviewSection = (View) findViewById(R.id.include);
@@ -231,9 +234,9 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
     private void setFavButton() {
         if (favorite.equals(getString(R.string.Yes))) {
-            mFavButton.setText(R.string.Remove_Fav);
+            mFavButtonBackground.setImageDrawable(getDrawable(R.drawable.ic_star_yellow));
         } else {
-            mFavButton.setText(R.string.Mark_Fav);
+            mFavButtonBackground.setImageDrawable(getDrawable(R.drawable.ic_star_background_24dp));
         }
     }
 
@@ -297,31 +300,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
     }
 
-    public void First_Trailer_Button(View v) {
-
-        String First_Trailer_URL = getString(R.string.Youtube_Base_URL) + movieTrailerURLS.get(0);
-
-        Uri webpage = Uri.parse(First_Trailer_URL);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-
-    }
-
-    public void Second_Trailer_Button(View v) {
-
-        String Second_Trailer_URL = getString(R.string.Youtube_Base_URL) + movieTrailerURLS.get(1);
-
-        Uri webpage = Uri.parse(Second_Trailer_URL);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-
-    }
 
     public static class apiCallMovieID extends AsyncTask<URL, Void, String> {
 
