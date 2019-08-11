@@ -20,6 +20,9 @@ import com.example.android.movies.database.AppDatabase;
 import com.example.android.movies.database.FavEntry;
 import com.example.android.movies.utilities.JsonUtils;
 import com.example.android.movies.utilities.NetworkUtils;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -28,7 +31,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class movieActivity extends AppCompatActivity {
+public class movieActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
     private TextView mName;
     private TextView mYear;
@@ -56,6 +59,8 @@ public class movieActivity extends AppCompatActivity {
     private FavEntry movieEntry;
     private ImageView mToolbarPoster;
     private CollapsingToolbarLayout mCollapseLayout;
+    private YouTubePlayerFragment playerFragment;
+    private YouTubePlayer mPlayer;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -165,6 +170,9 @@ public class movieActivity extends AppCompatActivity {
         setupViewModel();
 
         mCollapseLayout.setTitle(fromMain.getStringExtra(movieName));
+
+        playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
+
     }
 
     private void setupViewModel() {
@@ -178,6 +186,34 @@ public class movieActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player,
+                                        boolean wasRestored) {
+        mPlayer = player;
+
+        //Enables automatic control of orientation
+        mPlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
+
+        //Show full screen in landscape mode always
+        mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
+
+        //System controls will appear automatically
+        mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
+
+        if (!wasRestored) {
+            //player.cueVideo("9rLZYyMbJic");
+            mPlayer.loadVideo("9rLZYyMbJic");
+        } else {
+            mPlayer.play();
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult errorReason) {
+        mPlayer = null;
+    }
+
 
     private void intiViews() {
         mFavButton = (Button) findViewById(R.id.button);
@@ -196,11 +232,12 @@ public class movieActivity extends AppCompatActivity {
         mReviewSeparator = (ImageView) findViewById(R.id.imageBar_seperator);
         mTrailerBottomBar = (ImageView) findViewById(R.id.imageBar3);
         mTrailerText = (TextView) findViewById(R.id.textView);
-        mTrailer1PlayButton = (ImageView) findViewById(R.id.movie_Play_First_Trailer);
+        //  mTrailer1PlayButton = (ImageView) findViewById(R.id.movie_Play_First_Trailer);
         mTrailer1Text = (TextView) findViewById(R.id.play_trailer_first_text);
         mTopImageBar = (ImageView) findViewById(R.id.imageBar1);
         mToolbarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
         mCollapseLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+        playerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.movie_Play_First_Trailer);
     }
 
     @Override
@@ -227,7 +264,7 @@ public class movieActivity extends AppCompatActivity {
             mTopImageBar.setVisibility(View.GONE);
             mTrailer1Text.setVisibility(View.GONE);
             mTrailerText.setVisibility(View.GONE);
-            mTrailer1PlayButton.setVisibility(View.GONE);
+         //   mTrailer1PlayButton.setVisibility(View.GONE);
             mTrailer2TopBar.setVisibility(View.GONE);
             mTrailer2PlayButton.setVisibility(View.GONE);
             mTrailer2Text.setVisibility(View.GONE);
@@ -238,7 +275,7 @@ public class movieActivity extends AppCompatActivity {
         } else {
             mTrailer1Text.setVisibility(View.VISIBLE);
             mTrailerText.setVisibility(View.VISIBLE);
-            mTrailer1PlayButton.setVisibility(View.VISIBLE);
+          //  mTrailer1PlayButton.setVisibility(View.VISIBLE);
             mTrailer2TopBar.setVisibility(View.VISIBLE);
             mTrailer2PlayButton.setVisibility(View.VISIBLE);
             mTrailer2Text.setVisibility(View.VISIBLE);
@@ -270,11 +307,11 @@ public class movieActivity extends AppCompatActivity {
             public void run() {
                 if (favorite.equals(getString(R.string.Yes))) {
                     mDb.favDao().deleteFav(movieEntry);
-                    favorite=getString(R.string.No);
+                    favorite = getString(R.string.No);
                 } else {
                     FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName);
                     mDb.favDao().insertFav(enterNewFavorite);
-                    favorite=getString(R.string.Yes);
+                    favorite = getString(R.string.Yes);
                 }
             }
         });
