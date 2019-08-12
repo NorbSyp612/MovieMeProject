@@ -6,14 +6,19 @@ import android.util.Log;
 import com.example.android.movies.database.FavEntry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+import java.util.Collections;
 
 public class movieMeProcessor {
 
     private List<FavEntry> favorites;
+    private Random rand;
 
-    public movieMeProcessor (List<FavEntry> favs) {
+    public movieMeProcessor(List<FavEntry> favs) {
         favorites = favs;
+        rand = new Random();
     }
 
     public void process() {
@@ -47,10 +52,18 @@ public class movieMeProcessor {
         double probThriller = 0;
         double probWestern = 0;
 
+        int categoryCheck = 0;
+
+        String finalCategory = "";
+
         for (FavEntry a : favorites) {
-            genres.add(a.getCategory());
+            if (!genres.contains(a.getCategory())) {
+                genres.add(a.getCategory());
+            }
             ratings.add(a.getRating());
         }
+
+        HashMap<String, Double> map = new HashMap<>();
 
         for (String b : genres) {
             if (b.equals("Action")) {
@@ -81,6 +94,7 @@ public class movieMeProcessor {
         }
 
         probAction = numAction / genres.size();
+        probAdv = numAdv / genres.size();
         probComedy = numComedy / genres.size();
         probHistory = numHistory / genres.size();
         probHorror = numHorror / genres.size();
@@ -92,6 +106,47 @@ public class movieMeProcessor {
         probThriller = numThriller / genres.size();
         probWestern = numWestern / genres.size();
 
+        map.put("Action", probAction);
+        map.put("Adventure", probAdv);
+        map.put("Comedy", probComedy);
+        map.put("History", probHistory);
+        map.put("Horror", probHorror);
+        map.put("Drama", probDrama);
+        map.put("Fantasy", probFantasy);
+        map.put("Mystery", probMystery);
+        map.put("Romance", probRomance);
+        map.put("SciFi", probScifi);
+        map.put("Thriller", probThriller);
+        map.put("Western", probWestern);
 
+
+        int checkCounter = 0;
+
+        while (categoryCheck == 0) {
+            double randomDouble = rand.nextDouble();
+            Log.d("FAB", "Genres size: " + genres.size());
+
+            Collections.shuffle(genres);
+
+            int randomInt = rand.nextInt(genres.size());
+
+            Log.d("FAB", "random int is: " + randomInt);
+
+
+            if (map.get(genres.get(randomInt)) != null) {
+                Log.d("FAB", "Random double is: " + randomDouble);
+                Log.d("FAB", "Random genre is: " + genres.get(randomInt));
+                Log.d("FAB", "Random map result is: " + map.get(genres.get(randomInt)));
+
+                if (map.get(genres.get(randomInt)) > randomDouble) {
+                    finalCategory = genres.get(randomInt);
+                    categoryCheck = 1;
+                }
+
+            }
+
+        }
+
+        Log.d("FAB", "final category is: " + finalCategory);
     }
 }

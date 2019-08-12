@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 favorites = favEntries;
+                movieMeProcessor = new movieMeProcessor(favorites);
 
                 if (buttonClick == 0 && resumeCode == 1) {
                     populateUI(getString(R.string.Most_Popular));
@@ -586,7 +587,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void onFabClicked(View v) {
         Log.d("FAB", "FAB CLICKED");
-        movieMeProcessor = new movieMeProcessor(favorites);
+
         movieMeProcessor.process();
     }
 
