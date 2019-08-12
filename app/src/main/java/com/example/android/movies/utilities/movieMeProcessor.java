@@ -21,10 +21,11 @@ public class movieMeProcessor {
         rand = new Random();
     }
 
-    public void process() {
+    public ArrayList<String> process() {
 
         ArrayList<String> genres = new ArrayList<>();
         ArrayList<String> ratings = new ArrayList<>();
+        ArrayList<String> finalGenreAndRating = new ArrayList<>();
 
         double numAction = 0;
         double numAdv = 0;
@@ -51,6 +52,8 @@ public class movieMeProcessor {
         double probScifi = 0;
         double probThriller = 0;
         double probWestern = 0;
+
+        double ratingsTotal = 0;
 
         int categoryCheck = 0;
 
@@ -120,8 +123,6 @@ public class movieMeProcessor {
         map.put("Western", probWestern);
 
 
-        int checkCounter = 0;
-
         while (categoryCheck == 0) {
             double randomDouble = rand.nextDouble();
             Log.d("FAB", "Genres size: " + genres.size());
@@ -147,6 +148,25 @@ public class movieMeProcessor {
 
         }
 
+
+        for (String c : ratings) {
+            ratingsTotal = ratingsTotal + Double.parseDouble(c);
+        }
+
+        Log.d("FAB", "Ratings total: " + ratingsTotal);
+        Log.d("FAB", "Ratings size: " + ratings.size());
+
+        ratingsTotal = ratingsTotal / ratings.size();
+
+
         Log.d("FAB", "final category is: " + finalCategory);
+        Log.d("FAB", "final rating is: " + ratingsTotal);
+
+        String finaRating = "" + ratingsTotal;
+
+        finalGenreAndRating.add(finalCategory);
+        finalGenreAndRating.add(finaRating);
+
+        return finalGenreAndRating;
     }
 }

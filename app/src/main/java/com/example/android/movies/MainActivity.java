@@ -588,7 +588,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void onFabClicked(View v) {
         Log.d("FAB", "FAB CLICKED");
 
-        movieMeProcessor.process();
+        ArrayList<String> result = movieMeProcessor.process();
+        Log.d("FAB1", result.get(0));
+        Log.d("FAB1", result.get(1));
     }
 
 
