@@ -1,20 +1,15 @@
 package com.example.android.movies;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageButton;
@@ -24,6 +19,7 @@ import com.example.android.movies.database.AppDatabase;
 import com.example.android.movies.database.FavEntry;
 import com.example.android.movies.utilities.JsonUtils;
 import com.example.android.movies.utilities.NetworkUtils;
+import com.example.android.movies.utilities.movieMeProcessor;
 import com.example.android.movies.utilities.moviesAdapter;
 
 import java.io.IOException;
@@ -32,7 +28,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinWorkerThread;
 
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
 
@@ -70,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private ImageButton imgButtonScifi;
     private ImageButton imgButtonThriller;
     private ImageButton imgButtonWestern;
+    private movieMeProcessor movieMeProcessor;
 
 
     @Override
@@ -94,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         imgButtonScifi = (ImageButton) findViewById(R.id.imageButton_scifi);
         imgButtonThriller = (ImageButton) findViewById(R.id.imageButton_thriller);
         imgButtonWestern = (ImageButton) findViewById(R.id.imageButton_western);
+
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
@@ -584,6 +581,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
         });
 
+    }
+
+
+    public void onFabClicked(View v) {
+        Log.d("FAB", "FAB CLICKED");
+        movieMeProcessor = new movieMeProcessor(favorites);
+        movieMeProcessor.process();
     }
 
 
