@@ -176,6 +176,13 @@ public class JsonUtils {
                 String movieReleaseDate = movie.getString("release_date");
                 String movieId = movie.getString("id");
 
+                JSONArray genres = movie.getJSONArray("genre_ids");
+
+                for (int b = 0; b < genres.length(); b++) {
+                    Log.d("JSON", genres.getString(b));
+                }
+
+
                 addMovie.setMovieName(movieName);
                 addMovie.setImageURL(movieImageURL);
                 addMovie.setSynopsis(movieSynopsis);

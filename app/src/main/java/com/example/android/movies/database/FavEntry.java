@@ -14,18 +14,24 @@ public class FavEntry {
     private int key;
     private String id;
     private String name;
+    private String category;
+    private String rating;
 
     @Ignore
-    public FavEntry(String id, String name) {
+    public FavEntry(String id, String name, String category, String rating) {
         this.id = id;
         this.name = name;
+        this.category = category;
+        this.rating = rating;
     }
 
 
-    public FavEntry(int key, String id, String name) {
+    public FavEntry(int key, String id, String name, String category, String rating) {
         this.key = key;
         this.id = id;
         this.name = name;
+        this.category = category;
+        this.rating = rating;
     }
 
     public int getKey() {
@@ -44,11 +50,28 @@ public class FavEntry {
         this.id = id;
     }
 
-   public String getName() {
+    public String getName() {
         return this.name;
-   }
+    }
 
-   public void setName(String name) {
+    public void setName(String name) {
         this.name = name;
-   }
+    }
+
+    public void setCategory(String cat) {
+        this.category = cat;
+    }
+
+    public String getCategory() {
+        return this.category;
+    }
+
+    public void setRating(String score) {
+        this.rating = score;
+    }
+
+    public String getRating() {
+        return this.rating;
+    }
+
 }

@@ -576,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     mDb.favDao().deleteFav(movieEntry);
                     favorite = getString(R.string.No);
                 } else {
-                    FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName());
+                    FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getUserRating(), movies.get(clickedItemIndex).getUserRating());
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
                 }

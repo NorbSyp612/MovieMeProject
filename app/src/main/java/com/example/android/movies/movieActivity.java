@@ -166,6 +166,13 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("TEST6", "Destroy");
+        mPlayer = null;
+    }
+
     private void setupViewModel() {
         AddFavViewModelFactory factory = new AddFavViewModelFactory(mDb, mMovieID);
         AddFavViewModel viewModel = ViewModelProviders.of(this, factory).get(AddFavViewModel.class);
@@ -187,7 +194,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mPlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
 
         //Show full screen in landscape mode always
-        mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
+        // mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
 
         //System controls will appear automatically
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
@@ -291,7 +298,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     mDb.favDao().deleteFav(movieEntry);
                     favorite = getString(R.string.No);
                 } else {
-                    FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName);
+                    FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, "test", "test");
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
                 }
