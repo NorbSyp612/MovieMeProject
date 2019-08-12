@@ -538,6 +538,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
         goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
         goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenre());
 
         movieID = movies.get(clickedItemIndex).getId();
         isFavorite = getString(R.string.No);
@@ -576,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     mDb.favDao().deleteFav(movieEntry);
                     favorite = getString(R.string.No);
                 } else {
-                    FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getUserRating(), movies.get(clickedItemIndex).getUserRating());
+                    FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating());
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
                 }

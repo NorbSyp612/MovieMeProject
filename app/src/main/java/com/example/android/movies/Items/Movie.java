@@ -14,6 +14,15 @@ public class Movie {
     private String movieIdURL;
     private String backdropURL;
     private String isFav;
+    private String genre;
+
+    public void setGenre(String set) {
+        genre = set;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
 
     public Movie() {
         isFav = "no";

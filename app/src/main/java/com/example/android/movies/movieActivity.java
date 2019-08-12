@@ -47,6 +47,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private AppDatabase mDb;
     private String mMovieName;
     private String mMovieID;
+    private String mMovieGenre;
+    private String mMovieRating;
     private ImageButton mFavButton;
     private ImageView mFavButtonBackground;
     private String favorite;
@@ -137,6 +139,9 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
         String runTime = movieRunTime + getString(R.string.Min);
         mMovieName = fromMain.getStringExtra(movieName);
+        mMovieGenre = fromMain.getStringExtra(getResources().getString(R.string.Movie_Genre));
+        mMovieRating = fromMain.getStringExtra(getResources().getString(R.string.Movie_Rating));
+        Log.d("GENRE", mMovieGenre + " " + mMovieRating);
 
         mDate_Rating.setText(movieRatingOutOfTen);
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
@@ -298,7 +303,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     mDb.favDao().deleteFav(movieEntry);
                     favorite = getString(R.string.No);
                 } else {
-                    FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, "test", "test");
+                    FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, mMovieGenre, mMovieRating);
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
                 }
