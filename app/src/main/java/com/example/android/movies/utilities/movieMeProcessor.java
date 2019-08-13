@@ -157,6 +157,7 @@ public class movieMeProcessor {
         Log.d("FAB", "Ratings size: " + ratings.size());
 
         ratingsTotal = ratingsTotal / ratings.size();
+        ratingsTotal = ratingsTotal - (rand.nextDouble() + .25);
         if (ratingsTotal > 8.3) {
             ratingsTotal = ratingsTotal - 0.5;
         }
