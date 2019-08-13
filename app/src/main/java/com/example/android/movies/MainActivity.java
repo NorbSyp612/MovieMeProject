@@ -13,6 +13,7 @@ import android.util.Log;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.database.AppDatabase;
@@ -134,6 +135,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 favorites = favEntries;
                 movieMeProcessor = new movieMeProcessor(favorites);
+
+                favMovies.clear();
 
                 for (FavEntry a : favorites) {
                     Movie addMovie = new Movie();
@@ -403,40 +406,40 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             sortedBy = getString(R.string.API_Query_MostPop);
         } else if (MoviesCategory.equals(getString(R.string.Action))) {
             resumeCode = 4;
-            sortedBy = getString(R.string.API_Query_Genre_Action);
+            sortedBy = getString(R.string.API_Query_Genre_Action) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Adventure))) {
             resumeCode = 5;
-            sortedBy = getString(R.string.API_Query_Genre_Adventure);
+            sortedBy = getString(R.string.API_Query_Genre_Adventure) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Comedy))) {
             resumeCode = 6;
-            sortedBy = getString(R.string.API_Query_Genre_Comedy);
+            sortedBy = getString(R.string.API_Query_Genre_Comedy) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.History))) {
             resumeCode = 7;
-            sortedBy = getString(R.string.API_Query_Genre_History);
+            sortedBy = getString(R.string.API_Query_Genre_History) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Horror))) {
             resumeCode = 8;
-            sortedBy = getString(R.string.API_Query_Genre_Horror);
+            sortedBy = getString(R.string.API_Query_Genre_Horror) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Drama))) {
             resumeCode = 9;
-            sortedBy = getString(R.string.API_Query_Genre_Drama);
+            sortedBy = getString(R.string.API_Query_Genre_Drama) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Fantasy))) {
             resumeCode = 10;
-            sortedBy = getString(R.string.API_Query_Genre_Fantasy);
+            sortedBy = getString(R.string.API_Query_Genre_Fantasy) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Mystery))) {
             resumeCode = 11;
-            sortedBy = getString(R.string.API_Query_Genre_Mystery);
+            sortedBy = getString(R.string.API_Query_Genre_Mystery) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Romance))) {
             resumeCode = 12;
-            sortedBy = getString(R.string.API_Query_Genre_Romance);
+            sortedBy = getString(R.string.API_Query_Genre_Romance) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Science_Fiction))) {
             resumeCode = 13;
-            sortedBy = getString(R.string.API_Query_Genre_Science_Fiction);
+            sortedBy = getString(R.string.API_Query_Genre_Science_Fiction) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Thriller))) {
             resumeCode = 14;
-            sortedBy = getString(R.string.API_Query_Genre_Thriller);
+            sortedBy = getString(R.string.API_Query_Genre_Thriller) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Western))) {
             resumeCode = 15;
-            sortedBy = getString(R.string.API_Query_Genre_Western);
+            sortedBy = getString(R.string.API_Query_Genre_Western) + getString(R.string.API_Search_Part5);
         }
 
         for (int i = 1; i < 6; i++) {
@@ -596,56 +599,75 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void onFabClicked(View v) {
         Log.d("FAB1", "FAB CLICKED");
 
-        ArrayList<String> result = movieMeProcessor.process();
-        statusCode = 1;
-        Random rand = new Random();
+        if (favMovies.size() < 10) {
+            Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
+        } else {
+            int checkCode = 0;
+            String movieIDQuery = "";
+            String resultsString = "";
 
-        String movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
-                + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0);
+            ArrayList<String> result = movieMeProcessor.process();
+            statusCode = 1;
+            Random rand = new Random();
 
-        String resultsString = "";
+            while (checkCode == 0) {
+                movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
+                        + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
+                        + getString(R.string.API_Search_Part5);
 
-        try {
-            URL testURL = new URL(movieIDQuery);
-            resultsString = new apiCall().execute(testURL).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+                resultsString = "";
 
-        Log.d("FAB1", movieIDQuery);
+                try {
+                    URL testURL = new URL(movieIDQuery);
+                    resultsString = new apiCall().execute(testURL).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
 
-
-        int favCheck = 0;
-        Movie movieMe = new Movie();
-
-        ArrayList<Movie> movieMeResults;
-        movieMeResults = JsonUtils.parseApiResult(resultsString);
-
-        while (favCheck == 0) {
-            movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
-
-            favCheck = 1;
-
-            for (Movie b : favMovies) {
-                if (b.getMovieName().equals(movieMe.getMovieName())) {
-                    favCheck = 0;
+                if (resultsString.length() > 200) {
+                    checkCode = 1;
                 }
             }
+            Log.d("FAB1", movieIDQuery);
 
-            if (favCheck == 1) {
-                Log.d("FAB1", movieMe.getMovieName());
-            } else {
-                Log.d("FAB1", "Recommended a favorite starting over");
+
+            int favCheck = 0;
+            Movie movieMe = new Movie();
+
+            ArrayList<Movie> movieMeResults;
+            movieMeResults = JsonUtils.parseApiResult(resultsString);
+
+            while (favCheck == 0) {
+                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
+
+                favCheck = 1;
+
+                for (Movie b : favMovies) {
+                    if (b.getMovieName().equals(movieMe.getMovieName())) {
+                        favCheck = 0;
+                    }
+
+                }
+
+                if (movieMe.getBackdropURL() == "") {
+                    favCheck = 0;
+                }
+
+                if (favCheck == 1) {
+                    Log.d("FAB1", movieMe.getMovieName());
+                } else {
+                    Log.d("FAB1", "Recommended a favorite starting over");
+                }
+
             }
 
-        }
-
-        if (movieMe.getMovieName() != null) {
-            goToMovieMeDetail(movieMe);
+            if (movieMe.getMovieName() != null) {
+                goToMovieMeDetail(movieMe);
+            }
         }
     }
 

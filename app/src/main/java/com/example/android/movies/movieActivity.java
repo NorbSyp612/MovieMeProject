@@ -165,10 +165,11 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         setupViewModel();
 
         mCollapseLayout.setTitle(fromMain.getStringExtra(movieName));
+        Log.d("T7", "Empty: " + movieTrailerURLS.isEmpty());
 
-        playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
-
-
+        if (!movieTrailerURLS.isEmpty()) {
+            playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
+        }
     }
 
     @Override
@@ -205,7 +206,9 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
 
         if (!wasRestored) {
+
             player.cueVideo(movieTrailerURLS.get(0));
+
         } else {
             mPlayer.play();
         }
@@ -258,20 +261,20 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         if (i == 0) {
             mTopImageBar.setVisibility(View.GONE);
             mTrailerText.setVisibility(View.GONE);
-         //   mTrailer1PlayButton.setVisibility(View.GONE);
-         //   mTrailer2TopBar.setVisibility(View.GONE);
-         //   mTrailer2PlayButton.setVisibility(View.GONE);
-          //  mTrailer2Text.setVisibility(View.GONE);
+            //   mTrailer1PlayButton.setVisibility(View.GONE);
+            //   mTrailer2TopBar.setVisibility(View.GONE);
+            //   mTrailer2PlayButton.setVisibility(View.GONE);
+            //  mTrailer2Text.setVisibility(View.GONE);
         } else if (i == 1) {
-        //    mTrailer2TopBar.setVisibility(View.GONE);
-        //    mTrailer2PlayButton.setVisibility(View.GONE);
-         //   mTrailer2Text.setVisibility(View.GONE);
+            //    mTrailer2TopBar.setVisibility(View.GONE);
+            //    mTrailer2PlayButton.setVisibility(View.GONE);
+            //   mTrailer2Text.setVisibility(View.GONE);
         } else {
             mTrailerText.setVisibility(View.VISIBLE);
-          //  mTrailer1PlayButton.setVisibility(View.VISIBLE);
-       //     mTrailer2TopBar.setVisibility(View.VISIBLE);
-        //    mTrailer2PlayButton.setVisibility(View.VISIBLE);
-        //    mTrailer2Text.setVisibility(View.VISIBLE);
+            //  mTrailer1PlayButton.setVisibility(View.VISIBLE);
+            //     mTrailer2TopBar.setVisibility(View.VISIBLE);
+            //    mTrailer2PlayButton.setVisibility(View.VISIBLE);
+            //    mTrailer2Text.setVisibility(View.VISIBLE);
         }
     }
 
@@ -310,7 +313,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         });
 
     }
-
 
 
     public static class apiCallMovieID extends AsyncTask<URL, Void, String> {

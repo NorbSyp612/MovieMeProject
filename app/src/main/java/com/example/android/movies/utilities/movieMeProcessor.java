@@ -161,13 +161,11 @@ public class movieMeProcessor {
             ratingsTotal = ratingsTotal - 0.5;
         }
 
-        int ratingsTotalRounded = (int) Math.round(ratingsTotal);
-
 
         Log.d("FAB", "final category is: " + finalCategory);
-        Log.d("FAB", "final rating is: " + ratingsTotalRounded);
+        Log.d("FAB", "final rating is: " + ratingsTotal);
 
-        String finaRating = "" + ratingsTotalRounded;
+        String finaRating = "" + ratingsTotal;
 
         finalCategory = getGenreId(finalCategory);
 
