@@ -18,10 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.movies.Items.Movie;
 import com.example.android.movies.database.AppDatabase;
 import com.example.android.movies.database.FavEntry;
 import com.example.android.movies.utilities.JsonUtils;
 import com.example.android.movies.utilities.NetworkUtils;
+import com.example.android.movies.utilities.movieMeProcessor;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
@@ -31,6 +33,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class movieActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
@@ -57,6 +61,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private CollapsingToolbarLayout mCollapseLayout;
     private YouTubePlayerFragment playerFragment;
     private YouTubePlayer mPlayer;
+    private movieMeProcessor movieMeProcessor;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -77,11 +82,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         intiViews();
 
         String movieName = this.getResources().getString(R.string.Movie_Name);
-
-        String movieReleaseDate = this.getResources().getString(R.string.Movie_Release_Date);
-        String movieReleaseDateString = fromMain.getStringExtra(movieReleaseDate);
-        String movieYear = movieReleaseDateString.substring(0, 4);
-
         String movieRating = this.getResources().getString(R.string.Movie_Rating);
         String movieRatingString = fromMain.getStringExtra(movieRating);
         String movieRatingOutOfTen = movieRatingString + "/10";
@@ -137,7 +137,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             movieReviews = JsonUtils.getReviews(movieReviewResults);
         }
 
-        String runTime = movieRunTime + getString(R.string.Min);
+
         mMovieName = fromMain.getStringExtra(movieName);
         mMovieGenre = fromMain.getStringExtra(getResources().getString(R.string.Movie_Genre));
         mMovieRating = fromMain.getStringExtra(getResources().getString(R.string.Movie_Rating));
@@ -146,7 +146,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mDate_Rating.setText(movieRatingOutOfTen);
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
 
-        String imgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Img_Url));
         String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Backdrop));
         Log.d("TEST", backdropImgURL);
         Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
@@ -195,20 +194,11 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player,
                                         boolean wasRestored) {
         mPlayer = player;
-
-        //Enables automatic control of orientation
         mPlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
-
-        //Show full screen in landscape mode always
-        // mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
-
-        //System controls will appear automatically
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
 
         if (!wasRestored) {
-
             player.cueVideo(movieTrailerURLS.get(0));
-
         } else {
             mPlayer.play();
         }
@@ -231,7 +221,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mReviewSeparator = (ImageView) findViewById(R.id.imageBar_seperator);
         mTrailerBottomBar = (ImageView) findViewById(R.id.imageBar3);
         mTrailerText = (TextView) findViewById(R.id.textView);
-        //  mTrailer1PlayButton = (ImageView) findViewById(R.id.movie_Play_First_Trailer);
         mTopImageBar = (ImageView) findViewById(R.id.imageBar1);
         mToolbarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
         mCollapseLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
@@ -314,8 +303,131 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
     }
 
+    public void onFabClicked(View v) {
+
+        int test = MainActivity.getNumFavs();
+        List<Movie> favMovies = MainActivity.getFavMovies();
+
+        if (MainActivity.getNumFavs() < 10) {
+            Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Congrats on pressing the FAB: " + test, Toast.LENGTH_LONG).show();
+            int checkCode = 0;
+            String movieIDQuery = "";
+            String resultsString = "";
+
+
+            ArrayList<String> result = movieMeProcessor.process();
+            Random rand = new Random();
+
+            while (checkCode == 0) {
+                movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
+                        + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
+                        + getString(R.string.API_Search_Part5);
+
+                resultsString = "";
+
+                try {
+                    URL testURL = new URL(movieIDQuery);
+                    resultsString = new MainActivity.apiCall().execute(testURL).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+                if (resultsString.length() > 200) {
+                    checkCode = 1;
+                }
+            }
+            Log.d("FAB2", movieIDQuery);
+
+
+            int favCheck = 0;
+            Movie movieMe = new Movie();
+
+            ArrayList<Movie> movieMeResults;
+            movieMeResults = JsonUtils.parseApiResult(resultsString);
+
+            while (favCheck == 0) {
+                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
+
+                favCheck = 1;
+
+                for (Movie b : favMovies) {
+                    if (b.getMovieName().equals(movieMe.getMovieName())) {
+                        favCheck = 0;
+                    }
+
+                }
+
+                if (movieMe.getBackdropURL() == "") {
+                    favCheck = 0;
+                }
+
+                if (favCheck == 1) {
+                    Log.d("FAB2", movieMe.getMovieName());
+                } else {
+                    Log.d("FAB2", "Recommended a favorite starting over");
+                }
+                populateWithNewMovie(movieMe);
+            }
+        }
+    }
+
+    public void populateWithNewMovie(Movie movieMe) {
+        mMovieName = movieMe.getMovieName();
+        mMovieGenre = movieMe.getGenre();
+        mMovieRating = movieMe.getUserRating();
+
+        String movieRatingOutOfTen = mMovieRating + "/10";
+
+        mDate_Rating.setText(movieRatingOutOfTen);
+        mSynopsis.setText(movieMe.getSynopsis());
+
+        String backdropImgURL =getString(R.string.API_IMG_URL_BASE_342) + movieMe.getBackdropURL();
+        Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
+
+        mTrailerBottomBar.setVisibility(View.GONE);
+        setTrailersVisibilityAndContent();
+        setReviewVisibilityAndContent();
+
+        mMovieID = movieMe.getId();
+
+        favorite = (getString(R.string.No));
+
+        mCollapseLayout.setTitle(movieMe.getMovieName());
+
+        if (!movieTrailerURLS.isEmpty()) {
+            playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
+        }
+    }
 
     public static class apiCallMovieID extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+        }
+    }
+
+    public static class apiCall extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... urls) {

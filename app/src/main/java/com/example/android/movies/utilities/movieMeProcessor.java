@@ -13,15 +13,15 @@ import java.util.Collections;
 
 public class movieMeProcessor {
 
-    private List<FavEntry> favorites;
-    private Random rand;
+    private static List<FavEntry> favorites;
+    private static Random rand;
 
     public movieMeProcessor(List<FavEntry> favs) {
         favorites = favs;
         rand = new Random();
     }
 
-    public ArrayList<String> process() {
+    public static ArrayList<String> process() {
 
         ArrayList<String> genres = new ArrayList<>();
         ArrayList<String> ratings = new ArrayList<>();
@@ -176,7 +176,7 @@ public class movieMeProcessor {
         return finalGenreAndRating;
     }
 
-    public String getGenreId(String genre) {
+    public static String getGenreId(String genre) {
         if (genre.equals("Action")) {
             return "28";
         } else if (genre.equals("Adventure")) {

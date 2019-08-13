@@ -53,7 +53,7 @@
     <string name="API_Search_Part2">&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=true&amp;page=</string>
     <string name="API_Search_Part3">&amp;vote_average.gte=</string>
     <string name="API_Search_Part4">&amp;with_genres=</string>
-    <string name="API_Search_Part5">&amp;vote_count.gte=100</string>
+    <string name="API_Search_Part5">&amp;vote_count.gte=1000</string>
 
     <string name="Movie_Name">MovieName</string>
     <string name="Movie_Img_Url">MovieImgUrl</string>

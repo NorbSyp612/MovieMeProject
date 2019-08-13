@@ -696,6 +696,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     }
 
+    public static int getNumFavs() {
+        return favMovies.size();
+    }
+
+    public static List<Movie> getFavMovies() {
+        return favMovies;
+    }
 
     public static class apiCall extends AsyncTask<URL, Void, String> {
 
