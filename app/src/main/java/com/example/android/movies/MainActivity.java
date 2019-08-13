@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private ImageButton imgButtonThriller;
     private ImageButton imgButtonWestern;
     private movieMeProcessor movieMeProcessor;
+    private static int statusCode;
 
 
     @Override
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
         buttonClick = 0;
+        statusCode = 0;
 
 
         moviesGrid = (RecyclerView) findViewById(R.id.movie_items);
@@ -117,26 +119,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
 
-    public static void execute() {
 
-        if (resumeCode != 3) {
-            asyncCount++;
-        }
-        Log.d("async", "Count is: " + asyncCount);
-
-        if (asyncCount == 5) {
-
-
-            Log.d("FAV2", "is empty: " + favMovies.isEmpty());
-
-            asyncCount = 0;
-            mAdapter.setNumberMovies(NUM_LIST_MOVIES);
-            mAdapter.setMovies(movies);
-            moviesGrid.setAdapter(mAdapter);
-            scrollToPosition();
-        }
-
-    }
 
 
     @Override
@@ -248,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void populateUI(String category) {
-
 
 
         if (category.equals(getString(R.string.Most_Popular))) {
@@ -589,8 +571,59 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Log.d("FAB", "FAB CLICKED");
 
         ArrayList<String> result = movieMeProcessor.process();
-        Log.d("FAB1", result.get(0));
-        Log.d("FAB1", result.get(1));
+        statusCode = 1;
+
+
+
+        String movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
+                + "1" + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0);
+
+
+        String resultsString = "";
+
+
+        try {
+            URL testURL = new URL(movieIDQuery);
+            resultsString = new apiCall().execute(testURL).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("FAB1", movieIDQuery);
+    }
+
+    public static void execute(String apiResults) {
+
+        if (statusCode == 1) {
+            ArrayList<Movie> movieMeresults;
+            movieMeresults = JsonUtils.parseApiResult(apiResults);
+
+            for (Movie a : movieMeresults) {
+                Log.d("FAB1", a.getMovieName());
+            }
+        }
+
+        if (resumeCode != 3) {
+            asyncCount++;
+        }
+        Log.d("async", "Count is: " + asyncCount);
+
+        if (asyncCount == 5) {
+
+
+            Log.d("FAV2", "is empty: " + favMovies.isEmpty());
+
+            asyncCount = 0;
+            mAdapter.setNumberMovies(NUM_LIST_MOVIES);
+            mAdapter.setMovies(movies);
+            moviesGrid.setAdapter(mAdapter);
+            scrollToPosition();
+        }
+
     }
 
 
@@ -612,7 +645,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected void onPostExecute(String apiResults) {
-            MainActivity.execute();
+            MainActivity.execute(apiResults);
         }
     }
 }

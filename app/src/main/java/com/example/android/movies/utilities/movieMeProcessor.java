@@ -157,6 +157,7 @@ public class movieMeProcessor {
         Log.d("FAB", "Ratings size: " + ratings.size());
 
         ratingsTotal = ratingsTotal / ratings.size();
+        ratingsTotal = ratingsTotal - 0.5;
 
 
         Log.d("FAB", "final category is: " + finalCategory);
@@ -164,9 +165,41 @@ public class movieMeProcessor {
 
         String finaRating = "" + ratingsTotal;
 
+        finalCategory = getGenreId(finalCategory);
+
         finalGenreAndRating.add(finalCategory);
         finalGenreAndRating.add(finaRating);
 
         return finalGenreAndRating;
+    }
+
+    public String getGenreId(String genre) {
+        if (genre.equals("Action")) {
+            return "28";
+        } else if (genre.equals("Adventure")) {
+            return "12";
+        } else if (genre.equals("Comedy")) {
+            return "35";
+        } else if (genre.equals("Drama")) {
+            return "18";
+        } else if (genre.equals("Fantasy")) {
+            return "14";
+        } else if (genre.equals("History")) {
+            return "36";
+        } else if (genre.equals("Horror")) {
+            return "27";
+        } else if (genre.equals("Mystery")) {
+            return "9648";
+        } else if (genre.equals("Romance")) {
+            return "10749";
+        } else if (genre.equals("SciFi")) {
+            return "878";
+        } else if (genre.equals("Thriller")) {
+            return "53";
+        } else if (genre.equals("Western")) {
+            return "37";
+        }
+
+        return "";
     }
 }

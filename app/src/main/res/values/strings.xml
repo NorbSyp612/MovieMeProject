@@ -49,6 +49,11 @@
     <string name="API_Query_Reviews_Mid">/reviews?api_key=</string>
     <string name="API_Query_Videos_End">language=en-US</string>
 
+    <string name="API_Search_Part1">https://api.themoviedb.org/3/discover/movie?api_key=</string>
+    <string name="API_Search_Part2">&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=true&amp;page=</string>
+    <string name="API_Search_Part3">vote_average.gte=</string>
+    <string name="API_Search_Part4">&amp;with_genres=</string>
+
     <string name="Movie_Name">MovieName</string>
     <string name="Movie_Img_Url">MovieImgUrl</string>
     <string name="Movie_Synopsis">MovieSnyopsis</string>
