@@ -403,6 +403,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         if (!movieTrailerURLS.isEmpty()) {
             playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
         }
+
+        setupViewModel();
     }
 
     public static class apiCallMovieID extends AsyncTask<URL, Void, String> {
