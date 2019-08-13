@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
@@ -119,9 +120,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
 
-
-
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(INSTANCE_RESUME_CODE, resumeCode);
@@ -136,6 +134,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 favorites = favEntries;
                 movieMeProcessor = new movieMeProcessor(favorites);
+
+                for (FavEntry a : favorites) {
+                    Movie addMovie = new Movie();
+                    addMovie.setMovieName(a.getName());
+                    favMovies.add(addMovie);
+                }
 
                 if (buttonClick == 0 && resumeCode == 1) {
                     populateUI(getString(R.string.Most_Popular));
@@ -231,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void populateUI(String category) {
-
 
         if (category.equals(getString(R.string.Most_Popular))) {
             setMoviesFromCategory(getString(R.string.Most_Popular));
@@ -384,6 +387,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void setMoviesFromCategory(String category) {
 
+        statusCode = 0;
+
         movies = new ArrayList();
 
         String resultsString = "";
@@ -501,6 +506,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
     public void onListItemClick(int clickedItemIndex) {
+
         Context context = MainActivity.this;
         Class destination = movieActivity.class;
 
@@ -568,15 +574,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
     public void onFabClicked(View v) {
-        Log.d("FAB", "FAB CLICKED");
+        Log.d("FAB1", "FAB CLICKED");
 
         ArrayList<String> result = movieMeProcessor.process();
         statusCode = 1;
-
+        Random rand = new Random();
 
 
         String movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
-                + "1" + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0);
+                + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0);
 
 
         String resultsString = "";
@@ -589,7 +595,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
@@ -599,20 +605,44 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public static void execute(String apiResults) {
 
         if (statusCode == 1) {
-            ArrayList<Movie> movieMeresults;
-            movieMeresults = JsonUtils.parseApiResult(apiResults);
+            Random rand = new Random();
+            int favCheck = 0;
+            Movie movieMe;
 
-            for (Movie a : movieMeresults) {
-                Log.d("FAB1", a.getMovieName());
+            ArrayList<Movie> movieMeResults;
+            movieMeResults = JsonUtils.parseApiResult(apiResults);
+
+            while (favCheck == 0) {
+                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
+
+                favCheck = 1;
+
+                for (Movie b : favMovies) {
+                    if (b.getMovieName().equals(movieMe.getMovieName())) {
+                        favCheck = 0;
+                    }
+                }
+
+                if (favCheck == 1) {
+                    Log.d("FAB1", movieMe.getMovieName());
+                } else {
+                    Log.d("FAB1", "Recommended a favorite starting over");
+                }
+
             }
+
         }
 
-        if (resumeCode != 3) {
+        Log.d("async", "Resume code is: " + resumeCode);
+        Log.d("async", "Status code is: " + statusCode);
+
+        if (resumeCode != 3 && statusCode == 0) {
             asyncCount++;
         }
+
         Log.d("async", "Count is: " + asyncCount);
 
-        if (asyncCount == 5) {
+        if (asyncCount == 5 && statusCode == 0) {
 
 
             Log.d("FAV2", "is empty: " + favMovies.isEmpty());
