@@ -541,6 +541,26 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         startActivity(goToMovieActivity);
     }
 
+    public void goToMovieMeDetail(Movie movieMe) {
+        Context context = MainActivity.this;
+        Class destination = movieActivity.class;
+
+        final Intent goToMovieActivity = new Intent(context, destination);
+
+        goToMovieActivity.putExtra(getString(R.string.Movie_Name), movieMe.getMovieName());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movieMe.getImageURL());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movieMe.getSynopsis());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movieMe.getUserRating());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movieMe.getReleaseDate());
+        goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
+        goToMovieActivity.putExtra(getString(R.string.Movie_ID), movieMe.getId());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movieMe.getGenre());
+        goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), getString(R.string.No));
+
+        startActivity(goToMovieActivity);
+    }
+
     @Override
     public void onButtonClick(final int clickedItemIndex) {
         Log.d("TEST", "PLEASE: " + clickedItemIndex);
@@ -580,13 +600,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         statusCode = 1;
         Random rand = new Random();
 
-
         String movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
                 + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0);
 
-
         String resultsString = "";
-
 
         try {
             URL testURL = new URL(movieIDQuery);
@@ -600,38 +617,39 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
         Log.d("FAB1", movieIDQuery);
-    }
 
-    public static void execute(String apiResults) {
 
-        if (statusCode == 1) {
-            Random rand = new Random();
-            int favCheck = 0;
-            Movie movieMe;
+        int favCheck = 0;
+        Movie movieMe = new Movie();
 
-            ArrayList<Movie> movieMeResults;
-            movieMeResults = JsonUtils.parseApiResult(apiResults);
+        ArrayList<Movie> movieMeResults;
+        movieMeResults = JsonUtils.parseApiResult(resultsString);
 
-            while (favCheck == 0) {
-                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
+        while (favCheck == 0) {
+            movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 
-                favCheck = 1;
+            favCheck = 1;
 
-                for (Movie b : favMovies) {
-                    if (b.getMovieName().equals(movieMe.getMovieName())) {
-                        favCheck = 0;
-                    }
+            for (Movie b : favMovies) {
+                if (b.getMovieName().equals(movieMe.getMovieName())) {
+                    favCheck = 0;
                 }
+            }
 
-                if (favCheck == 1) {
-                    Log.d("FAB1", movieMe.getMovieName());
-                } else {
-                    Log.d("FAB1", "Recommended a favorite starting over");
-                }
-
+            if (favCheck == 1) {
+                Log.d("FAB1", movieMe.getMovieName());
+            } else {
+                Log.d("FAB1", "Recommended a favorite starting over");
             }
 
         }
+
+        if (movieMe.getMovieName() != null) {
+            goToMovieMeDetail(movieMe);
+        }
+    }
+
+    public static void execute() {
 
         Log.d("async", "Resume code is: " + resumeCode);
         Log.d("async", "Status code is: " + statusCode);
@@ -675,7 +693,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected void onPostExecute(String apiResults) {
-            MainActivity.execute(apiResults);
+            MainActivity.execute();
         }
     }
 }

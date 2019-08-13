@@ -206,7 +206,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
         if (!wasRestored) {
             player.cueVideo(movieTrailerURLS.get(0));
-           // mPlayer.loadVideo("9rLZYyMbJic");
         } else {
             mPlayer.play();
         }

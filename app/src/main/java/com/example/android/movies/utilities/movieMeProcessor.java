@@ -157,13 +157,17 @@ public class movieMeProcessor {
         Log.d("FAB", "Ratings size: " + ratings.size());
 
         ratingsTotal = ratingsTotal / ratings.size();
-        ratingsTotal = ratingsTotal - 0.5;
+        if (ratingsTotal > 8.3) {
+            ratingsTotal = ratingsTotal - 0.5;
+        }
+
+        int ratingsTotalRounded = (int) Math.round(ratingsTotal);
 
 
         Log.d("FAB", "final category is: " + finalCategory);
-        Log.d("FAB", "final rating is: " + ratingsTotal);
+        Log.d("FAB", "final rating is: " + ratingsTotalRounded);
 
-        String finaRating = "" + ratingsTotal;
+        String finaRating = "" + ratingsTotalRounded;
 
         finalCategory = getGenreId(finalCategory);
 
