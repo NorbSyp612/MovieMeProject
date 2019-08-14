@@ -166,9 +166,9 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mCollapseLayout.setTitle(fromMain.getStringExtra(movieName));
         Log.d("T7", "Empty: " + movieTrailerURLS.isEmpty());
 
-        if (!movieTrailerURLS.isEmpty()) {
-            playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
-        }
+
+        playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
+
     }
 
     public void setRunTimeTrailerReviews(Movie movieMe) {
@@ -248,7 +248,9 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
 
         if (!wasRestored) {
-            player.cueVideo(movieTrailerURLS.get(0));
+            if (!movieTrailerURLS.isEmpty()) {
+                player.cueVideo(movieTrailerURLS.get(0));
+            }
         } else {
             mPlayer.play();
         }
@@ -437,7 +439,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mDate_Rating.setText(movieRatingOutOfTen);
         mSynopsis.setText(movieMe.getSynopsis());
 
-        String backdropImgURL =getString(R.string.API_IMG_URL_BASE_342) + movieMe.getBackdropURL();
+        String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + movieMe.getBackdropURL();
         Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
 
         setRunTimeTrailerReviews(movieMe);

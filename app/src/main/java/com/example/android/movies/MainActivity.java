@@ -510,38 +510,42 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void onListItemClick(int clickedItemIndex) {
 
-        Context context = MainActivity.this;
-        Class destination = movieActivity.class;
+        if (!movies.isEmpty()) {
+            Context context = MainActivity.this;
+            Class destination = movieActivity.class;
 
-        viewHolderPosition = clickedItemIndex;
+            viewHolderPosition = clickedItemIndex;
 
-        Log.d("TEST", "Viewholder position is: " + viewHolderPosition);
+            Log.d("TEST", "Viewholder position is: " + viewHolderPosition);
 
-        final Intent goToMovieActivity = new Intent(context, destination);
+            final Intent goToMovieActivity = new Intent(context, destination);
 
-        goToMovieActivity.putExtra(getString(R.string.Movie_Name), movies.get(clickedItemIndex).getMovieName());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movies.get(clickedItemIndex).getImageURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movies.get(clickedItemIndex).getSynopsis());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movies.get(clickedItemIndex).getUserRating());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movies.get(clickedItemIndex).getReleaseDate());
-        goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenre());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Name), movies.get(clickedItemIndex).getMovieName());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movies.get(clickedItemIndex).getImageURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movies.get(clickedItemIndex).getSynopsis());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movies.get(clickedItemIndex).getUserRating());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movies.get(clickedItemIndex).getReleaseDate());
+            goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenre());
 
-        movieID = movies.get(clickedItemIndex).getId();
-        isFavorite = getString(R.string.No);
+            movieID = movies.get(clickedItemIndex).getId();
+            isFavorite = getString(R.string.No);
 
-        for (FavEntry a : favorites) {
-            if (a.getId().equals(movieID)) {
-                isFavorite = getString(R.string.Yes);
-                Log.d("TEST", "onListItemClick marking favorite as YES");
+            for (FavEntry a : favorites) {
+                if (a.getId().equals(movieID)) {
+                    isFavorite = getString(R.string.Yes);
+                    Log.d("TEST", "onListItemClick marking favorite as YES");
+                }
             }
+
+            goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
+
+            startActivity(goToMovieActivity);
+        } else {
+            Log.d("TEST", "ERROR");
         }
-
-        goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
-
-        startActivity(goToMovieActivity);
     }
 
     public void goToMovieMeDetail(Movie movieMe) {
@@ -566,32 +570,37 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     @Override
     public void onButtonClick(final int clickedItemIndex) {
-        Log.d("TEST", "PLEASE: " + clickedItemIndex);
 
-        favorite = getString(R.string.No);
-        buttonClick = 1;
+        if (!movies.isEmpty()) {
+            Log.d("TEST", "PLEASE: " + clickedItemIndex);
 
-        for (FavEntry a : favorites) {
-            if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
-                favorite = getString(R.string.Yes);
-                movieEntry = a;
-                Log.d("TEST", "Movie is a favorite");
-            }
-        }
+            favorite = getString(R.string.No);
+            buttonClick = 1;
 
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (favorite.equals(getString(R.string.Yes))) {
-                    mDb.favDao().deleteFav(movieEntry);
-                    favorite = getString(R.string.No);
-                } else {
-                    FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating());
-                    mDb.favDao().insertFav(enterNewFavorite);
+            for (FavEntry a : favorites) {
+                if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
                     favorite = getString(R.string.Yes);
+                    movieEntry = a;
+                    Log.d("TEST", "Movie is a favorite");
                 }
             }
-        });
+
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (favorite.equals(getString(R.string.Yes))) {
+                        mDb.favDao().deleteFav(movieEntry);
+                        favorite = getString(R.string.No);
+                    } else {
+                        FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating());
+                        mDb.favDao().insertFav(enterNewFavorite);
+                        favorite = getString(R.string.Yes);
+                    }
+                }
+            });
+        } else {
+            Log.d("TEST", "ERROR");
+        }
 
     }
 
@@ -599,75 +608,80 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void onFabClicked(View v) {
         Log.d("FAB1", "FAB CLICKED");
 
-        if (favMovies.size() < 10) {
-            Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
-        } else {
-            int checkCode = 0;
-            String movieIDQuery = "";
-            String resultsString = "";
+        if (!movies.isEmpty()) {
 
-            ArrayList<String> result = movieMeProcessor.process();
-            statusCode = 1;
-            Random rand = new Random();
+            if (favMovies.size() < 10) {
+                Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
+            } else {
+                int checkCode = 0;
+                String movieIDQuery = "";
+                String resultsString = "";
 
-            while (checkCode == 0) {
-                movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
-                        + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
-                        + getString(R.string.API_Search_Part5);
+                ArrayList<String> result = movieMeProcessor.process();
+                statusCode = 1;
+                Random rand = new Random();
 
-                resultsString = "";
+                while (checkCode == 0) {
+                    movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
+                            + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
+                            + getString(R.string.API_Search_Part5);
 
-                try {
-                    URL testURL = new URL(movieIDQuery);
-                    resultsString = new apiCall().execute(testURL).get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    resultsString = "";
+
+                    try {
+                        URL testURL = new URL(movieIDQuery);
+                        resultsString = new apiCall().execute(testURL).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (resultsString != null && resultsString.length() > 200) {
+                        checkCode = 1;
+                    }
                 }
-
-                if (resultsString.length() > 200) {
-                    checkCode = 1;
-                }
-            }
-            Log.d("FAB1", movieIDQuery);
+                Log.d("FAB1", movieIDQuery);
 
 
-            int favCheck = 0;
-            Movie movieMe = new Movie();
+                int favCheck = 0;
+                Movie movieMe = new Movie();
 
-            ArrayList<Movie> movieMeResults;
-            movieMeResults = JsonUtils.parseApiResult(resultsString);
+                ArrayList<Movie> movieMeResults;
+                movieMeResults = JsonUtils.parseApiResult(resultsString);
 
-            while (favCheck == 0) {
-                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
+                while (favCheck == 0) {
+                    movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 
-                favCheck = 1;
+                    favCheck = 1;
 
-                for (Movie b : favMovies) {
-                    if (b.getMovieName().equals(movieMe.getMovieName())) {
+                    for (Movie b : favMovies) {
+                        if (b.getMovieName().equals(movieMe.getMovieName())) {
+                            favCheck = 0;
+                        }
+
+                    }
+
+                    if (movieMe.getBackdropURL() == "") {
                         favCheck = 0;
+                    }
+
+                    if (favCheck == 1) {
+                        Log.d("FAB1", movieMe.getMovieName());
+                    } else {
+                        Log.d("FAB1", "Recommended a favorite starting over");
                     }
 
                 }
 
-                if (movieMe.getBackdropURL() == "") {
-                    favCheck = 0;
+                if (movieMe.getMovieName() != null) {
+                    goToMovieMeDetail(movieMe);
                 }
-
-                if (favCheck == 1) {
-                    Log.d("FAB1", movieMe.getMovieName());
-                } else {
-                    Log.d("FAB1", "Recommended a favorite starting over");
-                }
-
             }
-
-            if (movieMe.getMovieName() != null) {
-                goToMovieMeDetail(movieMe);
-            }
+        } else {
+            Log.d("TEST", "ERROR");
         }
     }
 
