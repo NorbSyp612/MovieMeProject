@@ -389,6 +389,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     e.printStackTrace();
                 }
 
+                Log.d("t7", resultsString);
+
                 if (resultsString.length() > 200) {
                     checkCode = 1;
                 }

@@ -682,13 +682,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return favMovies;
     }
 
-    public static class apiCall extends AsyncTask<URL, Void, String> {
+
+    public class apiCall extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... urls) {
             Log.d("T8", "doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
+
 
             try {
                 apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
@@ -701,6 +703,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected void onPostExecute(String apiResults) {
+
+            if (apiResults == null) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(MainActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
             ArrayList<Movie> moviesAdd;
             moviesAdd = JsonUtils.parseApiResult(apiResults);
