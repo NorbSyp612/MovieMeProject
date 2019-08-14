@@ -63,6 +63,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private YouTubePlayer mPlayer;
     AddFavViewModel viewModel;
     AddFavViewModelFactory factory;
+    private int buttonPressed;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -76,7 +77,14 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
+        Log.d("T9", "On Create");
+
         Intent fromMain = getIntent();
+
+        if (savedInstanceState != null) {
+            buttonPressed = savedInstanceState.getInt("TESTER");
+        }
+
 
         mDb = AppDatabase.getInstance(getApplicationContext());
 
@@ -165,6 +173,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mCollapseLayout.setTitle(fromMain.getStringExtra(movieName));
 
         playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
+
     }
 
     public void setRunTimeTrailerReviews(Movie movieMe) {
@@ -225,15 +234,19 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     private void setupViewModel() {
+
         factory = new AddFavViewModelFactory(mDb, mMovieID);
+
         viewModel = ViewModelProviders.of(this, factory).get(AddFavViewModel.class);
         viewModel.getFav().observe(this, new Observer<FavEntry>() {
             @Override
             public void onChanged(@Nullable FavEntry favEntry) {
                 setFavButton();
                 movieEntry = favEntry;
+                Log.d("T9", "liveData onChange");
             }
         });
+
     }
 
     @Override
@@ -280,6 +293,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(INSTANCE_FAV, favorite);
         outState.putString(INSTANCE_MOVIE_ID, mMovieID);
+        outState.putInt("TESTER", buttonPressed);
+        Log.d("T9", "OUT STATE: " + mMovieID);
         super.onSaveInstanceState(outState);
     }
 
@@ -327,6 +342,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     favorite = getString(R.string.No);
                 } else {
                     FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, mMovieGenre, mMovieRating);
+                    Log.d("T9", "adding: " + mMovieName);
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
                 }
@@ -337,12 +353,15 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
     public void onFabClicked(View v) {
 
+
         int test = MainActivity.getNumFavs();
         List<Movie> favMovies = MainActivity.getFavMovies();
 
         if (MainActivity.getNumFavs() < 10) {
             Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
         } else {
+            buttonPressed = 1;
+
             Toast.makeText(this, "Congrats on pressing the FAB: " + test, Toast.LENGTH_LONG).show();
             int checkCode = 0;
             String movieIDQuery = "";
@@ -434,22 +453,13 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         }
 
         mMovieID = movieMe.getId();
+        Log.d("T9", "populating with new movie ID: " + mMovieID);
         favorite = (getString(R.string.No));
         mCollapseLayout.setTitle(movieMe.getMovieName());
 
         if (!movieTrailerURLS.isEmpty()) {
             playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
         }
-
-        factory = new AddFavViewModelFactory(mDb, mMovieID);
-        viewModel = ViewModelProviders.of(this, factory).get(AddFavViewModel.class);
-        viewModel.getFav().observe(this, new Observer<FavEntry>() {
-            @Override
-            public void onChanged(@Nullable FavEntry favEntry) {
-                setFavButton();
-                movieEntry = favEntry;
-            }
-        });
 
     }
 
@@ -458,6 +468,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         Class destination = movieActivity.class;
 
         final Intent goToMovieActivity = new Intent(context, destination);
+        goToMovieActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         goToMovieActivity.putExtra(getString(R.string.Movie_Name), movieMe.getMovieName());
         goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movieMe.getImageURL());
