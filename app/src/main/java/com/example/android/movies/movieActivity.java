@@ -53,7 +53,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private String mMovieID;
     private String mMovieGenre;
     private String mMovieRating;
-    private ImageButton mFavButton;
     private ImageView mFavButtonBackground;
     private String favorite;
     private FavEntry movieEntry;
@@ -61,7 +60,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private CollapsingToolbarLayout mCollapseLayout;
     private YouTubePlayerFragment playerFragment;
     private YouTubePlayer mPlayer;
-    private movieMeProcessor movieMeProcessor;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -250,9 +248,11 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         if (!wasRestored) {
             if (!movieTrailerURLS.isEmpty()) {
                 player.cueVideo(movieTrailerURLS.get(0));
+            } else {
+                playerFragment.getView().setVisibility(View.GONE);
             }
         } else {
-            mPlayer.play();
+
         }
     }
 
@@ -263,7 +263,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
 
     private void intiViews() {
-        mFavButton = (ImageButton) findViewById(R.id.button);
         mFavButtonBackground = (ImageView) findViewById(R.id.button_background);
         mDate_Rating = (TextView) findViewById(R.id.movie_rating);
         mSynopsis = (TextView) findViewById(R.id.movie_summary);
@@ -448,7 +447,12 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         setTrailersVisibilityAndContent();
         setReviewVisibilityAndContent();
 
-        mPlayer.cueVideo(movieTrailerURLS.get(0));
+        if (!movieTrailerURLS.isEmpty()) {
+            playerFragment.getView().setVisibility(View.VISIBLE);
+            mPlayer.cueVideo(movieTrailerURLS.get(0));
+        } else {
+            playerFragment.getView().setVisibility(View.GONE);
+        }
 
         mMovieID = movieMe.getId();
 
