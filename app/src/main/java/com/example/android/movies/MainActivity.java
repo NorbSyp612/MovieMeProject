@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private static final int NUM_LIST_MOVIES = 100;
     private String isFavorite;
     private AppDatabase mDb;
-    List<FavEntry> favorites;
+    static List<FavEntry> favorites;
     private static int resumeCode;
     private String movieID;
     private String INSTANCE_RESUME_CODE = "RESUME_CODE";
@@ -443,34 +443,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
         for (int i = 1; i < 6; i++) {
-
             String pageNum = Integer.toString(i);
 
             URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
 
 
-            try {
-                resultsString = new apiCall().execute(testURL).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            ArrayList<Movie> moviesAdd;
-            moviesAdd = JsonUtils.parseApiResult(resultsString);
-
-            for (Movie movie : moviesAdd) {
-
-                for (FavEntry a : favorites) {
-                    if (a.getName().equals(movie.getMovieName())) {
-                        Log.d("T4", "YES");
-                        movie.setFav(getString(R.string.Yes));
-                    }
-                }
-                movies.add(movie);
-            }
+            new apiCall().execute(testURL);
         }
+
     }
 
     public void setMoviesFavorites() {
@@ -686,28 +666,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public static void execute() {
-
-        Log.d("async", "Resume code is: " + resumeCode);
-        Log.d("async", "Status code is: " + statusCode);
-
-        if (resumeCode != 3 && statusCode == 0) {
-            asyncCount++;
-        }
-
-        Log.d("async", "Count is: " + asyncCount);
-
-        if (asyncCount == 5 && statusCode == 0) {
-
-
-            Log.d("FAV2", "is empty: " + favMovies.isEmpty());
-
-            asyncCount = 0;
-            mAdapter.setNumberMovies(NUM_LIST_MOVIES);
-            mAdapter.setMovies(movies);
-            moviesGrid.setAdapter(mAdapter);
-            scrollToPosition();
-        }
-
+        Log.d("FAV2", "is empty: " + favMovies.isEmpty());
+        asyncCount = 0;
+        mAdapter.setNumberMovies(NUM_LIST_MOVIES);
+        mAdapter.setMovies(movies);
+        moviesGrid.setAdapter(mAdapter);
+        scrollToPosition();
     }
 
     public static int getNumFavs() {
@@ -722,6 +686,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected String doInBackground(URL... urls) {
+            Log.d("T8", "doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
 
@@ -736,7 +701,26 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected void onPostExecute(String apiResults) {
-            MainActivity.execute();
+
+            ArrayList<Movie> moviesAdd;
+            moviesAdd = JsonUtils.parseApiResult(apiResults);
+
+            for (Movie movie : moviesAdd) {
+
+                for (FavEntry a : favorites) {
+                    if (a.getName().equals(movie.getMovieName())) {
+                        Log.d("T4", "YES");
+                        movie.setFav("Yes");
+                    }
+                }
+                movies.add(movie);
+                Log.d("T8", "movies size is: " + movies.size());
+            }
+
+            if (movies.size() > 99) {
+                MainActivity.execute();
+            }
+
         }
     }
 }
