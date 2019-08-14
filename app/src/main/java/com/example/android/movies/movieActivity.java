@@ -2,6 +2,7 @@ package com.example.android.movies;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -60,6 +61,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private CollapsingToolbarLayout mCollapseLayout;
     private YouTubePlayerFragment playerFragment;
     private YouTubePlayer mPlayer;
+    AddFavViewModel viewModel;
+    AddFavViewModelFactory factory;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -82,7 +85,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         String movieName = this.getResources().getString(R.string.Movie_Name);
         String movieRating = this.getResources().getString(R.string.Movie_Rating);
         String movieRatingString = fromMain.getStringExtra(movieRating);
-        String movieRatingOutOfTen = movieRatingString + "/10";
+        String movieRatingOutOfTen = movieRatingString + this.getResources().getString(R.string.Out_of_ten);
 
         String movieSynopsis = this.getResources().getString(R.string.Movie_Synopsis);
 
@@ -139,13 +142,11 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mMovieName = fromMain.getStringExtra(movieName);
         mMovieGenre = fromMain.getStringExtra(getResources().getString(R.string.Movie_Genre));
         mMovieRating = fromMain.getStringExtra(getResources().getString(R.string.Movie_Rating));
-        Log.d("GENRE", mMovieGenre + " " + mMovieRating);
 
         mDate_Rating.setText(movieRatingOutOfTen);
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
 
         String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Backdrop));
-        Log.d("TEST", backdropImgURL);
         Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
 
         mTrailerBottomBar.setVisibility(View.GONE);
@@ -162,11 +163,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         setupViewModel();
 
         mCollapseLayout.setTitle(fromMain.getStringExtra(movieName));
-        Log.d("T7", "Empty: " + movieTrailerURLS.isEmpty());
-
 
         playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
-
     }
 
     public void setRunTimeTrailerReviews(Movie movieMe) {
@@ -227,8 +225,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     private void setupViewModel() {
-        AddFavViewModelFactory factory = new AddFavViewModelFactory(mDb, mMovieID);
-        AddFavViewModel viewModel = ViewModelProviders.of(this, factory).get(AddFavViewModel.class);
+        factory = new AddFavViewModelFactory(mDb, mMovieID);
+        viewModel = ViewModelProviders.of(this, factory).get(AddFavViewModel.class);
         viewModel.getFav().observe(this, new Observer<FavEntry>() {
             @Override
             public void onChanged(@Nullable FavEntry favEntry) {
@@ -295,31 +293,14 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     private void setTrailersVisibilityAndContent() {
-
         int i = movieTrailerURLS.size();
-
         if (i == 0) {
             mTopImageBar.setVisibility(View.GONE);
             mTrailerText.setVisibility(View.GONE);
-            //   mTrailer1PlayButton.setVisibility(View.GONE);
-            //   mTrailer2TopBar.setVisibility(View.GONE);
-            //   mTrailer2PlayButton.setVisibility(View.GONE);
-            //  mTrailer2Text.setVisibility(View.GONE);
-        } else if (i == 1) {
-            //    mTrailer2TopBar.setVisibility(View.GONE);
-            //    mTrailer2PlayButton.setVisibility(View.GONE);
-            //   mTrailer2Text.setVisibility(View.GONE);
-        } else {
-            mTrailerText.setVisibility(View.VISIBLE);
-            //  mTrailer1PlayButton.setVisibility(View.VISIBLE);
-            //     mTrailer2TopBar.setVisibility(View.VISIBLE);
-            //    mTrailer2PlayButton.setVisibility(View.VISIBLE);
-            //    mTrailer2Text.setVisibility(View.VISIBLE);
         }
     }
 
     private void setReviewVisibilityAndContent() {
-
         int i = movieReviews.size();
         mReviewSeparator.setVisibility(View.INVISIBLE);
 
@@ -393,8 +374,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     checkCode = 1;
                 }
             }
-            Log.d("FAB2", movieIDQuery);
-
 
             int favCheck = 0;
             Movie movieMe;
@@ -423,7 +402,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                 } else {
                     Log.d("FAB2", "Recommended a favorite starting over");
                 }
-                populateWithNewMovie(movieMe);
+                reloadActivity(movieMe);
             }
         }
     }
@@ -455,16 +434,43 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         }
 
         mMovieID = movieMe.getId();
-
         favorite = (getString(R.string.No));
-
         mCollapseLayout.setTitle(movieMe.getMovieName());
 
         if (!movieTrailerURLS.isEmpty()) {
             playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
         }
 
-        setupViewModel();
+        factory = new AddFavViewModelFactory(mDb, mMovieID);
+        viewModel = ViewModelProviders.of(this, factory).get(AddFavViewModel.class);
+        viewModel.getFav().observe(this, new Observer<FavEntry>() {
+            @Override
+            public void onChanged(@Nullable FavEntry favEntry) {
+                setFavButton();
+                movieEntry = favEntry;
+            }
+        });
+
+    }
+
+    public void reloadActivity(Movie movieMe) {
+        Context context = this;
+        Class destination = movieActivity.class;
+
+        final Intent goToMovieActivity = new Intent(context, destination);
+
+        goToMovieActivity.putExtra(getString(R.string.Movie_Name), movieMe.getMovieName());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movieMe.getImageURL());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movieMe.getSynopsis());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movieMe.getUserRating());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movieMe.getReleaseDate());
+        goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
+        goToMovieActivity.putExtra(getString(R.string.Movie_ID), movieMe.getId());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
+        goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movieMe.getGenre());
+        goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), getString(R.string.No));
+
+        startActivity(goToMovieActivity);
     }
 
     public static class apiCallMovieID extends AsyncTask<URL, Void, String> {
