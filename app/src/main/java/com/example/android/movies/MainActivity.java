@@ -294,12 +294,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         asyncCount = 0;
 
         setMoviesFavorites();
-        NUM_LIST_MOVIES_FAVORITES = movies.size();
-        mAdapter.setNumberMovies(NUM_LIST_MOVIES_FAVORITES);
-        mAdapter.setMovies(movies);
-        moviesGrid.setAdapter(mAdapter);
-        setTitle(R.string.Set_Title_Favorite);
-
         setCategoryButtonsColor();
     }
 
@@ -444,10 +438,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         for (int i = 1; i < 6; i++) {
             String pageNum = Integer.toString(i);
-
             URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
-
-
             new apiCall().execute(testURL);
         }
 
@@ -456,33 +447,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void setMoviesFavorites() {
         resumeCode = 3;
         movies = new ArrayList();
-        String resultsString = "";
-
 
         for (FavEntry a : favorites) {
             String favID = a.getId() + "?";
 
             String movieIDQuery = getString(R.string.API_Query_Fav_Base) + favID + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
+
+            URL movieURL = null;
             try {
-                URL movieURL = new URL(movieIDQuery);
-                resultsString = new apiCall().execute(movieURL).get();
-                Movie movieAdd;
-
-                movieAdd = JsonUtils.parseFavoriteMovie(resultsString);
-
-                if (movieAdd != null) {
-                    movieAdd.setFav(getString(R.string.Yes));
-                    movies.add(movieAdd);
-                }
-
+                movieURL = new URL(movieIDQuery);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
             }
+
+            new apiCallFavs().execute(movieURL);
         }
 
     }
@@ -665,6 +644,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
+    public static void executeFavs() {
+        Log.d("t7", "executing favs");
+        mAdapter.setNumberMovies(favMovies.size());
+        mAdapter.setMovies(movies);
+        moviesGrid.setAdapter(mAdapter);
+        scrollToPosition();
+    }
+
+
     public static void execute() {
         Log.d("FAV2", "is empty: " + favMovies.isEmpty());
         asyncCount = 0;
@@ -734,4 +722,42 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         }
     }
+
+    public class apiCallFavs extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            Log.d("T7", "doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+            Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
+
+            if (addMovie != null) {
+                addMovie.setFav(getString(R.string.Yes));
+                movies.add(addMovie);
+                Log.d("T7", "movies size is: " + movies.size());
+                Log.d("T7", "fav movies size is: " + favMovies.size());
+            }
+
+            if (movies.size() == favMovies.size()) {
+                MainActivity.executeFavs();
+            }
+
+        }
+    }
 }
+
