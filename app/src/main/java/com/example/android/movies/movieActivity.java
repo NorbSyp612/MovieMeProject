@@ -171,6 +171,56 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         }
     }
 
+    public void setRunTimeTrailerReviews(Movie movieMe) {
+
+        String movieTrailerURLString = getString(R.string.API_Query_Videos_Start)
+                + movieMe.getId()
+                + getString(R.string.API_Query_Videos_Mid)
+                + getString(R.string.API_key)
+                + "&"
+                + getString(R.string.API_Query_Videos_End);
+
+        String movieReviewURLString = getString(R.string.API_Query_Videos_Start)
+                + movieMe.getId()
+                + getString(R.string.API_Query_Reviews_Mid)
+                + getString(R.string.API_key)
+                + "&"
+                + getString(R.string.API_Query_Videos_End);
+
+        URL movieIdURL;
+        URL movieTrailerURL;
+        URL movieReviewURL;
+
+        String movieIdDetailsResults = "";
+        String movieTrailerResults = "";
+        String movieReviewResults = "";
+
+
+        try {
+            movieIdURL = new URL(movieMe.getMovieIdURL());
+            movieTrailerURL = new URL(movieTrailerURLString);
+            movieReviewURL = new URL(movieReviewURLString);
+
+            movieIdDetailsResults = new apiCallMovieID().execute(movieIdURL).get();
+            movieTrailerResults = new apiCallMovieID().execute(movieTrailerURL).get();
+            movieReviewResults = new apiCallMovieID().execute(movieReviewURL).get();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if (!movieIdDetailsResults.equals("")) {
+            movieRunTime = JsonUtils.movieIDtest(movieIdDetailsResults);
+            movieTrailerURLS = JsonUtils.getVideoLinks(movieTrailerResults);
+            movieReviews = JsonUtils.getReviews(movieReviewResults);
+        }
+
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -329,7 +379,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
                 try {
                     URL testURL = new URL(movieIDQuery);
-                    resultsString = new MainActivity.apiCall().execute(testURL).get();
+                    resultsString = new apiCall().execute(testURL).get();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -346,7 +396,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
 
             int favCheck = 0;
-            Movie movieMe = new Movie();
+            Movie movieMe;
 
             ArrayList<Movie> movieMeResults;
             movieMeResults = JsonUtils.parseApiResult(resultsString);
@@ -390,9 +440,13 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         String backdropImgURL =getString(R.string.API_IMG_URL_BASE_342) + movieMe.getBackdropURL();
         Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
 
+        setRunTimeTrailerReviews(movieMe);
+
         mTrailerBottomBar.setVisibility(View.GONE);
         setTrailersVisibilityAndContent();
         setReviewVisibilityAndContent();
+
+        mPlayer.cueVideo(movieTrailerURLS.get(0));
 
         mMovieID = movieMe.getId();
 
