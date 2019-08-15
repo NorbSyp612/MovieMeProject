@@ -66,6 +66,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     AddFavViewModelFactory factory;
     private int buttonPressed;
     private AdView mAdView;
+    private TextView mTitleBar;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -172,7 +173,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         }
         setupViewModel();
 
-        mCollapseLayout.setTitle(fromMain.getStringExtra(movieName));
+      //  mCollapseLayout.setTitle();
+        mTitleBar.setText(fromMain.getStringExtra(getString(R.string.Movie_Name)));
 
         playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
 
@@ -292,6 +294,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mToolbarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
         mCollapseLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         playerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.movie_Play_First_Trailer);
+        mTitleBar = (TextView) findViewById(R.id.title_bar);
         mAdView = findViewById(R.id.adView);
     }
 

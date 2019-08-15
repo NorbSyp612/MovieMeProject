@@ -2,13 +2,18 @@ package com.example.android.movies;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.os.AsyncTask;
 import android.view.View;
@@ -630,6 +635,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 String resultsString = "";
 
                 ArrayList<String> result = movieMeProcessor.process();
+                Log.d("T15", result.get(0));
                 statusCode = 1;
                 Random rand = new Random();
 
@@ -671,32 +677,37 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         ArrayList<Movie> movieMeResults;
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
-        while (favCheck == 0) {
-            movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
+        if (movieMeResults == null) {
+            Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
+        } else {
 
-            favCheck = 1;
+            while (favCheck == 0) {
+                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 
-            for (Movie b : favMovies) {
-                if (b.getMovieName().equals(movieMe.getMovieName())) {
+                favCheck = 1;
+
+                for (Movie b : favMovies) {
+                    if (b.getMovieName().equals(movieMe.getMovieName())) {
+                        favCheck = 0;
+                    }
+
+                }
+
+                if (movieMe.getBackdropURL() == "") {
                     favCheck = 0;
+                }
+
+                if (favCheck == 1) {
+                    Log.d("FAB1", movieMe.getMovieName());
+                } else {
+                    Log.d("FAB1", "Recommended a favorite starting over");
                 }
 
             }
 
-            if (movieMe.getBackdropURL() == "") {
-                favCheck = 0;
+            if (movieMe.getMovieName() != null) {
+                goToMovieMeDetail(movieMe, mContext);
             }
-
-            if (favCheck == 1) {
-                Log.d("FAB1", movieMe.getMovieName());
-            } else {
-                Log.d("FAB1", "Recommended a favorite starting over");
-            }
-
-        }
-
-        if (movieMe.getMovieName() != null) {
-            goToMovieMeDetail(movieMe, mContext);
         }
     }
 
