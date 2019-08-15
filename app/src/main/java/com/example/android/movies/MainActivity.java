@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private FavEntry movieEntry;
     private static int asyncCount;
     private int buttonClick;
-    private int category;
     private ImageButton imgButtonPop;
     private ImageButton imgButtonFav;
     private ImageButton imgButtonTop;
@@ -68,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private ImageButton imgButtonThriller;
     private ImageButton imgButtonWestern;
     private movieMeProcessor movieMeProcessor;
+    private static Context mContext;
     private static int statusCode;
 
 
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Context context = this;
+        mContext = this;
 
         imgButtonPop = (ImageButton) findViewById(R.id.imageButton_pop);
         imgButtonFav = (ImageButton) findViewById(R.id.imageButton_favorites);
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
         moviesGrid = (RecyclerView) findViewById(R.id.movie_items);
-        GridLayoutManager layoutManager = new GridLayoutManager(context, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 2);
         moviesGrid.setLayoutManager(layoutManager);
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
 
@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
+                Log.d("T11", "onChanged viewModel");
                 favorites = favEntries;
                 movieMeProcessor = new movieMeProcessor(favorites);
 
@@ -143,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     addMovie.setMovieName(a.getName());
                     favMovies.add(addMovie);
                 }
+
+                Log.d("T11", "Button click is: " + buttonClick);
 
                 if (buttonClick == 0 && resumeCode == 1) {
                     populateUI(getString(R.string.Most_Popular));
@@ -314,7 +317,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void FavsClick(View view) {
         viewHolderPosition = 0;
-        populateUIFavorites();
+
+        if (favMovies.size() == 0) {
+            Toast.makeText(this, "Add a favorite movie first!", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.d("T11", "Size: " + favMovies.size());
+            populateUIFavorites();
+        }
     }
 
     public void TopRatedClick(View view) {
@@ -410,6 +419,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (MoviesCategory.equals(getString(R.string.History))) {
             resumeCode = 7;
             sortedBy = getString(R.string.API_Query_Genre_History) + getString(R.string.API_Search_Part5);
+            Log.d("T10", sortedBy);
         } else if (MoviesCategory.equals(getString(R.string.Horror))) {
             resumeCode = 8;
             sortedBy = getString(R.string.API_Query_Genre_Horror) + getString(R.string.API_Search_Part5);
@@ -439,6 +449,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         for (int i = 1; i < 6; i++) {
             String pageNum = Integer.toString(i);
             URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
+            Log.d("T10", "URL: " + testURL);
             new apiCall().execute(testURL);
         }
 
@@ -507,24 +518,24 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
-    public void goToMovieMeDetail(Movie movieMe) {
-        Context context = MainActivity.this;
+    public static void goToMovieMeDetail(Movie movieMe, Context context) {
+        mContext = context;
         Class destination = movieActivity.class;
 
         final Intent goToMovieActivity = new Intent(context, destination);
 
-        goToMovieActivity.putExtra(getString(R.string.Movie_Name), movieMe.getMovieName());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movieMe.getImageURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movieMe.getSynopsis());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movieMe.getUserRating());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movieMe.getReleaseDate());
-        goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_ID), movieMe.getId());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movieMe.getGenre());
-        goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), getString(R.string.No));
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Name), movieMe.getMovieName());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Img_Url), movieMe.getImageURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Synopsis), movieMe.getSynopsis());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Rating), movieMe.getUserRating());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Release_Date), movieMe.getReleaseDate());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID), movieMe.getId());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenre());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), mContext.getString(R.string.No));
 
-        startActivity(goToMovieActivity);
+        mContext.startActivity(goToMovieActivity);
     }
 
     @Override
@@ -589,7 +600,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                     try {
                         URL testURL = new URL(movieIDQuery);
-                        resultsString = new apiCall().execute(testURL).get();
+                        resultsString = new apiCallButton().execute(testURL).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
@@ -605,42 +616,47 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 Log.d("FAB1", movieIDQuery);
 
 
-                int favCheck = 0;
-                Movie movieMe = new Movie();
 
-                ArrayList<Movie> movieMeResults;
-                movieMeResults = JsonUtils.parseApiResult(resultsString);
-
-                while (favCheck == 0) {
-                    movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
-
-                    favCheck = 1;
-
-                    for (Movie b : favMovies) {
-                        if (b.getMovieName().equals(movieMe.getMovieName())) {
-                            favCheck = 0;
-                        }
-
-                    }
-
-                    if (movieMe.getBackdropURL() == "") {
-                        favCheck = 0;
-                    }
-
-                    if (favCheck == 1) {
-                        Log.d("FAB1", movieMe.getMovieName());
-                    } else {
-                        Log.d("FAB1", "Recommended a favorite starting over");
-                    }
-
-                }
-
-                if (movieMe.getMovieName() != null) {
-                    goToMovieMeDetail(movieMe);
-                }
             }
         } else {
             Log.d("TEST", "ERROR");
+        }
+    }
+
+    public static void executeFavButton(String apiResults) {
+        int favCheck = 0;
+        Movie movieMe = new Movie();
+        Random rand = new Random();
+
+        ArrayList<Movie> movieMeResults;
+        movieMeResults = JsonUtils.parseApiResult(apiResults);
+
+        while (favCheck == 0) {
+            movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
+
+            favCheck = 1;
+
+            for (Movie b : favMovies) {
+                if (b.getMovieName().equals(movieMe.getMovieName())) {
+                    favCheck = 0;
+                }
+
+            }
+
+            if (movieMe.getBackdropURL() == "") {
+                favCheck = 0;
+            }
+
+            if (favCheck == 1) {
+                Log.d("FAB1", movieMe.getMovieName());
+            } else {
+                Log.d("FAB1", "Recommended a favorite starting over");
+            }
+
+        }
+
+        if (movieMe.getMovieName() != null) {
+            goToMovieMeDetail(movieMe, mContext);
         }
     }
 
@@ -670,8 +686,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return favMovies;
     }
 
-
-    public class apiCall extends AsyncTask<URL, Void, String> {
+    public static class apiCallButton extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... urls) {
@@ -691,15 +706,31 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected void onPostExecute(String apiResults) {
+            executeFavButton(apiResults);
+        }
+    }
 
-            if (apiResults == null) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
 
-                        Toast.makeText(MainActivity.this, "Network error", Toast.LENGTH_SHORT).show();
-                    }
-                });
+    public static class apiCall extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            Log.d("T8", "doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
 
             ArrayList<Movie> moviesAdd;
             moviesAdd = JsonUtils.parseApiResult(apiResults);
@@ -723,7 +754,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
-    public class apiCallFavs extends AsyncTask<URL, Void, String> {
+    public static class apiCallFavs extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... urls) {
@@ -747,7 +778,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
 
             if (addMovie != null) {
-                addMovie.setFav(getString(R.string.Yes));
+                addMovie.setFav("Yes");
                 movies.add(addMovie);
                 Log.d("T7", "movies size is: " + movies.size());
                 Log.d("T7", "fav movies size is: " + favMovies.size());
