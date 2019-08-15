@@ -12,6 +12,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
+
+        <meta-data
+            android:name="com.example.android.movies"
+            android:value="ca-app-pub-7216440919272822~7341034909" />
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme">

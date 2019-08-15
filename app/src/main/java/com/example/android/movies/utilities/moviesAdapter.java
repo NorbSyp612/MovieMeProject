@@ -1,33 +1,22 @@
 package com.example.android.movies.utilities;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.media.Image;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.android.movies.AddFavViewModel;
-import com.example.android.movies.AddFavViewModelFactory;
 import com.example.android.movies.Items.Movie;
-import com.example.android.movies.MainViewModel;
 import com.example.android.movies.R;
-import com.example.android.movies.database.AppDatabase;
-import com.example.android.movies.database.FavEntry;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberViewHolder> {
 

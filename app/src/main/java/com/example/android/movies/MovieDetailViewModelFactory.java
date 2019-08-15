@@ -1,7 +1,8 @@
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
+package com.example.android.movies;
 
-import com.example.android.movies.MovieDetailViewModel;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.android.movies.database.AppDatabase;
 
 public class MovieDetailViewModelFactory extends ViewModelProvider.NewInstanceFactory {

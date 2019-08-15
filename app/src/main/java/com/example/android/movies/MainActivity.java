@@ -1,14 +1,14 @@
 package com.example.android.movies;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.os.AsyncTask;
 import android.view.View;
@@ -29,7 +29,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
 
@@ -77,12 +76,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         setContentView(R.layout.activity_main);
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.containsKey("ID")) {
-            Log.d("T12", "Contains: " + extras.get("ID"));
-
-            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + extras.get("ID") + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
-
-            Log.d("T12", movieIDQuery);
+        if (extras != null && extras.containsKey(getString(R.string.ID))) {
+            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + extras.get(getString(R.string.ID)) + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
             URL movieURL = null;
             try {
@@ -92,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
 
             new apiCallFCM().execute(movieURL);
-
         }
 
         mContext = this;
