@@ -442,10 +442,13 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         Context context = this;
         Class destination = movieActivity.class;
 
+        Timber.d("Reloading movieActivity");
+
         final Intent goToMovieActivity = new Intent(context, destination);
         goToMovieActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         goToMovieActivity.putExtra(getString(R.string.Movie_Name), movieMe.getMovieName());
+        Timber.d(movieMe.getMovieName());
         goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movieMe.getImageURL());
         goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movieMe.getSynopsis());
         goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movieMe.getUserRating());

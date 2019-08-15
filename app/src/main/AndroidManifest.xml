@@ -22,8 +22,7 @@
         </activity>
         <activity
             android:name=".movieActivity"
-            android:theme="@style/AppThemeWithoutTitle"
-            android:launchMode="singleInstance"></activity>
+            android:theme="@style/AppThemeWithoutTitle"></activity>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
