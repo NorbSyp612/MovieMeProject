@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
 
     private static ArrayList<Movie> movies = new ArrayList();
@@ -80,6 +82,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Timber.plant(new Timber.DebugTree());
+
+        Timber.d("LifeCycles");
+
         Bundle extras = getIntent().getExtras();
         if (extras != null && extras.containsKey(getString(R.string.ID))) {
             String movieIDQuery = getString(R.string.API_Query_Fav_Base) + extras.get(getString(R.string.ID)) + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
@@ -93,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             new apiCallFCM().execute(movieURL);
         }
+
+
 
         mContext = this;
 
@@ -116,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
             viewHolderPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CODE);
-            Log.d("TEST", "Resume code: " + resumeCode);
+            Timber.d("Resume code: %s", resumeCode);
         } else {
             resumeCode = 1;
         }
@@ -152,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
-                Log.d("T11", "onChanged viewModel");
+                Timber.d( "onChanged viewModel");
                 favorites = favEntries;
                 movieMeProcessor = new movieMeProcessor(favorites);
 
@@ -164,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     favMovies.add(addMovie);
                 }
 
-                Log.d("T11", "Button click is: " + buttonClick);
+                Timber.d("Button click is: %s", buttonClick);
 
                 if (buttonClick == 0 && resumeCode == 1) {
                     populateUI(getString(R.string.Most_Popular));
@@ -324,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             if (resumeCode == 3 && viewHolderPosition == NUM_LIST_MOVIES_FAVORITES) {
                 viewHolderPosition--;
             }
-            Log.d("TEST", "Scrolling to: " + viewHolderPosition);
+            Timber.d("Scrolling to: %s", viewHolderPosition);
             moviesGrid.scrollToPosition(viewHolderPosition);
         }
     }
@@ -340,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (favMovies.size() == 0) {
             Toast.makeText(this, "Add a favorite movie first!", Toast.LENGTH_SHORT).show();
         } else {
-            Log.d("T11", "Size: " + favMovies.size());
+            Timber.d("Size: %s", favMovies.size());
             populateUIFavorites();
         }
     }
@@ -438,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (MoviesCategory.equals(getString(R.string.History))) {
             resumeCode = 7;
             sortedBy = getString(R.string.API_Query_Genre_History) + getString(R.string.API_Search_Part5);
-            Log.d("T10", sortedBy);
+            Timber.d(sortedBy);
         } else if (MoviesCategory.equals(getString(R.string.Horror))) {
             resumeCode = 8;
             sortedBy = getString(R.string.API_Query_Genre_Horror) + getString(R.string.API_Search_Part5);
@@ -468,7 +476,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         for (int i = 1; i < 6; i++) {
             String pageNum = Integer.toString(i);
             URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
-            Log.d("T10", "URL: " + testURL);
+            Timber.d("URL: %s", testURL);
             new apiCall().execute(testURL);
         }
 
@@ -476,14 +484,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void setMoviesFavorites() {
         resumeCode = 3;
-        movies = new ArrayList();
+        movies = new ArrayList<>();
 
         for (FavEntry a : favorites) {
             String favID = a.getId() + "?";
 
             String movieIDQuery = getString(R.string.API_Query_Fav_Base) + favID + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
-            Log.d("T12", movieIDQuery);
+            Timber.d(movieIDQuery);
 
             URL movieURL = null;
             try {
@@ -516,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         for (FavEntry a : favorites) {
             if (a.getId().equals(movieID)) {
                 isFavorite = mContext.getString(R.string.Yes);
-                Log.d("TEST", "onListItemClick marking favorite as YES");
+                Timber.d( "onListItemClick marking favorite as YES");
             }
         }
 
@@ -533,7 +541,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             viewHolderPosition = clickedItemIndex;
 
-            Log.d("TEST", "Viewholder position is: " + viewHolderPosition);
+            Timber.d("Viewholder position is: %s", viewHolderPosition);
 
             final Intent goToMovieActivity = new Intent(context, destination);
 
@@ -553,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             for (FavEntry a : favorites) {
                 if (a.getId().equals(movieID)) {
                     isFavorite = getString(R.string.Yes);
-                    Log.d("TEST", "onListItemClick marking favorite as YES");
+                    Timber.d("onListItemClick marking favorite as YES");
                 }
             }
 
@@ -561,7 +569,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             startActivity(goToMovieActivity);
         } else {
-            Log.d("TEST", "ERROR");
+            Timber.d("ERROR");
         }
     }
 
@@ -589,7 +597,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void onButtonClick(final int clickedItemIndex) {
 
         if (!movies.isEmpty()) {
-            Log.d("TEST", "PLEASE: " + clickedItemIndex);
 
             favorite = getString(R.string.No);
             buttonClick = 1;
@@ -598,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
                     favorite = getString(R.string.Yes);
                     movieEntry = a;
-                    Log.d("TEST", "Movie is a favorite");
+                    Timber.d("Movie is a favorite");
                 }
             }
 
@@ -616,14 +623,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             });
         } else {
-            Log.d("TEST", "ERROR");
+            Timber.d("ERROR");
         }
 
     }
 
 
     public void onFabClicked(View v) {
-        Log.d("FAB1", "FAB CLICKED");
+        Timber.d("FAB CLICKED");
 
         if (!movies.isEmpty()) {
 
@@ -635,7 +642,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 String resultsString = "";
 
                 ArrayList<String> result = movieMeProcessor.process();
-                Log.d("T15", result.get(0));
+                Timber.d(result.get(0));
                 statusCode = 1;
                 Random rand = new Random();
 
@@ -644,7 +651,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
                         + getString(R.string.API_Search_Part5);
 
-                Log.d("T14", movieIDQuery);
+                Timber.d(movieIDQuery);
 
                 resultsString = "";
 
@@ -656,16 +663,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
                 new apiCallButton().execute(testURL);
 
-                if (resultsString != null && resultsString.length() > 200) {
-                    checkCode = 1;
-                }
-
-                Log.d("FAB1", movieIDQuery);
+                Timber.d(movieIDQuery);
 
 
             }
         } else {
-            Log.d("TEST", "ERROR");
+            Timber.d("ERROR");
         }
     }
 
@@ -698,9 +701,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
 
                 if (favCheck == 1) {
-                    Log.d("FAB1", movieMe.getMovieName());
+                    Timber.d(movieMe.getMovieName());
                 } else {
-                    Log.d("FAB1", "Recommended a favorite starting over");
+                    Timber.d("Recommended a favorite starting over");
                 }
 
             }
@@ -712,7 +715,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public static void executeFavs() {
-        Log.d("t7", "executing favs");
+        Timber.d("executing favs");
         mAdapter.setNumberMovies(favMovies.size());
         mAdapter.setMovies(movies);
         moviesGrid.setAdapter(mAdapter);
@@ -721,7 +724,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
     public static void execute() {
-        Log.d("FAV2", "is empty: " + favMovies.isEmpty());
+        Timber.d("is empty: %s", favMovies.isEmpty());
         asyncCount = 0;
         mAdapter.setNumberMovies(NUM_LIST_MOVIES);
         mAdapter.setMovies(movies);
@@ -741,7 +744,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected String doInBackground(URL... urls) {
-            Log.d("T8", "doing in background");
+            Timber.d("doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
 
@@ -759,8 +762,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         protected void onPostExecute(String apiResults) {
             if (apiResults != null) {
                 executeFavButton(apiResults);
+            } else if (apiResults.length() < 100) {
+                Toast.makeText(mContext, "Error, please try again.", Toast.LENGTH_SHORT).show();
             } else {
-                Log.d("T14", "EMPTY");
+                Timber.d("EMPTY");
                 Toast.makeText(mContext, "Movie DB not responding", Toast.LENGTH_SHORT).show();
             }
         }
@@ -771,7 +776,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected String doInBackground(URL... urls) {
-            Log.d("T8", "doing in background");
+            Timber.d("doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
 
@@ -799,12 +804,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 for (FavEntry a : favorites) {
                     if (a.getName().equals(movie.getMovieName())) {
-                        Log.d("T4", "YES");
+                        Timber.d("YES");
                         movie.setFav("Yes");
                     }
                 }
                 movies.add(movie);
-                Log.d("T8", "movies size is: " + movies.size());
+                Timber.d("movies size is: " + movies.size());
             }
 
             if (movies.size() > 99) {
@@ -818,7 +823,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected String doInBackground(URL... urls) {
-            Log.d("T7", "doing in background");
+            Timber.d("doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
 
@@ -844,7 +849,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected String doInBackground(URL... urls) {
-            Log.d("T7", "doing in background");
+            Timber.d("doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
 
@@ -866,8 +871,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             if (addMovie != null) {
                 addMovie.setFav("Yes");
                 movies.add(addMovie);
-                Log.d("T7", "movies size is: " + movies.size());
-                Log.d("T7", "fav movies size is: " + favMovies.size());
+                Timber.d("movies size is: %s", movies.size());
+                Timber.d("fav movies size is: %s", favMovies.size());
             }
 
             if (movies.size() == favMovies.size()) {
