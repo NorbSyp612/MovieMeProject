@@ -48,6 +48,7 @@
     <string name="API_Query_Videos_Mid">/videos?api_key=</string>
     <string name="API_Query_Reviews_Mid">/reviews?api_key=</string>
     <string name="API_Query_Videos_End">language=en-US</string>
+    <string name="API_Query_Fav_Base">https://api.themoviedb.org/3/movie/</string>
 
     <string name="API_Search_Part1">https://api.themoviedb.org/3/discover/movie?api_key=</string>
     <string name="API_Search_Part2">&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=true&amp;page=</string>
@@ -73,7 +74,6 @@
     <string name="Remove_Fav">Remove Favorite</string>
     <string name="Mark_Fav">Mark as Favorite</string>
     <string name="Is_Fav">IsFavorite</string>
-    <string name="API_Query_Fav_Base">https://api.themoviedb.org/3/movie/</string>
     <string name="Set_Title_Favorite">Favorites</string>
     <string name="No">no</string>
     <string name="Yes">yes</string>

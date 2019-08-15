@@ -76,6 +76,25 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null && extras.containsKey("ID")) {
+            Log.d("T12", "Contains: " + extras.get("ID"));
+
+            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + extras.get("ID") + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
+
+            Log.d("T12", movieIDQuery);
+
+            URL movieURL = null;
+            try {
+                movieURL = new URL(movieIDQuery);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            new apiCallFCM().execute(movieURL);
+
+        }
+
         mContext = this;
 
         imgButtonPop = (ImageButton) findViewById(R.id.imageButton_pop);
@@ -117,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mDb = AppDatabase.getInstance(getApplicationContext());
 
         setupViewModel();
+
 
     }
 
@@ -464,6 +484,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             String movieIDQuery = getString(R.string.API_Query_Fav_Base) + favID + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
+            Log.d("T12", movieIDQuery);
 
             URL movieURL = null;
             try {
@@ -477,6 +498,33 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     }
 
+    public static void executeFCM(Movie firebaseMovie) {
+        Intent goToMovieActivity = new Intent(mContext, movieActivity.class);
+
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Name), firebaseMovie.getMovieName());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Img_Url), firebaseMovie.getImageURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Synopsis), firebaseMovie.getSynopsis());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Rating), firebaseMovie.getUserRating());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Release_Date), firebaseMovie.getReleaseDate());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID_URL), firebaseMovie.getMovieIdURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID), firebaseMovie.getId());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Backdrop), firebaseMovie.getBackdropURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), firebaseMovie.getGenre());
+
+        String movieID = firebaseMovie.getId();
+        String isFavorite = mContext.getString(R.string.No);
+
+        for (FavEntry a : favorites) {
+            if (a.getId().equals(movieID)) {
+                isFavorite = mContext.getString(R.string.Yes);
+                Log.d("TEST", "onListItemClick marking favorite as YES");
+            }
+        }
+
+        goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), isFavorite);
+
+        mContext.startActivity(goToMovieActivity);
+    }
 
     public void onListItemClick(int clickedItemIndex) {
 
@@ -591,30 +639,28 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 statusCode = 1;
                 Random rand = new Random();
 
-                while (checkCode == 0) {
-                    movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
-                            + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
-                            + getString(R.string.API_Search_Part5);
 
-                    resultsString = "";
+                movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
+                        + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
+                        + getString(R.string.API_Search_Part5);
 
-                    try {
-                        URL testURL = new URL(movieIDQuery);
-                        resultsString = new apiCallButton().execute(testURL).get();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
+                Log.d("T14", movieIDQuery);
 
-                    if (resultsString != null && resultsString.length() > 200) {
-                        checkCode = 1;
-                    }
+                resultsString = "";
+
+                URL testURL = null;
+                try {
+                    testURL = new URL(movieIDQuery);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
                 }
-                Log.d("FAB1", movieIDQuery);
+                new apiCallButton().execute(testURL);
 
+                if (resultsString != null && resultsString.length() > 200) {
+                    checkCode = 1;
+                }
+
+                Log.d("FAB1", movieIDQuery);
 
 
             }
@@ -706,7 +752,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected void onPostExecute(String apiResults) {
-            executeFavButton(apiResults);
+            if (apiResults != null) {
+                executeFavButton(apiResults);
+            } else {
+                Log.d("T14", "EMPTY");
+                Toast.makeText(mContext, "Movie DB not responding", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -732,6 +783,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         @Override
         protected void onPostExecute(String apiResults) {
 
+            if (apiResults == null) {
+                Toast.makeText(mContext, "API error", Toast.LENGTH_SHORT).show();
+            }
+
             ArrayList<Movie> moviesAdd;
             moviesAdd = JsonUtils.parseApiResult(apiResults);
 
@@ -751,6 +806,32 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 MainActivity.execute();
             }
 
+        }
+    }
+
+    public static class apiCallFCM extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            Log.d("T7", "doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+            Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
+            MainActivity.executeFCM(addMovie);
         }
     }
 

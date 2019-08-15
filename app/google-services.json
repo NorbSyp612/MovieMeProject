@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "429555751819",
+    "firebase_url": "https://moviemeproject.firebaseio.com",
+    "project_id": "moviemeproject",
+    "storage_bucket": "moviemeproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429555751819:android:10a20b711b94a3a4",
+        "android_client_info": {
+          "package_name": "com.example.android.movies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "429555751819-3bojtc713gui4lrbgfaep5ppn0e2ofom.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnaGJnIye-cyyzqdhxGRI4HZ3g8zo5fGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "429555751819-3bojtc713gui4lrbgfaep5ppn0e2ofom.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
