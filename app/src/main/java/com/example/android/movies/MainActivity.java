@@ -39,8 +39,8 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
 
-    private static ArrayList<Movie> movies = new ArrayList();
-    private static ArrayList<Movie> favMovies = new ArrayList();
+    private static ArrayList<Movie> movies = new ArrayList<>();
+    private static ArrayList<Movie> favMovies = new ArrayList<>();
     private static RecyclerView moviesGrid;
     private static moviesAdapter mAdapter;
     private static final int NUM_LIST_MOVIES = 100;
@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mDb = AppDatabase.getInstance(getApplicationContext());
 
         setupViewModel();
-
 
     }
 
@@ -637,9 +636,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             if (favMovies.size() < 10) {
                 Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
             } else {
-                int checkCode = 0;
                 String movieIDQuery = "";
-                String resultsString = "";
 
                 ArrayList<String> result = movieMeProcessor.process();
                 Timber.d(result.get(0));
@@ -653,8 +650,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 Timber.d(movieIDQuery);
 
-                resultsString = "";
-
                 URL testURL = null;
                 try {
                     testURL = new URL(movieIDQuery);
@@ -664,8 +659,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 new apiCallButton().execute(testURL);
 
                 Timber.d(movieIDQuery);
-
-
             }
         } else {
             Timber.d("ERROR");
@@ -683,7 +676,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (movieMeResults == null) {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-
             while (favCheck == 0) {
                 movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 

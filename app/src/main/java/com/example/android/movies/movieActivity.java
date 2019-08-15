@@ -2,6 +2,7 @@ package com.example.android.movies;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,7 +13,9 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+
+import timber.log.Timber;
 
 public class movieActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -80,7 +85,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
-        Log.d("T9", "On Create");
+        Timber.d("On Create");
 
         Intent fromMain = getIntent();
 
@@ -173,7 +178,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         }
         setupViewModel();
 
-      //  mCollapseLayout.setTitle();
         mTitleBar.setText(fromMain.getStringExtra(getString(R.string.Movie_Name)));
 
         playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
@@ -236,7 +240,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("TEST6", "Destroy");
+        Timber.d("Destroy");
         mPlayer = null;
     }
 
@@ -250,7 +254,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             public void onChanged(@Nullable FavEntry favEntry) {
                 setFavButton();
                 movieEntry = favEntry;
-                Log.d("T9", "liveData onChange");
+                Timber.d("liveData onChange");
             }
         });
 
@@ -269,8 +273,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             } else {
                 playerFragment.getView().setVisibility(View.GONE);
             }
-        } else {
-
         }
     }
 
@@ -303,7 +305,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         outState.putString(INSTANCE_FAV, favorite);
         outState.putString(INSTANCE_MOVIE_ID, mMovieID);
         outState.putInt("TESTER", buttonPressed);
-        Log.d("T9", "OUT STATE: " + mMovieID);
+        Timber.d("OUT STATE: %s", mMovieID);
         super.onSaveInstanceState(outState);
     }
 
@@ -351,7 +353,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     favorite = getString(R.string.No);
                 } else {
                     FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, mMovieGenre, mMovieRating);
-                    Log.d("T9", "adding: " + mMovieName);
+                    Timber.d("adding: %s", mMovieName);
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
                 }
@@ -361,10 +363,10 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     public void onFabClicked(View v) {
-
-
         int test = MainActivity.getNumFavs();
         List<Movie> favMovies = MainActivity.getFavMovies();
+
+        Timber.d("Fav clicked");
 
         if (MainActivity.getNumFavs() < 10) {
             Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
@@ -396,7 +398,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     e.printStackTrace();
                 }
 
-                Log.d("t7", resultsString);
+                Timber.d(resultsString);
 
                 if (resultsString.length() > 200) {
                     checkCode = 1;
@@ -421,56 +423,20 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
                 }
 
-                if (movieMe.getBackdropURL() == "") {
+                if (movieMe.getBackdropURL().equals("")) {
                     favCheck = 0;
                 }
 
                 if (favCheck == 1) {
-                    Log.d("FAB2", movieMe.getMovieName());
+                    Timber.d(movieMe.getMovieName());
                 } else {
-                    Log.d("FAB2", "Recommended a favorite starting over");
+                    Timber.d("Recommended a favorite starting over");
                 }
                 reloadActivity(movieMe);
             }
         }
     }
 
-    public void populateWithNewMovie(Movie movieMe) {
-        mMovieName = movieMe.getMovieName();
-        mMovieGenre = movieMe.getGenre();
-        mMovieRating = movieMe.getUserRating();
-
-        String movieRatingOutOfTen = mMovieRating + "/10";
-
-        mDate_Rating.setText(movieRatingOutOfTen);
-        mSynopsis.setText(movieMe.getSynopsis());
-
-        String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + movieMe.getBackdropURL();
-        Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
-
-        setRunTimeTrailerReviews(movieMe);
-
-        mTrailerBottomBar.setVisibility(View.GONE);
-        setTrailersVisibilityAndContent();
-        setReviewVisibilityAndContent();
-
-        if (!movieTrailerURLS.isEmpty()) {
-            playerFragment.getView().setVisibility(View.VISIBLE);
-            mPlayer.cueVideo(movieTrailerURLS.get(0));
-        } else {
-            playerFragment.getView().setVisibility(View.GONE);
-        }
-
-        mMovieID = movieMe.getId();
-        Log.d("T9", "populating with new movie ID: " + mMovieID);
-        favorite = (getString(R.string.No));
-        mCollapseLayout.setTitle(movieMe.getMovieName());
-
-        if (!movieTrailerURLS.isEmpty()) {
-            playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
-        }
-
-    }
 
     public void reloadActivity(Movie movieMe) {
         Context context = this;
