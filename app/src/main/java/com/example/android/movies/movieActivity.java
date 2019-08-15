@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,6 +65,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     AddFavViewModel viewModel;
     AddFavViewModelFactory factory;
     private int buttonPressed;
+    private AdView mAdView;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -170,6 +175,9 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mCollapseLayout.setTitle(fromMain.getStringExtra(movieName));
 
         playerFragment.initialize(getString(R.string.Youtube_API_Key), this);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
     }
 
@@ -284,6 +292,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mToolbarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
         mCollapseLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         playerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.movie_Play_First_Trailer);
+        mAdView = findViewById(R.id.adView);
     }
 
     @Override
