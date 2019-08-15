@@ -9,12 +9,14 @@
     tools:context=".movieActivity">
 
     <TextView
+        android:textDirection="locale"
+        android:textAlignment="gravity"
         android:id="@+id/movie_first_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
         android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -49,12 +51,14 @@
         app:layout_constraintTop_toBottomOf="@+id/movie_first_review" />
 
     <TextView
+        android:textDirection="locale"
+        android:textAlignment="gravity"
         android:id="@+id/movie_second_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
         android:paddingBottom="8dp"
         android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="parent"

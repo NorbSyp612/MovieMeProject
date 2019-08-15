@@ -361,8 +361,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
         } else {
             buttonPressed = 1;
-
-            Toast.makeText(this, "Congrats on pressing the FAB: " + test, Toast.LENGTH_LONG).show();
             int checkCode = 0;
             String movieIDQuery = "";
             String resultsString = "";
