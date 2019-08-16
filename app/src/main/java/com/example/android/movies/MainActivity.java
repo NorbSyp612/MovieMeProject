@@ -33,6 +33,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import timber.log.Timber;
@@ -86,8 +87,31 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         Timber.d("LifeCycles");
 
+        //Firebase notification send to movieDetail with only movieID
+
         Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.containsKey(getString(R.string.ID))) {
+
+        // Firebase notification send to movieDetail with all info already included
+
+        if (extras != null && extras.containsKey("GoToMovie")) {
+
+            Context context = getApplicationContext();
+            Class destination = movieActivity.class;
+
+            Intent goToMovieActivity = new Intent(context, destination);
+
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_Name), extras.getString(getString(R.string.Movie_Name)));
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_Img_Url), extras.getString(context.getString(R.string.Movie_Img_Url)));
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_Synopsis), extras.getString(context.getString(R.string.Movie_Synopsis)));
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_Rating), extras.getString(context.getString(R.string.Movie_Rating)));
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_Release_Date), extras.getString(context.getString(R.string.Movie_Release_Date)));
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_ID_URL), extras.getString(context.getString(R.string.Movie_ID_URL)));
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_ID), extras.getString(context.getString(R.string.Movie_ID)));
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_Backdrop), extras.getString(context.getString(R.string.Movie_Backdrop)));
+            goToMovieActivity.putExtra(context.getString(R.string.Movie_Genre), extras.getString(context.getString(R.string.Movie_Genre)));
+            goToMovieActivity.putExtra(context.getString(R.string.Is_Fav_Key), context.getString(R.string.No));
+            startActivity(goToMovieActivity);
+        } else if (extras != null && extras.containsKey(getString(R.string.ID))) {
             String movieIDQuery = getString(R.string.API_Query_Fav_Base) + extras.get(getString(R.string.ID)) + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
             URL movieURL = null;
@@ -99,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             new apiCallFCM().execute(movieURL);
         }
-
 
 
         mContext = this;
@@ -159,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
-                Timber.d( "onChanged viewModel");
+                Timber.d("onChanged viewModel");
                 favorites = favEntries;
                 movieMeProcessor = new movieMeProcessor(favorites);
 
@@ -523,7 +546,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         for (FavEntry a : favorites) {
             if (a.getId().equals(movieID)) {
                 isFavorite = mContext.getString(R.string.Yes);
-                Timber.d( "onListItemClick marking favorite as YES");
+                Timber.d("onListItemClick marking favorite as YES");
             }
         }
 
@@ -550,6 +573,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movies.get(clickedItemIndex).getUserRating());
             goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movies.get(clickedItemIndex).getReleaseDate());
             goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
+            Log.d("TEST", movies.get(clickedItemIndex).getMovieIdURL());
             goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
             goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
             goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenre());
@@ -673,7 +697,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         ArrayList<Movie> movieMeResults;
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
-        if (movieMeResults == null) {
+        if (movieMeResults == null || movieMeResults.size() < 0) {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
         } else {
             while (favCheck == 0) {
