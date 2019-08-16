@@ -694,27 +694,32 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             Toast.makeText(mContext, mContext.getString(R.string.Something_went_wrong), Toast.LENGTH_SHORT).show();
         } else {
             while (favCheck == 0) {
-                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size() + 1));
 
-                favCheck = 1;
+                try {
+                    movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size() + 1));
 
-                for (Movie b : favMovies) {
-                    if (b.getMovieName().equals(movieMe.getMovieName())) {
+
+                    favCheck = 1;
+
+                    for (Movie b : favMovies) {
+                        if (b.getMovieName().equals(movieMe.getMovieName())) {
+                            favCheck = 0;
+                        }
+
+                    }
+
+                    if (movieMe.getBackdropURL().equals("")) {
                         favCheck = 0;
                     }
 
+                    if (favCheck == 1) {
+                        Timber.d(movieMe.getMovieName());
+                    } else {
+                        Timber.d("Recommended a favorite starting over");
+                    }
+                } catch (Exception e) {
+                    Timber.d(e);
                 }
-
-                if (movieMe.getBackdropURL() == "") {
-                    favCheck = 0;
-                }
-
-                if (favCheck == 1) {
-                    Timber.d(movieMe.getMovieName());
-                } else {
-                    Timber.d("Recommended a favorite starting over");
-                }
-
             }
 
             if (movieMe.getMovieName() != null) {
