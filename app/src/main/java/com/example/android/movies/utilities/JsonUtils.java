@@ -134,6 +134,7 @@ public class JsonUtils {
             String movieUserRating = jResult.getString("vote_average");
             String movieReleaseDate = jResult.getString("release_date");
             String movieId = jResult.getString("id");
+            String movieBackdropURL = jResult.getString("backdrop_path");
 
             movie.setMovieName(movieName);
             movie.setImageURL(movieImageURL);
@@ -141,6 +142,7 @@ public class JsonUtils {
             movie.setUserRating(movieUserRating);
             movie.setReleaseDate(movieReleaseDate);
             movie.setId(movieId);
+            movie.setBackdropURL(movieBackdropURL);
 
 
         } catch (JSONException e) {

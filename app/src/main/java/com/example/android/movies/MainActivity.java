@@ -84,15 +84,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         setContentView(R.layout.activity_main);
 
         Timber.plant(new Timber.DebugTree());
-
         Timber.d("LifeCycles");
-
-        //Firebase notification send to movieDetail with only movieID
 
         Bundle extras = getIntent().getExtras();
 
         // Firebase notification send to movieDetail with all info already included
-
         if (extras != null && extras.containsKey("GoToMovie")) {
 
             Context context = getApplicationContext();

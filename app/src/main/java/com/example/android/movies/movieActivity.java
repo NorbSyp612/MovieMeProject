@@ -163,6 +163,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
 
         String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Backdrop));
+        Timber.d(backdropImgURL);
         Picasso.with(this).load(backdropImgURL).into(mToolbarPoster);
 
         mTrailerBottomBar.setVisibility(View.GONE);
