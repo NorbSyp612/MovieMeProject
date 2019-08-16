@@ -1,10 +1,9 @@
 package com.example.android.movies.utilities;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +14,8 @@ import android.widget.ImageView;
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.R;
 import com.squareup.picasso.Picasso;
+
+import timber.log.Timber;
 
 import java.util.ArrayList;
 
@@ -52,13 +53,12 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
     public void setMovies(ArrayList<Movie> moviesArray) {
         movies.clear();
-        Log.d("FAV2", "Cleaing movies array");
+        Timber.d("Cleaing movies array");
         if (movies.isEmpty()) {
-            Log.d("FAV2", "Movies is clear");
+            Timber.d("Movies is clear");
         }
         movies = moviesArray;
     }
-
 
 
     @Override
@@ -94,10 +94,10 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
         public NumberViewHolder(View itemView) {
             super(itemView);
-            movieItemView = (ImageView) itemView.findViewById(R.id.movie_item);
-            favButton = (ImageButton) itemView.findViewById(R.id.star_button);
-            star_white = (ImageView) itemView.findViewById(R.id.star_background_white);
-            star_yellow = (ImageView) itemView.findViewById(R.id.star_background_yellow);
+            movieItemView = itemView.findViewById(R.id.movie_item);
+            favButton = itemView.findViewById(R.id.star_button);
+            star_white = itemView.findViewById(R.id.star_background_white);
+            star_yellow = itemView.findViewById(R.id.star_background_yellow);
             favButton.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
@@ -108,7 +108,7 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
             int clickedPosition = getAdapterPosition();
 
             if (favButton.isPressed()) {
-                Log.d("TEST", "ACTIVIATED");
+                Timber.d("ACTIVIATED");
                 if (star_yellow.getVisibility() == View.INVISIBLE) {
                     star_yellow.setVisibility(View.VISIBLE);
                 } else if (star_yellow.getVisibility() == View.VISIBLE) {
@@ -131,11 +131,11 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
                 Movie test = movies.get(listIndex);
 
-                Log.d("T4", "TEST " + test.getFav());
+                Timber.d("TEST %s", test.getFav());
 
                 for (Movie a : favMovies) {
                     if (test.getMovieName().equals(a.getMovieName())) {
-                        Log.d("TEST", "FAVORITE FOUND: " + test.getMovieName());
+                        Timber.d("FAVORITE FOUND: %s", test.getMovieName());
                         star_yellow.setVisibility(View.VISIBLE);
                     }
                 }
@@ -143,7 +143,6 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
                 if (test.getFav().equals("yes")) {
                     star_yellow.setVisibility(View.VISIBLE);
                 }
-
 
                 Picasso.with(context).load(imgURL).into(movieItemView);
             }

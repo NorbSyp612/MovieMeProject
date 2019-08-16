@@ -86,4 +86,22 @@
     <string name="User_Score">User Score</string>
     <string name="Overview">Overview</string>
     <string name="Out_of_ten"> /10</string>
+    <string name="GoToMovie">GoToMovie</string>
+    <string name="AddFavPls">Add a favorite movie first!</string>
+    <string name="Something_went_wrong">Something went wrong</string>
+    <string name="Error_Try_Again">Error. Please try again</string>
+    <string name="tmDB_not_responding">The movie database is not responding.</string>
+
+    <string name="Action_ID">28</string>
+    <string name="Adv_ID">12</string>
+    <string name="Comedy_ID">35</string>
+    <string name="Drama_ID">18</string>
+    <string name="Fantasy_ID">14</string>
+    <string name="History_ID">36</string>
+    <string name="Horror_ID">27</string>
+    <string name="Mystery_ID">9648</string>
+    <string name="Romance_ID">10749</string>
+    <string name="SciFi_ID">878</string>
+    <string name="Thriller_ID">53</string>
+    <string name="Western_ID">37</string>
 </resources>

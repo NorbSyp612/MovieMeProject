@@ -27,7 +27,7 @@ public class JsonUtils {
 
     public static ArrayList<String> getVideoLinks(String apiResult) {
 
-        ArrayList<String> trailerLinks = new ArrayList<String>();
+        ArrayList<String> trailerLinks = new ArrayList<>();
 
         try {
 
@@ -154,7 +154,7 @@ public class JsonUtils {
 
     public static ArrayList<Movie> parseApiResult(String apiResult) {
 
-        ArrayList<Movie> parsedResults = new ArrayList<Movie>();
+        ArrayList<Movie> parsedResults = new ArrayList<>();
 
         try {
 

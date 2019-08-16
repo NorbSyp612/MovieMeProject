@@ -3,6 +3,7 @@ package com.example.android.movies.utilities;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.android.movies.R;
 import com.example.android.movies.database.FavEntry;
 
 import java.util.ArrayList;
@@ -15,10 +16,12 @@ public class movieMeProcessor {
 
     private static List<FavEntry> favorites;
     private static Random rand;
+    private static Context context;
 
-    public movieMeProcessor(List<FavEntry> favs) {
+    public movieMeProcessor(List<FavEntry> favs, Context appContext) {
         favorites = favs;
         rand = new Random();
+        context = appContext;
     }
 
     public static ArrayList<String> process() {
@@ -69,29 +72,29 @@ public class movieMeProcessor {
         HashMap<String, Double> map = new HashMap<>();
 
         for (String b : genres) {
-            if (b.equals("Action")) {
+            if (b.equals(context.getString(R.string.Action))) {
                 numAction++;
-            } else if (b.equals("Adventure")) {
+            } else if (b.equals(context.getString(R.string.Adventure))) {
                 numAdv++;
-            } else if (b.equals("Comedy")) {
+            } else if (b.equals(context.getString(R.string.Comedy))) {
                 numComedy++;
-            } else if (b.equals("History")) {
+            } else if (b.equals(context.getString(R.string.History))) {
                 numHistory++;
-            } else if (b.equals("Horror")) {
+            } else if (b.equals(context.getString(R.string.Horror))) {
                 numHorror++;
-            } else if (b.equals("Drama")) {
+            } else if (b.equals(context.getString(R.string.Drama))) {
                 numDrama++;
-            } else if (b.equals("Fantasy")) {
+            } else if (b.equals(context.getString(R.string.Fantasy))) {
                 numFantasy++;
-            } else if (b.equals("Mystery")) {
+            } else if (b.equals(context.getString(R.string.Mystery))) {
                 numMystery++;
-            } else if (b.equals("Romance")) {
+            } else if (b.equals(context.getString(R.string.Romance))) {
                 numRomance++;
-            } else if (b.equals("SciFi")) {
+            } else if (b.equals(context.getString(R.string.SciFi))) {
                 numSciFi++;
-            } else if (b.equals("Thriller")) {
+            } else if (b.equals(context.getString(R.string.Thriller))) {
                 numThriller++;
-            } else if (b.equals("Western")) {
+            } else if (b.equals(context.getString(R.string.Western))) {
                 numWestern++;
             }
         }
@@ -109,62 +112,46 @@ public class movieMeProcessor {
         probThriller = numThriller / genres.size();
         probWestern = numWestern / genres.size();
 
-        map.put("Action", probAction);
-        map.put("Adventure", probAdv);
-        map.put("Comedy", probComedy);
-        map.put("History", probHistory);
-        map.put("Horror", probHorror);
-        map.put("Drama", probDrama);
-        map.put("Fantasy", probFantasy);
-        map.put("Mystery", probMystery);
-        map.put("Romance", probRomance);
-        map.put("SciFi", probScifi);
-        map.put("Thriller", probThriller);
-        map.put("Western", probWestern);
+        map.put(context.getString(R.string.Action), probAction);
+        map.put(context.getString(R.string.Adventure), probAdv);
+        map.put(context.getString(R.string.Comedy), probComedy);
+        map.put(context.getString(R.string.History), probHistory);
+        map.put(context.getString(R.string.Horror), probHorror);
+        map.put(context.getString(R.string.Drama), probDrama);
+        map.put(context.getString(R.string.Fantasy), probFantasy);
+        map.put(context.getString(R.string.Mystery), probMystery);
+        map.put(context.getString(R.string.Romance), probRomance);
+        map.put(context.getString(R.string.SciFi), probScifi);
+        map.put(context.getString(R.string.Thriller), probThriller);
+        map.put(context.getString(R.string.Western), probWestern);
 
 
         while (categoryCheck == 0) {
             double randomDouble = rand.nextDouble();
-            Log.d("FAB", "Genres size: " + genres.size());
 
             Collections.shuffle(genres);
 
             int randomInt = rand.nextInt(genres.size());
 
-            Log.d("FAB", "random int is: " + randomInt);
-
-
             if (map.get(genres.get(randomInt)) != null) {
-                Log.d("FAB", "Random double is: " + randomDouble);
-                Log.d("FAB", "Random genre is: " + genres.get(randomInt));
-                Log.d("FAB", "Random map result is: " + map.get(genres.get(randomInt)));
-
                 if (map.get(genres.get(randomInt)) > randomDouble) {
                     finalCategory = genres.get(randomInt);
                     categoryCheck = 1;
                 }
-
             }
-
         }
-
 
         for (String c : ratings) {
             ratingsTotal = ratingsTotal + Double.parseDouble(c);
         }
 
-        Log.d("FAB", "Ratings total: " + ratingsTotal);
-        Log.d("FAB", "Ratings size: " + ratings.size());
-
         ratingsTotal = ratingsTotal / ratings.size();
         ratingsTotal = ratingsTotal - (rand.nextDouble() + .25);
+
         if (ratingsTotal > 8.3) {
             ratingsTotal = ratingsTotal - 0.5;
         }
 
-
-        Log.d("FAB", "final category is: " + finalCategory);
-        Log.d("FAB", "final rating is: " + ratingsTotal);
 
         String finaRating = "" + ratingsTotal;
 
@@ -177,32 +164,31 @@ public class movieMeProcessor {
     }
 
     public static String getGenreId(String genre) {
-        if (genre.equals("Action")) {
-            return "28";
-        } else if (genre.equals("Adventure")) {
-            return "12";
-        } else if (genre.equals("Comedy")) {
-            return "35";
-        } else if (genre.equals("Drama")) {
-            return "18";
-        } else if (genre.equals("Fantasy")) {
-            return "14";
-        } else if (genre.equals("History")) {
-            return "36";
-        } else if (genre.equals("Horror")) {
-            return "27";
-        } else if (genre.equals("Mystery")) {
-            return "9648";
-        } else if (genre.equals("Romance")) {
-            return "10749";
-        } else if (genre.equals("SciFi")) {
-            return "878";
-        } else if (genre.equals("Thriller")) {
-            return "53";
-        } else if (genre.equals("Western")) {
-            return "37";
+        if (genre.equals(context.getString(R.string.Action))) {
+            return context.getString(R.string.Action_ID);
+        } else if (genre.equals(context.getString(R.string.Adventure))) {
+            return context.getString(R.string.Adv_ID);
+        } else if (genre.equals(context.getString(R.string.Comedy))) {
+            return context.getString(R.string.Comedy_ID);
+        } else if (genre.equals(context.getString(R.string.Drama))) {
+            return context.getString(R.string.Drama_ID);
+        } else if (genre.equals(context.getString(R.string.Fantasy))) {
+            return context.getString(R.string.Fantasy_ID);
+        } else if (genre.equals(context.getString(R.string.History))) {
+            return context.getString(R.string.History_ID);
+        } else if (genre.equals(context.getString(R.string.Horror))) {
+            return context.getString(R.string.Horror_ID);
+        } else if (genre.equals(context.getString(R.string.Mystery))) {
+            return context.getString(R.string.Mystery_ID);
+        } else if (genre.equals(context.getString(R.string.Romance))) {
+            return context.getString(R.string.Romance_ID);
+        } else if (genre.equals(context.getString(R.string.SciFi))) {
+            return context.getString(R.string.SciFi_ID);
+        } else if (genre.equals(context.getString(R.string.Thriller))) {
+            return context.getString(R.string.Thriller_ID);
+        } else if (genre.equals(context.getString(R.string.Western))) {
+            return context.getString(R.string.Western_ID);
         }
-
         return "";
     }
 }
