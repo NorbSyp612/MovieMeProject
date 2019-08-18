@@ -70,6 +70,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private int buttonPressed;
     private AdView mAdView;
     private TextView mTitleBar;
+    private static Context mContext;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -82,6 +83,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
+
+        mContext = getApplicationContext();
 
         Timber.d("On Create");
 
@@ -362,54 +365,45 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     public void onFabClicked(View v) {
-        int test = MainActivity.getNumFavs();
-        List<Movie> favMovies = MainActivity.getFavMovies();
-
         Timber.d("Fav clicked");
 
         if (MainActivity.getNumFavs() < 10) {
             Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
         } else {
-            buttonPressed = 1;
-            int checkCode = 0;
             String movieIDQuery = "";
             String resultsString = "";
-
 
             ArrayList<String> result = movieMeProcessor.process();
             Random rand = new Random();
 
-            while (checkCode == 0) {
-                movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
-                        + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
-                        + getString(R.string.API_Search_Part5);
+            movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
+                    + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
+                    + getString(R.string.API_Search_Part5);
 
-                resultsString = "";
+            Timber.d(movieIDQuery);
 
-                try {
-                    URL testURL = new URL(movieIDQuery);
-                    resultsString = new apiCall().execute(testURL).get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-
-                Timber.d(resultsString);
-
-                if (resultsString.length() > 200) {
-                    checkCode = 1;
-                }
+            URL testURL = null;
+            try {
+                testURL = new URL(movieIDQuery);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
+            new apiCallButton().execute(testURL);
+        }
 
-            int favCheck = 0;
-            Movie movieMe;
+    }
 
-            ArrayList<Movie> movieMeResults;
-            movieMeResults = JsonUtils.parseApiResult(resultsString);
+    public static void executeFavButton(String apiResults) {
+        int favCheck = 0;
+        Movie movieMe = new Movie();
+        Random rand = new Random();
+        ArrayList<Movie> favMovies = MainActivity.getFavMovies();
+        ArrayList<Movie> movieMeResults;
+        movieMeResults = JsonUtils.parseApiResult(apiResults);
 
+        if (movieMeResults == null || movieMeResults.size() == 0) {
+            Toast.makeText(mContext, mContext.getString(R.string.Something_went_wrong), Toast.LENGTH_SHORT).show();
+        } else {
             while (favCheck == 0) {
                 movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 
@@ -422,7 +416,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
                 }
 
-                if (movieMe.getBackdropURL().equals("")) {
+                if (movieMe.getBackdropURL() == "") {
                     favCheck = 0;
                 }
 
@@ -431,14 +425,18 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                 } else {
                     Timber.d("Recommended a favorite starting over");
                 }
+
+            }
+
+            if (movieMe.getMovieName() != null) {
                 reloadActivity(movieMe);
             }
         }
     }
 
 
-    public void reloadActivity(Movie movieMe) {
-        Context context = this;
+    public static void reloadActivity(Movie movieMe) {
+        Context context = mContext;
         Class destination = movieActivity.class;
 
         Timber.d("Reloading movieActivity");
@@ -446,19 +444,19 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         final Intent goToMovieActivity = new Intent(context, destination);
         goToMovieActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        goToMovieActivity.putExtra(getString(R.string.Movie_Name), movieMe.getMovieName());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Name), movieMe.getMovieName());
         Timber.d(movieMe.getMovieName());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movieMe.getImageURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movieMe.getSynopsis());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movieMe.getUserRating());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movieMe.getReleaseDate());
-        goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_ID), movieMe.getId());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
-        goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movieMe.getGenre());
-        goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), getString(R.string.No));
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Img_Url), movieMe.getImageURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Synopsis), movieMe.getSynopsis());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Rating), movieMe.getUserRating());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Release_Date), movieMe.getReleaseDate());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID), movieMe.getId());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenre());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), mContext.getString(R.string.No));
 
-        startActivity(goToMovieActivity);
+        mContext.startActivity(goToMovieActivity);
     }
 
     public static class apiCallMovieID extends AsyncTask<URL, Void, String> {
@@ -483,7 +481,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         }
     }
 
-    public static class apiCall extends AsyncTask<URL, Void, String> {
+    public static class apiCallButton extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... urls) {
@@ -502,6 +500,11 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         @Override
         protected void onPostExecute(String apiResults) {
 
+            if (apiResults.length() < 200) {
+                Toast.makeText(mContext, mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+            } else {
+                executeFavButton(apiResults);
+            }
         }
     }
 }

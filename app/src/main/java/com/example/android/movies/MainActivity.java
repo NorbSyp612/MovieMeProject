@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -86,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Timber.plant(new Timber.DebugTree());
 
         Bundle extras = getIntent().getExtras();
-
 
 
         if (extras != null && extras.containsKey(getString(R.string.GoToMovie))) {
@@ -196,17 +196,17 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 double numWestern = 0;
 
                 String probAction = "";
-                double probAdv = 0;
-                double probComedy = 0;
-                double probHistory = 0;
-                double probHorror = 0;
-                double probDrama = 0;
-                double probFantasy = 0;
-                double probMystery = 0;
-                double probRomance = 0;
-                double probScifi = 0;
-                double probThriller = 0;
-                double probWestern = 0;
+                String probAdv = "";
+                String probComedy = "";
+                String probHistory = "";
+                String probHorror = "";
+                String probDrama = "";
+                String probFantasy = "";
+                String probMystery = "";
+                String probRomance = "";
+                String probScifi = "";
+                String probThriller = "";
+                String probWestern = "";
 
                 double ratingsTotal = 0;
 
@@ -219,10 +219,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     Movie addMovie = new Movie();
                     addMovie.setMovieName(a.getName());
                     favMovies.add(addMovie);
-
-                    if (!genres.contains(a.getCategory())) {
-                        genres.add(a.getCategory());
-                    }
+                    genres.add(a.getCategory());
                     ratings.add(a.getRating());
                 }
 
@@ -254,23 +251,37 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
 
-                probAction = "" + (numAction / genres.size());
-                probAdv = numAdv / genres.size();
-                probComedy = numComedy / genres.size();
-                probHistory = numHistory / genres.size();
-                probHorror = numHorror / genres.size();
-                probDrama = numDrama / genres.size();
-                probFantasy = numFantasy / genres.size();
-                probMystery = numMystery / genres.size();
-                probRomance = numRomance / genres.size();
-                probScifi = numSciFi / genres.size();
-                probThriller = numThriller / genres.size();
-                probWestern = numWestern / genres.size();
+
+                int genreSize = genres.size() + 1;
+
+                probAction = "" + (numAction / genreSize);
+                probAdv = "" + (numAdv / genreSize);
+                probComedy = "" + (numComedy / genreSize);
+                probHistory = "" + (numHistory / genreSize);
+                probHorror = "" + (numHorror / genreSize);
+                probDrama = "" + (numDrama / genreSize);
+                probFantasy = "" + (numFantasy / genreSize);
+                probMystery = "" + (numMystery / genreSize);
+                probRomance = "" + (numRomance / genreSize);
+                probScifi = "" + (numSciFi / genreSize);
+                probThriller = "" + (numThriller / genreSize);
+                probWestern = "" + (numWestern / genreSize);;
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                editor.putString("PROB_ACTION", probAction);
+                editor.putString(getString(R.string.Action), probAction);
+                editor.putString(getString(R.string.Adventure), probAdv);
+                editor.putString(getString(R.string.Comedy), probComedy);
+                editor.putString(getString(R.string.History), probHistory);
+                editor.putString(getString(R.string.Horror), probHorror);
+                editor.putString(getString(R.string.Drama), probDrama);
+                editor.putString(getString(R.string.Fantasy), probFantasy);
+                editor.putString(getString(R.string.Mystery), probMystery);
+                editor.putString(getString(R.string.Romance), probRomance);
+                editor.putString(getString(R.string.SciFi), probScifi);
+                editor.putString(getString(R.string.Thriller), probThriller);
+                editor.putString(getString(R.string.Western), probWestern);
 
                 editor.apply();
 
@@ -778,11 +789,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         ArrayList<Movie> movieMeResults;
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
-        if (movieMeResults == null || movieMeResults.size() < 0) {
+        if (movieMeResults == null || movieMeResults.size() == 0) {
             Toast.makeText(mContext, mContext.getString(R.string.Something_went_wrong), Toast.LENGTH_SHORT).show();
         } else {
             while (favCheck == 0) {
-                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size() + 1));
+                Log.d("TEST", "SIZE IS: " + movieMeResults.size());
+                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 
                 favCheck = 1;
 
@@ -833,7 +845,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return favMovies.size();
     }
 
-    public static List<Movie> getFavMovies() {
+    public static ArrayList<Movie> getFavMovies() {
         return favMovies;
     }
 

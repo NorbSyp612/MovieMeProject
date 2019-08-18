@@ -5,8 +5,6 @@
     <string name="SciFi">SciFi</string>
 
     <string name="app_name">Movies</string>
-    <string name="API_key">cf302f54886739895a2c28626d65e40d</string>
-    <string name="Youtube_API_Key">AIzaSyC9kRsavQOqCulyPhTY1rLHZ8EJHQnrLsY</string>
     <string name="API_key_append">api_key=</string>
     <string name="pop_desc">popularity.desc</string>
 

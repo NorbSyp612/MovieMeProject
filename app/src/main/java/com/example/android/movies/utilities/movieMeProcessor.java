@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Collections;
 
+import timber.log.Timber;
+
 public class movieMeProcessor {
 
     private static List<FavEntry> favorites;
@@ -67,9 +69,9 @@ public class movieMeProcessor {
         String finalCategory = "";
 
         for (FavEntry a : favorites) {
-            if (!genres.contains(a.getCategory())) {
-                genres.add(a.getCategory());
-            }
+
+            genres.add(a.getCategory());
+
             ratings.add(a.getRating());
         }
 
@@ -105,23 +107,62 @@ public class movieMeProcessor {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-      //  probAction = numAction / genres.size();
-        Log.d("TEST", "First prob action is: " + (numAction / genres.size()));
-        String test = sharedPreferences.getString("PROB_ACTION", "");
-        probAction = Double.parseDouble(test);
-        Log.d("TEST", "Prob action is: " + probAction);
-        probAdv = numAdv / genres.size();
-        Log.d("TEST", "Prob adv is: " + probAdv);
-        probComedy = numComedy / genres.size();
-        probHistory = numHistory / genres.size();
-        probHorror = numHorror / genres.size();
-        probDrama = numDrama / genres.size();
-        probFantasy = numFantasy / genres.size();
-        probMystery = numMystery / genres.size();
-        probRomance = numRomance / genres.size();
-        probScifi = numSciFi / genres.size();
-        probThriller = numThriller / genres.size();
-        probWestern = numWestern / genres.size();
+        String Action = sharedPreferences.getString(context.getString(R.string.Action), "");
+        String Adv = sharedPreferences.getString(context.getString(R.string.Adventure), "");
+        String Comedy = sharedPreferences.getString(context.getString(R.string.Comedy), "");
+        String History = sharedPreferences.getString(context.getString(R.string.History), "");
+        String Horror = sharedPreferences.getString(context.getString(R.string.Horror), "");
+        String Drama = sharedPreferences.getString(context.getString(R.string.Drama), "");
+        String Fantasy = sharedPreferences.getString(context.getString(R.string.Fantasy), "");
+        String Mystery = sharedPreferences.getString(context.getString(R.string.Mystery), "");
+        String Romance = sharedPreferences.getString(context.getString(R.string.Romance), "");
+        String Scifi = sharedPreferences.getString(context.getString(R.string.SciFi), "");
+        String Thriller = sharedPreferences.getString(context.getString(R.string.Thriller), "");
+        String Western = sharedPreferences.getString(context.getString(R.string.Western), "");
+
+        int genreSize = genres.size() - 1;
+
+
+        Timber.d("First prob action is: %s", (numAction / genreSize));
+        Timber.d("First prob adv is: %s", (numAdv / genreSize));
+        Timber.d("First prob comedy is: %s", (numComedy / genreSize));
+        Timber.d("First prob history is: %s", (numHistory / genreSize));
+        Timber.d("First prob horror is: %s", (numHorror / genreSize));
+        Timber.d("First prob drama is: %s", (numDrama / genreSize));
+        Timber.d("First prob fantasy is: %s", (numFantasy / genreSize));
+        Timber.d("First prob mystery is: %s", (numMystery / genreSize));
+        Timber.d("First prob romance is: %s", (numRomance / genreSize));
+        Timber.d("First prob scifi is: %s", (numSciFi / genreSize));
+        Timber.d("First prob thriller is: %s", (numThriller / genreSize));
+        Timber.d("First prob western is: %s", (numWestern / genreSize));
+
+
+        probAction = Double.parseDouble(Action);
+        probAdv = Double.parseDouble(Adv);
+        probComedy = Double.parseDouble(Comedy);
+        probHistory = Double.parseDouble(History);
+        probHorror = Double.parseDouble(Horror);
+        probDrama = Double.parseDouble(Drama);
+        probFantasy = Double.parseDouble(Fantasy);
+        probMystery = Double.parseDouble(Mystery);
+        probRomance = Double.parseDouble(Romance);
+        probScifi = Double.parseDouble(Scifi);
+        probThriller = Double.parseDouble(Thriller);
+        probWestern = Double.parseDouble(Western);
+
+
+        Timber.d("Prob action is: %s", probAction);
+        Timber.d("Prob adv is: %s", probAdv);
+        Timber.d("Prob comedy is: %s", probComedy);
+        Timber.d("Prob history is: %s", probHistory);
+        Timber.d("Prob horror is: %s", probHorror);
+        Timber.d("Prob Drama is: %s", probDrama);
+        Timber.d("Prob fantasy is: %s", probFantasy);
+        Timber.d("Prob mystery is: %s", probMystery);
+        Timber.d("Prob romance is: %s", probRomance);
+        Timber.d("Prob scifi is: %s", probScifi);
+        Timber.d("Prob thriller is: %s", probThriller);
+        Timber.d("Prob western is: %s", probWestern);
 
         map.put(context.getString(R.string.Action), probAction);
         map.put(context.getString(R.string.Adventure), probAdv);
@@ -170,6 +211,9 @@ public class movieMeProcessor {
 
         finalGenreAndRating.add(finalCategory);
         finalGenreAndRating.add(finaRating);
+
+        Timber.d(finalCategory);
+        Timber.d(finaRating);
 
         return finalGenreAndRating;
     }
