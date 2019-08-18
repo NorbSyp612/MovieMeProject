@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.android.movies.R;
+import com.example.android.movies.database.AppDatabase;
 import com.example.android.movies.database.FavEntry;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class movieMeProcessor {
         ArrayList<String> genres = new ArrayList<>();
         ArrayList<String> ratings = new ArrayList<>();
         ArrayList<String> finalGenreAndRating = new ArrayList<>();
+
 
         double numAction = 0;
         double numAdv = 0;
