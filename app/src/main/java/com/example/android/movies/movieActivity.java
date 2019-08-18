@@ -33,6 +33,7 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private int buttonPressed;
     private AdView mAdView;
     private TextView mTitleBar;
-    private static Context mContext;
+    private Context mContext;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -285,20 +286,20 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
 
     private void intiViews() {
-        mFavButtonBackground = (ImageView) findViewById(R.id.button_background);
-        mDate_Rating = (TextView) findViewById(R.id.movie_rating);
-        mSynopsis = (TextView) findViewById(R.id.movie_summary);
-        mReviewSection = (View) findViewById(R.id.include);
-        mFirstReview = (TextView) findViewById(R.id.movie_first_review);
-        mSecondreview = (TextView) findViewById(R.id.movie_second_review);
-        mReviewSeparator = (ImageView) findViewById(R.id.imageBar_seperator);
-        mTrailerBottomBar = (ImageView) findViewById(R.id.imageBar3);
-        mTrailerText = (TextView) findViewById(R.id.textView);
-        mTopImageBar = (ImageView) findViewById(R.id.imageBar1);
-        mToolbarPoster = (ImageView) findViewById(R.id.movie_toolbar_poster);
-        mCollapseLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+        mFavButtonBackground = findViewById(R.id.button_background);
+        mDate_Rating = findViewById(R.id.movie_rating);
+        mSynopsis = findViewById(R.id.movie_summary);
+        mReviewSection = findViewById(R.id.include);
+        mFirstReview = findViewById(R.id.movie_first_review);
+        mSecondreview = findViewById(R.id.movie_second_review);
+        mReviewSeparator = findViewById(R.id.imageBar_seperator);
+        mTrailerBottomBar = findViewById(R.id.imageBar3);
+        mTrailerText = findViewById(R.id.textView);
+        mTopImageBar = findViewById(R.id.imageBar1);
+        mToolbarPoster = findViewById(R.id.movie_toolbar_poster);
+        mCollapseLayout = findViewById(R.id.collapsing_toolbar_layout);
         playerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.movie_Play_First_Trailer);
-        mTitleBar = (TextView) findViewById(R.id.title_bar);
+        mTitleBar = findViewById(R.id.title_bar);
         mAdView = findViewById(R.id.adView);
     }
 
@@ -365,14 +366,16 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     public void onFabClicked(View v) {
-        initiateFAB();
+        initiateFAB(mContext);
     }
 
-    public static void initiateFAB() {
+    public void initiateFAB(Context context) {
         Timber.d("Fav clicked");
 
+        Context bContext = context;
+
         if (MainActivity.getNumFavs() < 10) {
-            Toast.makeText(mContext, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
+            Toast.makeText(bContext, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
         } else {
             String movieIDQuery = "";
             String resultsString = "";
@@ -380,9 +383,9 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             ArrayList<String> result = movieMeProcessor.process();
             Random rand = new Random();
 
-            movieIDQuery = mContext.getString(R.string.API_Search_Part1) + mContext.getString(R.string.API_key) + mContext.getString(R.string.API_Search_Part2)
-                    + (rand.nextInt(10) + 1) + mContext.getString(R.string.API_Search_Part3) + result.get(1) + mContext.getString(R.string.API_Search_Part4) + result.get(0)
-                    + mContext.getString(R.string.API_Search_Part5);
+            movieIDQuery = bContext.getString(R.string.API_Search_Part1) + bContext.getString(R.string.API_key) + bContext.getString(R.string.API_Search_Part2)
+                    + (rand.nextInt(10) + 1) + bContext.getString(R.string.API_Search_Part3) + result.get(1) + bContext.getString(R.string.API_Search_Part4) + result.get(0)
+                    + bContext.getString(R.string.API_Search_Part5);
 
             Timber.d(movieIDQuery);
 
@@ -392,11 +395,11 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            new apiCallButton().execute(testURL);
+            new apiCallButton(this).execute(testURL);
         }
     }
 
-    public static void executeFavButton(String apiResults) {
+    public void executeFavButton(String apiResults) {
         int favCheck = 0;
         Movie movieMe = new Movie();
         Random rand = new Random();
@@ -406,7 +409,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
         if (movieMeResults == null || movieMeResults.size() == 0) {
             Toast.makeText(mContext, mContext.getString(R.string.Something_went_wrong), Toast.LENGTH_SHORT).show();
-            initiateFAB();
+            initiateFAB(mContext);
         } else {
             while (favCheck == 0) {
                 movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
@@ -439,7 +442,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
 
-    public static void reloadActivity(Movie movieMe) {
+    public void reloadActivity(Movie movieMe) {
         Context context = mContext;
         Class destination = movieActivity.class;
 
@@ -487,6 +490,12 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
     public static class apiCallButton extends AsyncTask<URL, Void, String> {
 
+        private WeakReference<movieActivity> mainReference;
+
+        apiCallButton(movieActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
+
         @Override
         protected String doInBackground(URL... urls) {
             URL apiCall = urls[0];
@@ -503,11 +512,13 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
         @Override
         protected void onPostExecute(String apiResults) {
+            movieActivity activity = mainReference.get();
+            if (activity == null || activity.isFinishing()) return;
 
             if (apiResults.length() < 200) {
-                initiateFAB();
+                activity.initiateFAB(activity.mContext);
             } else {
-                executeFavButton(apiResults);
+                activity.executeFavButton(apiResults);
             }
         }
     }
