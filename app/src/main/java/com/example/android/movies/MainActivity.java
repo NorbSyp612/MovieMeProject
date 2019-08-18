@@ -9,12 +9,14 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Timber.plant(new Timber.DebugTree());
 
         Bundle extras = getIntent().getExtras();
+
 
 
         if (extras != null && extras.containsKey(getString(R.string.GoToMovie))) {
@@ -179,13 +182,98 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 favorites = favEntries;
                 movieMeProcessor = new movieMeProcessor(favorites, mContext);
 
+                double numAction = 0;
+                double numAdv = 0;
+                double numComedy = 0;
+                double numHistory = 0;
+                double numHorror = 0;
+                double numDrama = 0;
+                double numFantasy = 0;
+                double numMystery = 0;
+                double numRomance = 0;
+                double numSciFi = 0;
+                double numThriller = 0;
+                double numWestern = 0;
+
+                String probAction = "";
+                double probAdv = 0;
+                double probComedy = 0;
+                double probHistory = 0;
+                double probHorror = 0;
+                double probDrama = 0;
+                double probFantasy = 0;
+                double probMystery = 0;
+                double probRomance = 0;
+                double probScifi = 0;
+                double probThriller = 0;
+                double probWestern = 0;
+
+                double ratingsTotal = 0;
+
                 favMovies.clear();
+
+                ArrayList<String> genres = new ArrayList<>();
+                ArrayList<String> ratings = new ArrayList<>();
 
                 for (FavEntry a : favorites) {
                     Movie addMovie = new Movie();
                     addMovie.setMovieName(a.getName());
                     favMovies.add(addMovie);
+
+                    if (!genres.contains(a.getCategory())) {
+                        genres.add(a.getCategory());
+                    }
+                    ratings.add(a.getRating());
                 }
+
+                for (String b : genres) {
+                    if (b.equals(getString(R.string.Action))) {
+                        numAction++;
+                    } else if (b.equals(getString(R.string.Adventure))) {
+                        numAdv++;
+                    } else if (b.equals(getString(R.string.Comedy))) {
+                        numComedy++;
+                    } else if (b.equals(getString(R.string.History))) {
+                        numHistory++;
+                    } else if (b.equals(getString(R.string.Horror))) {
+                        numHorror++;
+                    } else if (b.equals(getString(R.string.Drama))) {
+                        numDrama++;
+                    } else if (b.equals(getString(R.string.Fantasy))) {
+                        numFantasy++;
+                    } else if (b.equals(getString(R.string.Mystery))) {
+                        numMystery++;
+                    } else if (b.equals(getString(R.string.Romance))) {
+                        numRomance++;
+                    } else if (b.equals(getString(R.string.SciFi))) {
+                        numSciFi++;
+                    } else if (b.equals(getString(R.string.Thriller))) {
+                        numThriller++;
+                    } else if (b.equals(getString(R.string.Western))) {
+                        numWestern++;
+                    }
+                }
+
+                probAction = "" + (numAction / genres.size());
+                probAdv = numAdv / genres.size();
+                probComedy = numComedy / genres.size();
+                probHistory = numHistory / genres.size();
+                probHorror = numHorror / genres.size();
+                probDrama = numDrama / genres.size();
+                probFantasy = numFantasy / genres.size();
+                probMystery = numMystery / genres.size();
+                probRomance = numRomance / genres.size();
+                probScifi = numSciFi / genres.size();
+                probThriller = numThriller / genres.size();
+                probWestern = numWestern / genres.size();
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.putString("PROB_ACTION", probAction);
+
+                editor.apply();
+
 
                 Timber.d("Button click is: %s", buttonClick);
 

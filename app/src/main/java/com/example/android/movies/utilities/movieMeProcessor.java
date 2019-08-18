@@ -1,6 +1,8 @@
 package com.example.android.movies.utilities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.example.android.movies.R;
@@ -101,8 +103,15 @@ public class movieMeProcessor {
             }
         }
 
-        probAction = numAction / genres.size();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+      //  probAction = numAction / genres.size();
+        Log.d("TEST", "First prob action is: " + (numAction / genres.size()));
+        String test = sharedPreferences.getString("PROB_ACTION", "");
+        probAction = Double.parseDouble(test);
+        Log.d("TEST", "Prob action is: " + probAction);
         probAdv = numAdv / genres.size();
+        Log.d("TEST", "Prob adv is: " + probAdv);
         probComedy = numComedy / genres.size();
         probHistory = numHistory / genres.size();
         probHorror = numHorror / genres.size();
