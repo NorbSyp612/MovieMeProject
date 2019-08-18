@@ -4,6 +4,7 @@
     <string name="Top">Top</string>
     <string name="SciFi">SciFi</string>
 
+
     <string name="app_name">Movies</string>
     <string name="API_key_append">api_key=</string>
     <string name="pop_desc">popularity.desc</string>

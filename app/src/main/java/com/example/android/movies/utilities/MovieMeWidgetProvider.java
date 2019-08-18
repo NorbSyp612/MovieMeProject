@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.StrictMode;
@@ -11,21 +12,19 @@ import android.widget.RemoteViews;
 
 import com.example.android.movies.MainActivity;
 import com.example.android.movies.R;
-import com.example.android.movies.movieActivity;
-import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
 import timber.log.Timber;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class MovieMeWidgetProvider extends AppWidgetProvider {
+
+    private static String Service_ID = "test123";
 
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, String movieURL, String movieName, String movieID, int appWidgetId) {
@@ -41,10 +40,10 @@ public class MovieMeWidgetProvider extends AppWidgetProvider {
         Timber.d(movieName);
         views.setImageViewBitmap(R.id.widget_poster, getImageBitmap(imgURL));
 
-     //   Intent intent = new Intent(context, MainActivity.class);
-     //   intent.putExtra(context.getString(R.string.Widget_MovieID), movieID);
-     //   PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-     //   views.setOnClickPendingIntent(R.id.widget_poster, pendingIntent);
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(Service_ID, movieID);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.widget_poster, pendingIntent);
 
 
         // Instruct the widget manager to update the widget
