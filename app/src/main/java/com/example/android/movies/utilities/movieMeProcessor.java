@@ -3,10 +3,8 @@ package com.example.android.movies.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.example.android.movies.R;
-import com.example.android.movies.database.AppDatabase;
 import com.example.android.movies.database.FavEntry;
 
 import java.util.ArrayList;
@@ -32,22 +30,21 @@ public class movieMeProcessor {
     public static ArrayList<String> process() {
 
         ArrayList<String> genres = new ArrayList<>();
-        ArrayList<String> ratings = new ArrayList<>();
+
+        genres.add(context.getString(R.string.Action));
+        genres.add(context.getString(R.string.Adventure));
+        genres.add(context.getString(R.string.Comedy));
+        genres.add(context.getString(R.string.History));
+        genres.add(context.getString(R.string.Horror));
+        genres.add(context.getString(R.string.Drama));
+        genres.add(context.getString(R.string.Fantasy));
+        genres.add(context.getString(R.string.Mystery));
+        genres.add(context.getString(R.string.Romance));
+        genres.add(context.getString(R.string.SciFi));
+        genres.add(context.getString(R.string.Thriller));
+        genres.add(context.getString(R.string.Western));
+
         ArrayList<String> finalGenreAndRating = new ArrayList<>();
-
-
-        double numAction = 0;
-        double numAdv = 0;
-        double numComedy = 0;
-        double numHistory = 0;
-        double numHorror = 0;
-        double numDrama = 0;
-        double numFantasy = 0;
-        double numMystery = 0;
-        double numRomance = 0;
-        double numSciFi = 0;
-        double numThriller = 0;
-        double numWestern = 0;
 
         double probAction = 0;
         double probAdv = 0;
@@ -68,42 +65,7 @@ public class movieMeProcessor {
 
         String finalCategory = "";
 
-        for (FavEntry a : favorites) {
-
-            genres.add(a.getCategory());
-
-            ratings.add(a.getRating());
-        }
-
         HashMap<String, Double> map = new HashMap<>();
-
-        for (String b : genres) {
-            if (b.equals(context.getString(R.string.Action))) {
-                numAction++;
-            } else if (b.equals(context.getString(R.string.Adventure))) {
-                numAdv++;
-            } else if (b.equals(context.getString(R.string.Comedy))) {
-                numComedy++;
-            } else if (b.equals(context.getString(R.string.History))) {
-                numHistory++;
-            } else if (b.equals(context.getString(R.string.Horror))) {
-                numHorror++;
-            } else if (b.equals(context.getString(R.string.Drama))) {
-                numDrama++;
-            } else if (b.equals(context.getString(R.string.Fantasy))) {
-                numFantasy++;
-            } else if (b.equals(context.getString(R.string.Mystery))) {
-                numMystery++;
-            } else if (b.equals(context.getString(R.string.Romance))) {
-                numRomance++;
-            } else if (b.equals(context.getString(R.string.SciFi))) {
-                numSciFi++;
-            } else if (b.equals(context.getString(R.string.Thriller))) {
-                numThriller++;
-            } else if (b.equals(context.getString(R.string.Western))) {
-                numWestern++;
-            }
-        }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -119,23 +81,8 @@ public class movieMeProcessor {
         String Scifi = sharedPreferences.getString(context.getString(R.string.SciFi), "");
         String Thriller = sharedPreferences.getString(context.getString(R.string.Thriller), "");
         String Western = sharedPreferences.getString(context.getString(R.string.Western), "");
-
-        int genreSize = genres.size() - 1;
-
-
-        Timber.d("First prob action is: %s", (numAction / genreSize));
-        Timber.d("First prob adv is: %s", (numAdv / genreSize));
-        Timber.d("First prob comedy is: %s", (numComedy / genreSize));
-        Timber.d("First prob history is: %s", (numHistory / genreSize));
-        Timber.d("First prob horror is: %s", (numHorror / genreSize));
-        Timber.d("First prob drama is: %s", (numDrama / genreSize));
-        Timber.d("First prob fantasy is: %s", (numFantasy / genreSize));
-        Timber.d("First prob mystery is: %s", (numMystery / genreSize));
-        Timber.d("First prob romance is: %s", (numRomance / genreSize));
-        Timber.d("First prob scifi is: %s", (numSciFi / genreSize));
-        Timber.d("First prob thriller is: %s", (numThriller / genreSize));
-        Timber.d("First prob western is: %s", (numWestern / genreSize));
-
+        String returnedRating = sharedPreferences.getString(context.getString(R.string.Return_Ratings), "");
+        Timber.d(returnedRating);
 
         probAction = Double.parseDouble(Action);
         probAdv = Double.parseDouble(Adv);
@@ -193,17 +140,12 @@ public class movieMeProcessor {
             }
         }
 
-        for (String c : ratings) {
-            ratingsTotal = ratingsTotal + Double.parseDouble(c);
-        }
-
-        ratingsTotal = ratingsTotal / ratings.size();
+        ratingsTotal =  Double.parseDouble(returnedRating);
         ratingsTotal = ratingsTotal - (rand.nextDouble() + .25);
 
         if (ratingsTotal > 8.3) {
             ratingsTotal = ratingsTotal - 0.5;
         }
-
 
         String finaRating = "" + ratingsTotal;
 
@@ -218,7 +160,7 @@ public class movieMeProcessor {
         return finalGenreAndRating;
     }
 
-    public static String getGenreId(String genre) {
+    private static String getGenreId(String genre) {
         if (genre.equals(context.getString(R.string.Action))) {
             return context.getString(R.string.Action_ID);
         } else if (genre.equals(context.getString(R.string.Adventure))) {

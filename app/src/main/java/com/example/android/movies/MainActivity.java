@@ -222,7 +222,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     favMovies.add(addMovie);
                     genres.add(a.getCategory());
                     ratings.add(a.getRating());
+                    ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
+
 
                 for (String b : genres) {
                     if (b.equals(getString(R.string.Action))) {
@@ -254,6 +256,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
                 int genreSize = genres.size() + 1;
+                ratingsTotal = ratingsTotal / genreSize;
+                String returnRatings = "" + ratingsTotal;
 
                 probAction = "" + (numAction / genreSize);
                 probAdv = "" + (numAdv / genreSize);
@@ -271,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
+                editor.putString(getString(R.string.Return_Ratings), returnRatings);
                 editor.putString(getString(R.string.Action), probAction);
                 editor.putString(getString(R.string.Adventure), probAdv);
                 editor.putString(getString(R.string.Comedy), probComedy);

@@ -103,4 +103,6 @@
     <string name="SciFi_ID">878</string>
     <string name="Thriller_ID">53</string>
     <string name="Western_ID">37</string>
+
+    <string name="Return_Ratings">ReturnRatings</string>
 </resources>
