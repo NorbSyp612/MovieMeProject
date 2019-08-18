@@ -32,6 +32,9 @@
             </intent-filter>
         </service>
 
+        <service android:name="utilities.movieMeWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7216440919272822~7341034909"/>
