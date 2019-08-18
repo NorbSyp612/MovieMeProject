@@ -1,6 +1,5 @@
 package com.example.android.movies.utilities;
 
-import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,14 +7,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
 
 import com.example.android.movies.Items.Movie;
+import com.example.android.movies.MainActivity;
 import com.example.android.movies.R;
 import com.example.android.movies.database.AppDatabase;
+import com.example.android.movies.database.FavEntry;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,9 +28,8 @@ import timber.log.Timber;
 public class WidgetUpdateService extends JobIntentService {
 
     private static Movie movieMe;
-    private static AppDatabase mdb;
     public static final String ACTION_UPDATE_WIDGET = "com.example.android.movies.update_widget";
-    private static Context mContext;
+    private Context mContext;
     public static final int JOB_ID = 1;
 
     public WidgetUpdateService() {
@@ -38,8 +38,8 @@ public class WidgetUpdateService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-
         final String action = intent.getAction();
+
         if (action.equals(ACTION_UPDATE_WIDGET)) {
             initiate();
         }
@@ -47,10 +47,10 @@ public class WidgetUpdateService extends JobIntentService {
     }
 
     public static void startActionUpdateWidget(Context context) {
-        mContext = context;
+        Timber.uprootAll();
+        Timber.plant(new Timber.DebugTree());
         Intent intent = new Intent(context, WidgetUpdateService.class);
         intent.setAction(ACTION_UPDATE_WIDGET);
-      //  context.startService(intent);
         WidgetUpdateService.enqueueWork(context, intent);
     }
 
@@ -58,46 +58,44 @@ public class WidgetUpdateService extends JobIntentService {
         enqueueWork(context, WidgetUpdateService.class, JOB_ID, work);
     }
 
-    //@Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (action.equals(ACTION_UPDATE_WIDGET)) {
-                initiate();
-            }
-        }
-    }
 
-    private static void finishUpdate() {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(mContext, MovieMeWidgetProvider.class));
+    private static void finishUpdate(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, MovieMeWidgetProvider.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget);
-        MovieMeWidgetProvider.updateWidgets(mContext, appWidgetManager, movieMe.getMovieIdURL(), movieMe.getMovieName(), appWidgetIds);
+        MovieMeWidgetProvider.updateWidgets(context, appWidgetManager, movieMe.getImageURL(), movieMe.getMovieName(), appWidgetIds);
     }
 
 
-    public static void execute(String apiResults) {
-        int favCheck = 0;
+    public void execute(Context context, String apiResults) {
         Random rand = new Random();
 
         ArrayList<Movie> movieMeResults;
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
-        if (movieMeResults == null || movieMeResults.size() < 0) {
-            Timber.d("Uh oh");
+        for (Movie a : movieMeResults) {
+            Timber.d(a.getMovieName());
+        }
+
+        if (movieMeResults == null) {
+            initiate();
         } else {
-            movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size() + 1));
+            movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
             Timber.d(movieMe.getMovieName());
-            WidgetUpdateService.finishUpdate();
+            WidgetUpdateService.finishUpdate(context);
         }
     }
 
 
     public void initiate() {
 
+        AppDatabase mDb = AppDatabase.getInstance(getApplicationContext());
+
+        com.example.android.movies.utilities.movieMeProcessor movieMeProcessor = new movieMeProcessor(mDb.favDao().loadAllFavs().getValue());
+
         String movieIDQuery = "";
 
-        ArrayList<String> result = movieMeProcessor.process();
+        ArrayList<String> result = movieMeProcessor.process(getApplicationContext());
         Random rand = new Random();
 
 
@@ -105,7 +103,6 @@ public class WidgetUpdateService extends JobIntentService {
                 + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
                 + getString(R.string.API_Search_Part5);
 
-        Timber.d(movieIDQuery);
 
         URL testURL = null;
         try {
@@ -113,13 +110,19 @@ public class WidgetUpdateService extends JobIntentService {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        new apiForWidget().execute(testURL);
+        new apiForWidget(this).execute(testURL);
 
         Timber.d(movieIDQuery);
     }
 }
 
 class apiForWidget extends AsyncTask<URL, Void, String> {
+
+    private WeakReference<WidgetUpdateService> mainReference;
+
+    apiForWidget(WidgetUpdateService context) {
+        mainReference = new WeakReference<>(context);
+    }
 
     @Override
     protected String doInBackground(URL... urls) {
@@ -139,8 +142,12 @@ class apiForWidget extends AsyncTask<URL, Void, String> {
 
     @Override
     protected void onPostExecute(String apiResults) {
+
+        WidgetUpdateService service = mainReference.get();
+        if (service == null) return;
+
         if (apiResults != null) {
-            WidgetUpdateService.execute(apiResults);
+            service.execute(service.getApplicationContext(), apiResults);
         }
     }
 }

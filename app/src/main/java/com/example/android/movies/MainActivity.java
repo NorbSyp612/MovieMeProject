@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 Timber.d("onChanged viewModel");
                 favorites = favEntries;
-                movieMeProcessor = new movieMeProcessor(favorites, mContext);
+                movieMeProcessor = new movieMeProcessor(favorites);
 
                 double numAction = 0;
                 double numAdv = 0;
@@ -767,7 +767,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             } else {
                 String movieIDQuery = "";
 
-                ArrayList<String> result = movieMeProcessor.process();
+                ArrayList<String> result = movieMeProcessor.process(context);
                 Timber.d(result.get(0));
                 statusCode = 1;
                 Random rand = new Random();

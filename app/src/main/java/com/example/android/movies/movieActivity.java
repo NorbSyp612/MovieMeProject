@@ -331,7 +331,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             String movieIDQuery = "";
             String resultsString = "";
 
-            ArrayList<String> result = movieMeProcessor.process();
+            ArrayList<String> result = movieMeProcessor.process(context);
             Random rand = new Random();
 
             movieIDQuery = bContext.getString(R.string.API_Search_Part1) + bContext.getString(R.string.API_key) + bContext.getString(R.string.API_Search_Part2)

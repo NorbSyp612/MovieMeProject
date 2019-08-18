@@ -5,10 +5,28 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.StrictMode;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.android.movies.MainActivity;
 import com.example.android.movies.R;
+import com.squareup.picasso.Picasso;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+
+import timber.log.Timber;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
 public class MovieMeWidgetProvider extends AppWidgetProvider {
 
 
@@ -19,12 +37,43 @@ public class MovieMeWidgetProvider extends AppWidgetProvider {
         views = new RemoteViews(context.getPackageName(), R.layout.movieme_widget);
         views.setTextViewText(R.id.widget_movieName, movieName);
 
+        String imgURL = context.getString(R.string.API_IMG_URL_BASE_342) + movieURL;
+        Timber.d(imgURL);
+        Uri uriSting = Uri.parse(imgURL);
+        // views.setImageViewUri(R.id.widget_poster, uriSting);
+        views.setImageViewBitmap(R.id.widget_poster, getImageBitmap(imgURL));
+
+
+
         Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.widget_movieName, pendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_poster, pendingIntent);
+
+
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    private static Bitmap getImageBitmap(String url) {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        Bitmap bm = null;
+        try {
+            URL aURL = new URL(url);
+            URLConnection conn = aURL.openConnection();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
+            bm = BitmapFactory.decodeStream(bis);
+            bis.close();
+            is.close();
+        } catch (IOException e) {
+            Timber.d(e);
+        }
+        return bm;
     }
 
     @Override

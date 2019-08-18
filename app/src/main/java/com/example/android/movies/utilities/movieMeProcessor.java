@@ -19,30 +19,40 @@ public class movieMeProcessor {
 
     private static List<FavEntry> favorites;
     private static Random rand;
-    private static Context context;
 
-    public movieMeProcessor(List<FavEntry> favs, Context appContext) {
+    public movieMeProcessor(List<FavEntry> favs) {
         favorites = favs;
         rand = new Random();
-        context = appContext;
     }
 
-    public static ArrayList<String> process() {
+    public static ArrayList<String> process(Context context) {
 
         ArrayList<String> genres = new ArrayList<>();
 
-        genres.add(context.getString(R.string.Action));
-        genres.add(context.getString(R.string.Adventure));
-        genres.add(context.getString(R.string.Comedy));
-        genres.add(context.getString(R.string.History));
-        genres.add(context.getString(R.string.Horror));
-        genres.add(context.getString(R.string.Drama));
-        genres.add(context.getString(R.string.Fantasy));
-        genres.add(context.getString(R.string.Mystery));
-        genres.add(context.getString(R.string.Romance));
-        genres.add(context.getString(R.string.SciFi));
-        genres.add(context.getString(R.string.Thriller));
-        genres.add(context.getString(R.string.Western));
+        genres.add("Action");
+        genres.add("Adventure");
+        genres.add("Comedy");
+        genres.add("History");
+        genres.add("Horror");
+        genres.add("Drama");
+        genres.add("Fantasy");
+        genres.add("Mystery");
+        genres.add("Romance");
+        genres.add("Science Fiction");
+        genres.add("Thriller");
+        genres.add("Western");
+
+     //   genres.add(context.getString(R.string.Adventure));
+     //   genres.add(context.getString(R.string.Comedy));
+     //   genres.add(context.getString(R.string.History));
+     //   genres.add(context.getString(R.string.Horror));
+     //   genres.add(context.getString(R.string.Drama));
+     //   genres.add(context.getString(R.string.Fantasy));
+     //   genres.add(context.getString(R.string.Mystery));
+     //   genres.add(context.getString(R.string.Romance));
+     //   genres.add(context.getString(R.string.SciFi));
+     //   genres.add(context.getString(R.string.Thriller));
+      //  genres.add(context.getString(R.string.Western));
 
         ArrayList<String> finalGenreAndRating = new ArrayList<>();
 
@@ -149,7 +159,7 @@ public class movieMeProcessor {
 
         String finaRating = "" + ratingsTotal;
 
-        finalCategory = getGenreId(finalCategory);
+        finalCategory = getGenreId(finalCategory, context);
 
         finalGenreAndRating.add(finalCategory);
         finalGenreAndRating.add(finaRating);
@@ -160,7 +170,7 @@ public class movieMeProcessor {
         return finalGenreAndRating;
     }
 
-    private static String getGenreId(String genre) {
+    private static String getGenreId(String genre, Context context) {
         if (genre.equals(context.getString(R.string.Action))) {
             return context.getString(R.string.Action_ID);
         } else if (genre.equals(context.getString(R.string.Adventure))) {

@@ -3,25 +3,25 @@
     android:id="@+id/widget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:background="@color/background">
-
-    <ImageView
-        android:id="@+id/widget_poster"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop" />
+    android:orientation="vertical"
+    android:background="@color/colorAccent">
 
     <TextView
         android:id="@+id/widget_movieName"
-        android:layout_width="wrap_content"
+        android:textColor="@color/color_text_primary"
+        android:textSize="15sp"
+        android:maxLines="2"
+        android:layout_gravity="center_horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/Overview"/>
 
     <ImageView
-        android:id="@+id/widget_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_star_yellow"/>
+        android:id="@+id/widget_poster"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
