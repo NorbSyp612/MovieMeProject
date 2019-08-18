@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private ImageButton imgButtonScifi;
     private ImageButton imgButtonThriller;
     private ImageButton imgButtonWestern;
-    private movieMeProcessor movieMeProcessor;
+    private static movieMeProcessor movieMeProcessor;
     private static Context mContext;
     private static int statusCode;
 
@@ -745,12 +745,16 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
     public void onFabClicked(View v) {
+        initiateFAB();
+    }
+
+    public static void initiateFAB() {
         Timber.d("FAB CLICKED");
 
         if (!movies.isEmpty()) {
 
             if (favMovies.size() < 10) {
-                Toast.makeText(this, getString(R.string.AddFavPls), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, mContext.getString(R.string.AddFavPls), Toast.LENGTH_LONG).show();
             } else {
                 String movieIDQuery = "";
 
@@ -760,9 +764,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 Random rand = new Random();
 
 
-                movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
-                        + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
-                        + getString(R.string.API_Search_Part5);
+                movieIDQuery = mContext.getString(R.string.API_Search_Part1) + mContext.getString(R.string.API_key) + mContext.getString(R.string.API_Search_Part2)
+                        + (rand.nextInt(10) + 1) + mContext.getString(R.string.API_Search_Part3) + result.get(1) + mContext.getString(R.string.API_Search_Part4) + result.get(0)
+                        + mContext.getString(R.string.API_Search_Part5);
 
                 Timber.d(movieIDQuery);
 
@@ -786,11 +790,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Movie movieMe = new Movie();
         Random rand = new Random();
 
+        Log.d("TEST", apiResults);
+
         ArrayList<Movie> movieMeResults;
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
         if (movieMeResults == null || movieMeResults.size() == 0) {
-            Toast.makeText(mContext, mContext.getString(R.string.Something_went_wrong), Toast.LENGTH_SHORT).show();
+            initiateFAB();
         } else {
             while (favCheck == 0) {
                 Log.d("TEST", "SIZE IS: " + movieMeResults.size());

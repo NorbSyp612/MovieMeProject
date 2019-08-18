@@ -365,10 +365,14 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     public void onFabClicked(View v) {
+        initiateFAB();
+    }
+
+    public static void initiateFAB() {
         Timber.d("Fav clicked");
 
         if (MainActivity.getNumFavs() < 10) {
-            Toast.makeText(this, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
         } else {
             String movieIDQuery = "";
             String resultsString = "";
@@ -376,9 +380,9 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             ArrayList<String> result = movieMeProcessor.process();
             Random rand = new Random();
 
-            movieIDQuery = getString(R.string.API_Search_Part1) + getString(R.string.API_key) + getString(R.string.API_Search_Part2)
-                    + (rand.nextInt(10) + 1) + getString(R.string.API_Search_Part3) + result.get(1) + getString(R.string.API_Search_Part4) + result.get(0)
-                    + getString(R.string.API_Search_Part5);
+            movieIDQuery = mContext.getString(R.string.API_Search_Part1) + mContext.getString(R.string.API_key) + mContext.getString(R.string.API_Search_Part2)
+                    + (rand.nextInt(10) + 1) + mContext.getString(R.string.API_Search_Part3) + result.get(1) + mContext.getString(R.string.API_Search_Part4) + result.get(0)
+                    + mContext.getString(R.string.API_Search_Part5);
 
             Timber.d(movieIDQuery);
 
@@ -390,7 +394,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             }
             new apiCallButton().execute(testURL);
         }
-
     }
 
     public static void executeFavButton(String apiResults) {
@@ -403,6 +406,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
         if (movieMeResults == null || movieMeResults.size() == 0) {
             Toast.makeText(mContext, mContext.getString(R.string.Something_went_wrong), Toast.LENGTH_SHORT).show();
+            initiateFAB();
         } else {
             while (favCheck == 0) {
                 movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
@@ -501,7 +505,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         protected void onPostExecute(String apiResults) {
 
             if (apiResults.length() < 200) {
-                Toast.makeText(mContext, mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+                initiateFAB();
             } else {
                 executeFavButton(apiResults);
             }
