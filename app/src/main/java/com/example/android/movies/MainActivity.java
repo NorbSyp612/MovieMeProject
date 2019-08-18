@@ -31,6 +31,7 @@ import com.example.android.movies.utilities.movieMeProcessor;
 import com.example.android.movies.utilities.moviesAdapter;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -74,8 +75,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private ImageButton imgButtonScifi;
     private ImageButton imgButtonThriller;
     private ImageButton imgButtonWestern;
-    private static movieMeProcessor movieMeProcessor;
-    private static Context mContext;
+    private movieMeProcessor movieMeProcessor;
+    private Context mContext;
     private static int statusCode;
 
 
@@ -117,11 +118,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 e.printStackTrace();
             }
 
-            new apiCallFCM().execute(movieURL);
+            new apiCallFCM(this).execute(movieURL);
         }
 
 
-        mContext = this;
+        mContext = getApplicationContext();
 
         imgButtonPop = findViewById(R.id.imageButton_pop);
         imgButtonFav = findViewById(R.id.imageButton_favorites);
@@ -204,9 +205,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 String probFantasy = "";
                 String probMystery = "";
                 String probRomance = "";
-                String probScifi = "";
-                String probThriller = "";
-                String probWestern = "";
+                String probScifi;
+                String probThriller;
+                String probWestern;
 
                 double ratingsTotal = 0;
 
@@ -537,9 +538,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         statusCode = 0;
 
-        movies = new ArrayList();
+        movies = new ArrayList<>();
 
-        String resultsString = "";
         String MoviesCategory = category;
         String sortedBy = "";
 
@@ -592,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             String pageNum = Integer.toString(i);
             URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
             Timber.d("URL: %s", testURL);
-            new apiCall().execute(testURL);
+            new apiCall(this).execute(testURL);
         }
 
     }
@@ -615,37 +615,40 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 e.printStackTrace();
             }
 
-            new apiCallFavs().execute(movieURL);
+            new apiCallFavs(this).execute(movieURL);
         }
 
     }
 
-    public static void executeFCM(Movie firebaseMovie) {
-        Intent goToMovieActivity = new Intent(mContext, movieActivity.class);
+    public static void executeFCM(Movie firebaseMovie, Context context) {
 
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Name), firebaseMovie.getMovieName());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Img_Url), firebaseMovie.getImageURL());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Synopsis), firebaseMovie.getSynopsis());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Rating), firebaseMovie.getUserRating());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Release_Date), firebaseMovie.getReleaseDate());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID_URL), firebaseMovie.getMovieIdURL());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID), firebaseMovie.getId());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Backdrop), firebaseMovie.getBackdropURL());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), firebaseMovie.getGenre());
+        Context cContext = context;
+
+        Intent goToMovieActivity = new Intent(cContext, movieActivity.class);
+
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_Name), firebaseMovie.getMovieName());
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_Img_Url), firebaseMovie.getImageURL());
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_Synopsis), firebaseMovie.getSynopsis());
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_Rating), firebaseMovie.getUserRating());
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_Release_Date), firebaseMovie.getReleaseDate());
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_ID_URL), firebaseMovie.getMovieIdURL());
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_ID), firebaseMovie.getId());
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_Backdrop), firebaseMovie.getBackdropURL());
+        goToMovieActivity.putExtra(cContext.getString(R.string.Movie_Genre), firebaseMovie.getGenre());
 
         String movieID = firebaseMovie.getId();
-        String isFavorite = mContext.getString(R.string.No);
+        String isFavorite = cContext.getString(R.string.No);
 
         for (FavEntry a : favorites) {
             if (a.getId().equals(movieID)) {
-                isFavorite = mContext.getString(R.string.Yes);
+                isFavorite = cContext.getString(R.string.Yes);
                 Timber.d("onListItemClick marking favorite as YES");
             }
         }
 
-        goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), isFavorite);
+        goToMovieActivity.putExtra(cContext.getString(R.string.Is_Fav_Key), isFavorite);
 
-        mContext.startActivity(goToMovieActivity);
+        cContext.startActivity(goToMovieActivity);
     }
 
     public void onListItemClick(int clickedItemIndex) {
@@ -688,11 +691,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
-    public static void goToMovieMeDetail(Movie movieMe, Context context) {
-        mContext = context;
+    public void goToMovieMeDetail(Movie movieMe) {
         Class destination = movieActivity.class;
 
-        final Intent goToMovieActivity = new Intent(context, destination);
+        final Intent goToMovieActivity = new Intent(mContext, destination);
 
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Name), movieMe.getMovieName());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Img_Url), movieMe.getImageURL());
@@ -745,16 +747,18 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
     public void onFabClicked(View v) {
-        initiateFAB();
+        initiateFAB(mContext);
     }
 
-    public static void initiateFAB() {
+    public void initiateFAB(Context context) {
         Timber.d("FAB CLICKED");
+
+        Context bContext = context;
 
         if (!movies.isEmpty()) {
 
             if (favMovies.size() < 10) {
-                Toast.makeText(mContext, mContext.getString(R.string.AddFavPls), Toast.LENGTH_LONG).show();
+                Toast.makeText(bContext, bContext.getString(R.string.AddFavPls), Toast.LENGTH_LONG).show();
             } else {
                 String movieIDQuery = "";
 
@@ -764,9 +768,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 Random rand = new Random();
 
 
-                movieIDQuery = mContext.getString(R.string.API_Search_Part1) + mContext.getString(R.string.API_key) + mContext.getString(R.string.API_Search_Part2)
-                        + (rand.nextInt(10) + 1) + mContext.getString(R.string.API_Search_Part3) + result.get(1) + mContext.getString(R.string.API_Search_Part4) + result.get(0)
-                        + mContext.getString(R.string.API_Search_Part5);
+                movieIDQuery = bContext.getString(R.string.API_Search_Part1) + bContext.getString(R.string.API_key) + bContext.getString(R.string.API_Search_Part2)
+                        + (rand.nextInt(10) + 1) + bContext.getString(R.string.API_Search_Part3) + result.get(1) + bContext.getString(R.string.API_Search_Part4) + result.get(0)
+                        + bContext.getString(R.string.API_Search_Part5);
 
                 Timber.d(movieIDQuery);
 
@@ -776,7 +780,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
-                new apiCallButton().execute(testURL);
+                new apiCallButton(this).execute(testURL);
 
                 Timber.d(movieIDQuery);
             }
@@ -785,21 +789,19 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
-    public static void executeFavButton(String apiResults) {
+    public void executeFavButton(String apiResults) {
         int favCheck = 0;
         Movie movieMe = new Movie();
         Random rand = new Random();
 
-        Log.d("TEST", apiResults);
 
         ArrayList<Movie> movieMeResults;
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
         if (movieMeResults == null || movieMeResults.size() == 0) {
-            initiateFAB();
+            initiateFAB(mContext);
         } else {
             while (favCheck == 0) {
-                Log.d("TEST", "SIZE IS: " + movieMeResults.size());
                 movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 
                 favCheck = 1;
@@ -824,7 +826,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
 
             if (movieMe.getMovieName() != null) {
-                goToMovieMeDetail(movieMe, mContext);
+                goToMovieMeDetail(movieMe);
             }
         }
     }
@@ -857,6 +859,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public static class apiCallButton extends AsyncTask<URL, Void, String> {
 
+        private WeakReference<MainActivity> mainReference;
+
+        apiCallButton(MainActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
+
         @Override
         protected String doInBackground(URL... urls) {
             Timber.d("doing in background");
@@ -876,18 +884,22 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         @Override
         protected void onPostExecute(String apiResults) {
             if (apiResults != null) {
-                executeFavButton(apiResults);
-            } else if (apiResults.length() < 100) {
-                Toast.makeText(mContext, mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
-            } else {
-                Timber.d("EMPTY");
-                Toast.makeText(mContext, mContext.getString(R.string.tmDB_not_responding), Toast.LENGTH_SHORT).show();
+                MainActivity activity = mainReference.get();
+                if (activity == null || activity.isFinishing()) return;
+
+                activity.executeFavButton(apiResults);
             }
         }
     }
 
 
     public static class apiCall extends AsyncTask<URL, Void, String> {
+
+        private WeakReference<MainActivity> mainReference;
+
+        apiCall(MainActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
 
         @Override
         protected String doInBackground(URL... urls) {
@@ -908,8 +920,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         @Override
         protected void onPostExecute(String apiResults) {
 
+            MainActivity activity = mainReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
             if (apiResults == null) {
-                Toast.makeText(mContext, mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
             }
 
             ArrayList<Movie> moviesAdd;
@@ -920,7 +935,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 for (FavEntry a : favorites) {
                     if (a.getName().equals(movie.getMovieName())) {
                         Timber.d("YES");
-                        movie.setFav(mContext.getString(R.string.Yes));
+                        movie.setFav(activity.mContext.getString(R.string.Yes));
                     }
                 }
                 movies.add(movie);
@@ -936,6 +951,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public static class apiCallFCM extends AsyncTask<URL, Void, String> {
 
+        private WeakReference<MainActivity> mainReference;
+
+        apiCallFCM(MainActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
+
         @Override
         protected String doInBackground(URL... urls) {
             Timber.d("doing in background");
@@ -955,12 +976,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         @Override
         protected void onPostExecute(String apiResults) {
 
+            MainActivity activity = mainReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
             Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
-            MainActivity.executeFCM(addMovie);
+            MainActivity.executeFCM(addMovie, activity.mContext);
         }
     }
 
     public static class apiCallFavs extends AsyncTask<URL, Void, String> {
+
+        private WeakReference<MainActivity> mainReference;
+
+        apiCallFavs(MainActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
 
         @Override
         protected String doInBackground(URL... urls) {
@@ -984,7 +1014,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
 
             if (addMovie != null) {
-                addMovie.setFav(mContext.getString(R.string.Yes));
+
+                MainActivity activity = mainReference.get();
+                if (activity == null || activity.isFinishing()) return;
+
+                addMovie.setFav(activity.mContext.getString(R.string.Yes));
                 movies.add(addMovie);
                 Timber.d("movies size is: %s", movies.size());
                 Timber.d("fav movies size is: %s", favMovies.size());
