@@ -4,16 +4,14 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.StrictMode;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.android.movies.MainActivity;
 import com.example.android.movies.R;
+import com.example.android.movies.movieActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
@@ -30,7 +28,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 public class MovieMeWidgetProvider extends AppWidgetProvider {
 
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, String movieURL, String movieName, int appWidgetId) {
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, String movieURL, String movieName, String movieID, int appWidgetId) {
 
         RemoteViews views;
 
@@ -39,16 +37,14 @@ public class MovieMeWidgetProvider extends AppWidgetProvider {
 
         String imgURL = context.getString(R.string.API_IMG_URL_BASE_342) + movieURL;
         Timber.d(imgURL);
-        Uri uriSting = Uri.parse(imgURL);
-        // views.setImageViewUri(R.id.widget_poster, uriSting);
+        Timber.d(movieID);
+        Timber.d(movieName);
         views.setImageViewBitmap(R.id.widget_poster, getImageBitmap(imgURL));
 
-
-
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.widget_poster, pendingIntent);
-
+     //   Intent intent = new Intent(context, MainActivity.class);
+     //   intent.putExtra(context.getString(R.string.Widget_MovieID), movieID);
+     //   PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+     //   views.setOnClickPendingIntent(R.id.widget_poster, pendingIntent);
 
 
         // Instruct the widget manager to update the widget
@@ -82,9 +78,9 @@ public class MovieMeWidgetProvider extends AppWidgetProvider {
         WidgetUpdateService.startActionUpdateWidget(context);
     }
 
-    public static void updateWidgets(Context context, AppWidgetManager appWidgetManager, String movieURL, String movieName, int[] appWidgetIds) {
+    public static void updateWidgets(Context context, AppWidgetManager appWidgetManager, String movieURL, String movieName, String movieID, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, movieURL, movieName, appWidgetId);
+            updateAppWidget(context, appWidgetManager, movieURL, movieName, movieID, appWidgetId);
         }
     }
 

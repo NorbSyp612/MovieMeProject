@@ -63,7 +63,7 @@ public class WidgetUpdateService extends JobIntentService {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, MovieMeWidgetProvider.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget);
-        MovieMeWidgetProvider.updateWidgets(context, appWidgetManager, movieMe.getImageURL(), movieMe.getMovieName(), appWidgetIds);
+        MovieMeWidgetProvider.updateWidgets(context, appWidgetManager, movieMe.getImageURL(), movieMe.getMovieName(), movieMe.getId(), appWidgetIds);
     }
 
 

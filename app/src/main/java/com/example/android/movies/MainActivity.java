@@ -87,8 +87,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         Timber.plant(new Timber.DebugTree());
 
-        Bundle extras = getIntent().getExtras();
+        Intent test = getIntent();
+        if (test != null && test.getStringExtra(getString(R.string.Widget_MovieID)) != null) {
+            Log.d("MovieMeWi", "in main:" +  test.getStringExtra(getString(R.string.Widget_MovieID)));
 
+        }
+
+        Bundle extras = getIntent().getExtras();
 
         if (extras != null && extras.containsKey(getString(R.string.GoToMovie))) {
 
@@ -109,7 +114,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             goToMovieActivity.putExtra(context.getString(R.string.Is_Fav_Key), context.getString(R.string.No));
             startActivity(goToMovieActivity);
         } else if (extras != null && extras.containsKey(getString(R.string.ID))) {
-            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + extras.get(getString(R.string.ID)) + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
+            Timber.d("FCM movie id is: %s", extras.getString(getString(R.string.ID)));
+            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + extras.getString(getString(R.string.ID)) + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
             URL movieURL = null;
             try {
@@ -117,9 +123,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-
             new apiCallFCM(this).execute(movieURL);
         }
+
+        extras = null;
 
 
         mContext = getApplicationContext();
@@ -270,7 +277,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 probRomance = "" + (numRomance / genreSize);
                 probScifi = "" + (numSciFi / genreSize);
                 probThriller = "" + (numThriller / genreSize);
-                probWestern = "" + (numWestern / genreSize);;
+                probWestern = "" + (numWestern / genreSize);
+                ;
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -944,7 +952,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
                 movies.add(movie);
-                Timber.d("movies size is: %s", movies.size());
+             //   Timber.d("movies size is: %s", movies.size());
             }
 
             if (movies.size() > 99) {
@@ -1025,8 +1033,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 addMovie.setFav(activity.mContext.getString(R.string.Yes));
                 movies.add(addMovie);
-                Timber.d("movies size is: %s", movies.size());
-                Timber.d("fav movies size is: %s", favMovies.size());
+            //    Timber.d("movies size is: %s", movies.size());
+            //    Timber.d("fav movies size is: %s", favMovies.size());
             }
 
             if (movies.size() == favMovies.size()) {
