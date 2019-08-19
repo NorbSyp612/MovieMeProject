@@ -31,6 +31,7 @@ public class MovieMeWidgetProvider extends AppWidgetProvider {
         views = new RemoteViews(context.getPackageName(), R.layout.movieme_widget);
         views.setTextViewText(R.id.widget_movieName, movieName);
 
+
         String imgURL = context.getString(R.string.API_IMG_URL_BASE_342) + movieURL;
         Timber.d(imgURL);
         Timber.d(movieID);

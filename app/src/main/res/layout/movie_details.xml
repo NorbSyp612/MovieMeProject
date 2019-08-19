@@ -51,6 +51,7 @@
             app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
         <ImageView
+            android:contentDescription="@string/Fav_Button"
             android:id="@+id/button_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,6 +64,7 @@
             app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
         <ImageButton
+            android:contentDescription="@string/Fav_Button"
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,6 +107,7 @@
 
 
         <ImageView
+            android:contentDescription="@string/Sec_Sep"
             android:id="@+id/imageBar1"
             android:layout_width="325dp"
             android:layout_height="2dp"
@@ -148,6 +151,7 @@
 
 
         <ImageView
+            android:contentDescription="@string/Sec_Sep"
             android:id="@+id/imageBar3"
             android:layout_width="325dp"
             android:layout_height="2dp"

@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         setContentView(R.layout.activity_main);
 
         Timber.plant(new Timber.DebugTree());
+
 
       //  Intent test = getIntent();
      //   if (test != null && test.getStringExtra("test123") != null) {
@@ -168,8 +170,17 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         statusCode = 0;
 
 
+        int orientation = getResources().getConfiguration().orientation;
+        int spanCount = 2;
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            spanCount = 4;
+        } else {
+            spanCount = 2;
+        }
+
         moviesGrid = findViewById(R.id.movie_items);
-        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
         moviesGrid.setLayoutManager(layoutManager);
         mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
 

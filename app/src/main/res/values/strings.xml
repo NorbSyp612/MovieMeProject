@@ -4,7 +4,6 @@
     <string name="Top">Top</string>
     <string name="SciFi">SciFi</string>
 
-
     <string name="app_name">Movies</string>
     <string name="API_key_append">api_key=</string>
     <string name="pop_desc">popularity.desc</string>
@@ -106,4 +105,6 @@
 
     <string name="Return_Ratings">ReturnRatings</string>
     <string name="Widget_MovieID">WidgetMovieID</string>
+    <string name="Fav_Button">Favorite Button</string>
+    <string name="Sec_Sep">Section Separator</string>
 </resources>

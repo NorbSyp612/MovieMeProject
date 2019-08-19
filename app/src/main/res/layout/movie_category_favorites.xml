@@ -6,6 +6,7 @@
     android:background="@color/colorPrimaryLight">
 
     <ImageButton
+        android:contentDescription="@string/Favorites"
         android:id="@+id/imageButton_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

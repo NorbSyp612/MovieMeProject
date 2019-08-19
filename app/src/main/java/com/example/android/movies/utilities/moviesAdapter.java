@@ -144,6 +144,7 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
                     star_yellow.setVisibility(View.VISIBLE);
                 }
 
+                movieItemView.setContentDescription(test.getMovieName());
                 Picasso.with(context).load(imgURL).into(movieItemView);
             }
         }
