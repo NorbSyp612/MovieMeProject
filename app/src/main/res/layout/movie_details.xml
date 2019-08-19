@@ -101,9 +101,9 @@
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
             android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Overview"
-            tools:text="Summary of new movie. Chappie is a robot who does robotic things in a robotic world. Here's a bit more text to make it three lines." />
+            tools:text="Summary of new movie." />
 
 
         <ImageView

@@ -38,6 +38,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:contentDescription="@string/Sec_Sep"
         android:id="@+id/imageBar_seperator"
         android:layout_width="325dp"
         android:layout_height="1dp"
