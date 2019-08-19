@@ -29,8 +29,8 @@ public class WidgetUpdateService extends JobIntentService {
 
     private static Movie movieMe;
     public static final String ACTION_UPDATE_WIDGET = "com.example.android.movies.update_widget";
-    private Context mContext;
     public static final int JOB_ID = 1;
+    private Intent mIntent;
 
     public WidgetUpdateService() {
 
@@ -56,6 +56,7 @@ public class WidgetUpdateService extends JobIntentService {
 
     public static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, WidgetUpdateService.class, JOB_ID, work);
+
     }
 
 
@@ -81,7 +82,6 @@ public class WidgetUpdateService extends JobIntentService {
             initiate();
         } else {
             movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
-            Timber.d(movieMe.getMovieName());
             WidgetUpdateService.finishUpdate(context);
         }
     }
@@ -119,9 +119,15 @@ public class WidgetUpdateService extends JobIntentService {
 class apiForWidget extends AsyncTask<URL, Void, String> {
 
     private WeakReference<WidgetUpdateService> mainReference;
+    WidgetUpdateService service;
 
     apiForWidget(WidgetUpdateService context) {
         mainReference = new WeakReference<>(context);
+        service = mainReference.get();
+
+        if (service == null) {
+            Timber.d("Null 1");
+        }
     }
 
     @Override
@@ -137,14 +143,21 @@ class apiForWidget extends AsyncTask<URL, Void, String> {
             e.printStackTrace();
         }
 
+        Timber.d(apiResult);
+        service = mainReference.get();
+        if (service == null) {
+            Timber.d("Null 2");
+        }
+
         return apiResult;
     }
 
     @Override
     protected void onPostExecute(String apiResults) {
 
-        WidgetUpdateService service = mainReference.get();
+        service = mainReference.get();
         if (service == null) return;
+
 
         if (apiResults != null) {
             service.execute(service.getApplicationContext(), apiResults);

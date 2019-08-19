@@ -87,19 +87,19 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         Timber.plant(new Timber.DebugTree());
 
-        Intent test = getIntent();
-        if (test != null && test.getStringExtra("test123") != null) {
-            Log.d("Test123", "Hello");
-            String movieIDQuery = getString(R.string.API_Query_Fav_Base) + test.getStringExtra("test123") + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
+      //  Intent test = getIntent();
+     //   if (test != null && test.getStringExtra("test123") != null) {
+     //       Log.d("Test123", "Hello");
+     //       String movieIDQuery = getString(R.string.API_Query_Fav_Base) + test.getStringExtra("test123") + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
-            URL movieURL = null;
-            try {
-                movieURL = new URL(movieIDQuery);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            new apiCallFCM(this).execute(movieURL);
-        }
+     //       URL movieURL = null;
+     //       try {
+     //           movieURL = new URL(movieIDQuery);
+      //      } catch (MalformedURLException e) {
+      //          e.printStackTrace();
+     //       }
+     //       new apiCallFCM(this).execute(movieURL);
+     //   }
 
         Bundle extras = getIntent().getExtras();
 

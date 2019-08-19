@@ -24,9 +24,6 @@ import timber.log.Timber;
 
 public class MovieMeWidgetProvider extends AppWidgetProvider {
 
-    private static String Service_ID = "test123";
-
-
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, String movieURL, String movieName, String movieID, int appWidgetId) {
 
         RemoteViews views;
@@ -40,10 +37,10 @@ public class MovieMeWidgetProvider extends AppWidgetProvider {
         Timber.d(movieName);
         views.setImageViewBitmap(R.id.widget_poster, getImageBitmap(imgURL));
 
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(Service_ID, movieID);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_poster, pendingIntent);
+       // Intent intent = new Intent(context, MainActivity.class);
+       // intent.putExtra(Service_ID, movieID);
+       // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+       // views.setOnClickPendingIntent(R.id.widget_poster, pendingIntent);
 
 
         // Instruct the widget manager to update the widget
