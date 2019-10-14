@@ -6,6 +6,7 @@
     android:background="@color/colorPrimaryLight">
 
     <ImageButton
+        android:contentDescription="@string/Romance"
         android:id="@+id/imageButton_romance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

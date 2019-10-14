@@ -6,6 +6,7 @@
     android:background="@color/colorPrimaryLight">
 
     <ImageButton
+        android:contentDescription="@string/History"
         android:id="@+id/imageButton_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

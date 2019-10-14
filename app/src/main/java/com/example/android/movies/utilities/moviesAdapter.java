@@ -128,6 +128,7 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
             if (!movies.isEmpty()) {
                 String imgURL = context.getString(R.string.API_Img_URL_185) + movies.get(listIndex).getImageURL();
+                Timber.d(imgURL);
 
                 Movie test = movies.get(listIndex);
 
@@ -144,7 +145,10 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
                     star_yellow.setVisibility(View.VISIBLE);
                 }
 
-                Picasso.with(context).load(imgURL).into(movieItemView);
+                movieItemView.setContentDescription(test.getMovieName());
+                Picasso.get()
+                        .load(imgURL)
+                        .into(movieItemView);
             }
         }
     }

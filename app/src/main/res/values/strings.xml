@@ -66,8 +66,8 @@
     <string name="Movie_ID_URL">MovieIdURL</string>
     <string name="Movie_ID">MovieID</string>
 
-    <string name="API_Img_URL_185">http://image.tmdb.org/t/p/w185//</string>
-    <string name="API_IMG_URL_BASE_342">http://image.tmdb.org/t/p/w342//</string>
+    <string name="API_Img_URL_185">https://image.tmdb.org/t/p/w185//</string>
+    <string name="API_IMG_URL_BASE_342">https://image.tmdb.org/t/p/w342//</string>
     <string name="JSON_Title">title</string>
     <string name="Youtube_Base_URL">https://www.youtube.com/watch?v=</string>
     <string name="Min">min</string>
@@ -104,4 +104,9 @@
     <string name="SciFi_ID">878</string>
     <string name="Thriller_ID">53</string>
     <string name="Western_ID">37</string>
+
+    <string name="Return_Ratings">ReturnRatings</string>
+    <string name="Widget_MovieID">WidgetMovieID</string>
+    <string name="Fav_Button">Favorite Button</string>
+    <string name="Sec_Sep">Section Separator</string>
 </resources>

@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:contentDescription="@string/Action"
         android:id="@+id/movie_item"
         android:layout_width="0dp"
         android:layout_height="350dp"
@@ -16,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:contentDescription="@string/Fav_Button"
         android:id="@+id/star_background_white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,6 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:contentDescription="@string/Fav_Button"
         android:id="@+id/star_background_yellow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,12 +39,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
+        android:contentDescription="@string/Fav_Button"
         android:id="@+id/star_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
-        android:onClick="starClick"
         android:background="@null"
         android:src="@drawable/ic_star_border_black_24dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -2,17 +2,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
-    <item
-        android:id="@+id/sort_pop"
-        android:orderInCategory="1"
-        android:title="Most Popular"/>
-    <item
-        android:id="@+id/sort_rated"
-        android:orderInCategory="2"
-        android:title="Top Rated"/>
-    <item
-        android:id="@+id/sort_favorites"
-        android:orderInCategory="3"
-        android:title="Favorites"/>
-
 </menu>
