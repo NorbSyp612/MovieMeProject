@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -91,19 +92,19 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Timber.plant(new Timber.DebugTree());
 
 
-      //  Intent test = getIntent();
-     //   if (test != null && test.getStringExtra("test123") != null) {
-     //       Log.d("Test123", "Hello");
-     //       String movieIDQuery = getString(R.string.API_Query_Fav_Base) + test.getStringExtra("test123") + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
+        //  Intent test = getIntent();
+        //   if (test != null && test.getStringExtra("test123") != null) {
+        //       Log.d("Test123", "Hello");
+        //       String movieIDQuery = getString(R.string.API_Query_Fav_Base) + test.getStringExtra("test123") + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
-     //       URL movieURL = null;
-     //       try {
-     //           movieURL = new URL(movieIDQuery);
-      //      } catch (MalformedURLException e) {
-      //          e.printStackTrace();
-     //       }
-     //       new apiCallFCM(this).execute(movieURL);
-     //   }
+        //       URL movieURL = null;
+        //       try {
+        //           movieURL = new URL(movieIDQuery);
+        //      } catch (MalformedURLException e) {
+        //          e.printStackTrace();
+        //       }
+        //       new apiCallFCM(this).execute(movieURL);
+        //   }
 
         Bundle extras = getIntent().getExtras();
 
@@ -189,6 +190,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         moviesGrid.setAdapter(mAdapter);
         moviesGrid.setHasFixedSize(true);
         mDb = AppDatabase.getInstance(getApplicationContext());
+
+        moviesGrid.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+            }
+        });
 
         setupViewModel();
 
@@ -793,8 +801,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (!movies.isEmpty()) {
 
-            if (favMovies.size() < 10) {
-                Toast.makeText(bContext, bContext.getString(R.string.AddFavPls), Toast.LENGTH_LONG).show();
+
+            if (favMovies.isEmpty()) {
+                Toast.makeText(bContext, bContext.getString(R.string.AddFavPls), Toast.LENGTH_SHORT).show();
+            } else if (favMovies.size() < 10) {
+                Toast.makeText(bContext, bContext.getString(R.string.AddMoreThanTen), Toast.LENGTH_SHORT).show();
             } else {
                 String movieIDQuery = "";
 
@@ -975,7 +986,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
                 movies.add(movie);
-             //   Timber.d("movies size is: %s", movies.size());
+                //   Timber.d("movies size is: %s", movies.size());
             }
 
             if (movies.size() > 99) {
@@ -1056,8 +1067,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 addMovie.setFav(activity.mContext.getString(R.string.Yes));
                 movies.add(addMovie);
-            //    Timber.d("movies size is: %s", movies.size());
-            //    Timber.d("fav movies size is: %s", favMovies.size());
+                //    Timber.d("movies size is: %s", movies.size());
+                //    Timber.d("fav movies size is: %s", favMovies.size());
             }
 
             if (movies.size() == favMovies.size()) {

@@ -88,6 +88,7 @@
     <string name="Out_of_ten"> /10</string>
     <string name="GoToMovie">GoToMovie</string>
     <string name="AddFavPls">Add a favorite movie first!</string>
+    <string name="AddMoreThanTen">Add at least 10 favorites!</string>
     <string name="Something_went_wrong">Something went wrong</string>
     <string name="Error_Try_Again">Error. Please try again</string>
     <string name="tmDB_not_responding">The movie database is not responding.</string>

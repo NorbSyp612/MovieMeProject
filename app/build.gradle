@@ -10,11 +10,11 @@ android {
         }
     }
 
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.example.android.movies"
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion 23
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,6 +41,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-ads:18.2.0"
     implementation "com.google.firebase:firebase-messaging:20.0.0"
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
 
     annotationProcessor 'androidx.room:room-compiler:2.2.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.1.0'
