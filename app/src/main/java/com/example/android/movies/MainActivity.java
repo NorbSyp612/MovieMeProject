@@ -208,10 +208,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if(!recyclerView.canScrollVertically(1))
-
-                {
-                    Toast.makeText(mContext,"Reached the Bottom", Toast.LENGTH_SHORT).show();;
+                if (!recyclerView.canScrollVertically(1)) {
+                    Toast.makeText(mContext, "Reached the Bottom", Toast.LENGTH_SHORT).show();
+                    moviesGrid.setHasFixedSize(false);
+                    mAdapter.setNumberMovies(200);
+                    setMoviesExtra(current_Category);
                 }
             }
 
@@ -599,6 +600,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         populateUI(getString(R.string.Western));
     }
 
+    public void setMoviesExtra(String category) {
+        resumeCode = 2;
+
+        swipeLayout.setRefreshing(true);
+
+        String sortedBy = getString(R.string.API_Query_TopRated_Desc);
+
+        for (int i = 6; i < 11; i++) {
+            String pageNum = Integer.toString(i);
+            URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
+            Timber.d("URL: %s", testURL);
+            new apiCallExtra(this).execute(testURL);
+        }
+    }
+
     public void setMoviesFromCategory(String category) {
 
         statusCode = 0;
@@ -921,6 +937,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         swipeLayout.setRefreshing(false);
     }
 
+    public static void executeExtra() {
+        Timber.d("is empty: %s", favMovies.isEmpty());
+        asyncCount = 0;
+        Timber.d("success");
+        Timber.d("Movie 200 is: %s", movies.get(199).getMovieName());
+        mAdapter.addMovies(movies);
+        swipeLayout.setRefreshing(false);
+    }
+
     public static int getNumFavs() {
         return favMovies.size();
     }
@@ -1016,6 +1041,62 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             if (movies.size() > 99) {
                 MainActivity.execute();
+            }
+
+        }
+    }
+
+    public static class apiCallExtra extends AsyncTask<URL, Void, String> {
+
+        private WeakReference<MainActivity> mainReference;
+
+        apiCallExtra(MainActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            Timber.d("doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+            MainActivity activity = mainReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            if (apiResults == null) {
+                Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+            }
+
+            ArrayList<Movie> moviesAdd;
+            moviesAdd = JsonUtils.parseApiResult(apiResults);
+
+            for (Movie movie : moviesAdd) {
+
+                for (FavEntry a : favorites) {
+                    if (a.getName().equals(movie.getMovieName())) {
+                        Timber.d("YES");
+                        movie.setFav(activity.mContext.getString(R.string.Yes));
+                    }
+                }
+                movies.add(movie);
+                //   Timber.d("movies size is: %s", movies.size());
+            }
+
+            if (movies.size() > 199) {
+                MainActivity.executeExtra();
             }
 
         }

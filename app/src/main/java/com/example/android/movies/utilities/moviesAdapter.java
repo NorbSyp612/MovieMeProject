@@ -60,6 +60,15 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         movies = moviesArray;
     }
 
+    public void addMovies(ArrayList<Movie> newMoviesArray) {
+        Timber.d("Movie 1 is: %s", newMoviesArray.get(0).getMovieName());
+        Timber.d("Movie 101 is: %s", newMoviesArray.get(100).getMovieName());
+
+        for (int i = 100; i < 201; i++) {
+            movies.add(newMoviesArray.get(i));
+        }
+    }
+
 
     @Override
     public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
