@@ -84,22 +84,30 @@
 
     </HorizontalScrollView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movie_items"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+
         android:layout_marginTop="115dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/movie_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/refresh_fab"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        android:contentDescription="@string/app_name"
-        android:layout_gravity="bottom|end"
         android:background="@color/colorAccent"
+        android:contentDescription="@string/app_name"
         android:elevation="6dp"
         android:onClick="onFabClicked"
         android:stateListAnimator="@animator/fab_state_list_anim"

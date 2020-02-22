@@ -15,6 +15,7 @@ import android.os.Bundle;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private static ArrayList<Movie> favMovies = new ArrayList<>();
     private static RecyclerView moviesGrid;
     private static moviesAdapter mAdapter;
+    private static SwipeRefreshLayout swipeLayout;
     private static final int NUM_LIST_MOVIES = 100;
     private String isFavorite;
     private AppDatabase mDb;
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private String movieID;
     private String INSTANCE_RESUME_CODE = "RESUME_CODE";
     private String INSTANCE_VIEW_POSITION_CODE = "POSITION CODE";
+    private static String INSTANCE_CATEGORY;
+    private static String current_Category;
     private static int viewHolderPosition;
     private static int NUM_LIST_MOVIES_FAVORITES;
     private String favorite;
@@ -80,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private ImageButton imgButtonThriller;
     private ImageButton imgButtonWestern;
     private movieMeProcessor movieMeProcessor;
+
     private Context mContext;
     private static int statusCode;
 
@@ -159,7 +164,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         imgButtonScifi = findViewById(R.id.imageButton_scifi);
         imgButtonThriller = findViewById(R.id.imageButton_thriller);
         imgButtonWestern = findViewById(R.id.imageButton_western);
+        swipeLayout = findViewById(R.id.swipe_container);
 
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateUI(current_Category);
+            }
+        });
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
@@ -425,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void populateUI(String category) {
-
+        current_Category = category;
         if (category.equals(getString(R.string.Most_Popular))) {
             setMoviesFromCategory(getString(R.string.Most_Popular));
             setTitle(getString(R.string.Most_Popular));
@@ -479,6 +491,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void populateUIFavorites() {
         asyncCount = 0;
+        current_Category = getString(R.string.Favorites);
 
         setMoviesFavorites();
         setCategoryButtonsColor();
@@ -884,6 +897,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mAdapter.setMovies(movies);
         moviesGrid.setAdapter(mAdapter);
         scrollToPosition();
+        swipeLayout.setRefreshing(false);
     }
 
 
@@ -894,6 +908,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mAdapter.setMovies(movies);
         moviesGrid.setAdapter(mAdapter);
         scrollToPosition();
+        swipeLayout.setRefreshing(false);
     }
 
     public static int getNumFavs() {
