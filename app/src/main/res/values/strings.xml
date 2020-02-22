@@ -30,8 +30,8 @@
     <string name="Thriller">Thriller</string>
     <string name="Western">Western</string>
 
-    <string name="API_Query_TopRated_Desc">https://api.themoviedb.org/3/movie/top_rated?api_key=cf302f54886739895a2c28626d65e40d</string>
-    <string name="API_Query_MostPop">https://api.themoviedb.org/3/movie/popular?api_key=cf302f54886739895a2c28626d65e40d</string>
+    <string name="API_Query_TopRated_Desc">https://api.themoviedb.org/3/movie/top_rated?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false</string>
+    <string name="API_Query_MostPop">https://api.themoviedb.org/3/movie/popular?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;vote_average.gte=3</string>
     <string name="API_Query_Genre_Action">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=28</string>
     <string name="API_Query_Genre_Adventure">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=12</string>
     <string name="API_Query_Genre_History">https://api.themoviedb.org/3/discover/movie?api_key=cf302f54886739895a2c28626d65e40d&amp;language=en-US&amp;sort_by=popularity.desc&amp;include_adult=false&amp;include_video=false&amp;page=1&amp;with_genres=36</string>

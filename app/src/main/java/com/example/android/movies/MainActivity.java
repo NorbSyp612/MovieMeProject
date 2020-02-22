@@ -36,6 +36,7 @@ import com.example.android.movies.utilities.moviesAdapter;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private static moviesAdapter mAdapter;
     private static SwipeRefreshLayout swipeLayout;
     private static final int NUM_LIST_MOVIES = 100;
+    private static int currentMovieSizeTest;
     private String isFavorite;
     private AppDatabase mDb;
     static List<FavEntry> favorites;
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private ImageButton imgButtonThriller;
     private ImageButton imgButtonWestern;
     private movieMeProcessor movieMeProcessor;
+    private int ExtraCounter;
 
     private Context mContext;
     private static int statusCode;
@@ -196,6 +199,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             spanCount = 2;
         }
 
+        ExtraCounter = 1;
+
         moviesGrid = findViewById(R.id.movie_items);
         GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
         moviesGrid.setLayoutManager(layoutManager);
@@ -211,8 +216,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1)) {
                     Toast.makeText(mContext, "Reached the Bottom", Toast.LENGTH_SHORT).show();
                     moviesGrid.setHasFixedSize(false);
+                    currentMovieSizeTest = movies.size() + 99;
                     mAdapter.setNumberMovies(movies.size() + 100);
                     setMoviesExtra(current_Category);
+                    Log.d("TEST", "Movie size before everything " + movies.size());
                 }
             }
         });
@@ -603,8 +610,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void setMoviesExtra(String MoviesCategory) {
         resumeCode = 2;
 
-        Log.d("TEST", MoviesCategory);
-
         swipeLayout.setRefreshing(true);
 
         String sortedBy = "";
@@ -654,13 +659,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             sortedBy = getString(R.string.API_Query_Genre_Western) + getString(R.string.API_Search_Part5);
         }
 
-        for (int i = 6; i < 11; i++) {
+        Log.d("TEST", "Extra Counter is : " + ExtraCounter);
+
+        int start = ExtraCounter + 5;
+        int end = start + 5;
+
+        Log.d("TEST", "Start is: " + start + " and end is " + end);
+
+        for (int i = start; i < end; i++) {
             String pageNum = Integer.toString(i);
             URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
             Timber.d("URL: %s", testURL);
             new apiCallExtra(this).execute(testURL);
         }
 
+        ExtraCounter = start;
 
     }
 
@@ -670,50 +683,49 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         movies = new ArrayList<>();
 
-        String MoviesCategory = category;
         String sortedBy = "";
 
-        if (MoviesCategory.equals(getString(R.string.Top_Rated))) {
+        if (category.equals(getString(R.string.Top_Rated))) {
             resumeCode = 2;
             sortedBy = getString(R.string.API_Query_TopRated_Desc);
-        } else if (MoviesCategory.equals(getString(R.string.Most_Popular))) {
+        } else if (category.equals(getString(R.string.Most_Popular))) {
             resumeCode = 1;
             sortedBy = getString(R.string.API_Query_MostPop);
-        } else if (MoviesCategory.equals(getString(R.string.Action))) {
+        } else if (category.equals(getString(R.string.Action))) {
             resumeCode = 4;
             sortedBy = getString(R.string.API_Query_Genre_Action) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Adventure))) {
+        } else if (category.equals(getString(R.string.Adventure))) {
             resumeCode = 5;
             sortedBy = getString(R.string.API_Query_Genre_Adventure) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Comedy))) {
+        } else if (category.equals(getString(R.string.Comedy))) {
             resumeCode = 6;
             sortedBy = getString(R.string.API_Query_Genre_Comedy) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.History))) {
+        } else if (category.equals(getString(R.string.History))) {
             resumeCode = 7;
             sortedBy = getString(R.string.API_Query_Genre_History) + getString(R.string.API_Search_Part5);
             Timber.d(sortedBy);
-        } else if (MoviesCategory.equals(getString(R.string.Horror))) {
+        } else if (category.equals(getString(R.string.Horror))) {
             resumeCode = 8;
             sortedBy = getString(R.string.API_Query_Genre_Horror) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Drama))) {
+        } else if (category.equals(getString(R.string.Drama))) {
             resumeCode = 9;
             sortedBy = getString(R.string.API_Query_Genre_Drama) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Fantasy))) {
+        } else if (category.equals(getString(R.string.Fantasy))) {
             resumeCode = 10;
             sortedBy = getString(R.string.API_Query_Genre_Fantasy) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Mystery))) {
+        } else if (category.equals(getString(R.string.Mystery))) {
             resumeCode = 11;
             sortedBy = getString(R.string.API_Query_Genre_Mystery) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Romance))) {
+        } else if (category.equals(getString(R.string.Romance))) {
             resumeCode = 12;
             sortedBy = getString(R.string.API_Query_Genre_Romance) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Science_Fiction))) {
+        } else if (category.equals(getString(R.string.Science_Fiction))) {
             resumeCode = 13;
             sortedBy = getString(R.string.API_Query_Genre_Science_Fiction) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Thriller))) {
+        } else if (category.equals(getString(R.string.Thriller))) {
             resumeCode = 14;
             sortedBy = getString(R.string.API_Query_Genre_Thriller) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Western))) {
+        } else if (category.equals(getString(R.string.Western))) {
             resumeCode = 15;
             sortedBy = getString(R.string.API_Query_Genre_Western) + getString(R.string.API_Search_Part5);
         }
@@ -988,9 +1000,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public static void executeExtra() {
 
+        Log.d("TEST", "Size of movies array at start of executeXtra " + movies.size());
+
         Timber.d("exeuctingExtra");
         asyncCount = 0;
-        mAdapter.addMovies(movies);
+       // mAdapter.addMovies(movies);
         mAdapter.notifyItemInserted(movies.size() - 99);
         mAdapter.notifyItemInserted(movies.size() - 98);
         mAdapter.notifyItemInserted(movies.size() - 97);
@@ -1003,6 +1017,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mAdapter.notifyItemInserted(movies.size() - 90);
         swipeLayout.setRefreshing(false);
         Timber.d("madapter size is %s", mAdapter.getItemCount());
+        Log.d("TEST", "Movies array size after executeExtra: " + movies.size());
     }
 
     public static int getNumFavs() {
@@ -1139,8 +1154,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
             }
 
-            ArrayList<Movie> moviesAdd;
+            ArrayList<Movie> moviesAdd = new ArrayList<Movie>();
             moviesAdd = JsonUtils.parseApiResult(apiResults);
+
+            Log.d("TEST", "size is " + currentMovieSizeTest);
+            Log.d("TEST", "moviesAdd size is " + moviesAdd.size());
 
             for (Movie movie : moviesAdd) {
 
@@ -1151,10 +1169,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
                 movies.add(movie);
+                Log.d("TEST", "Added " + movie.getMovieName() + " size is now " + movies.size());
                 //   Timber.d("movies size is: %s", movies.size());
             }
 
-            if (movies.size() > 199) {
+            if (movies.size() > currentMovieSizeTest) {
                 MainActivity.executeExtra();
             }
 

@@ -72,6 +72,8 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
             movies.add(newMoviesArray.get(start));
             start++;
         }
+
+        Timber.d("Movies size is adapter is %s", movies.size());
     }
 
 
