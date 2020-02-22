@@ -1,5 +1,6 @@
 package com.example.android.movies;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -176,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
             viewHolderPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CODE);
+            current_Category = savedInstanceState.getString(INSTANCE_CATEGORY);
             Timber.d("Resume code: %s", resumeCode);
         } else {
             resumeCode = 1;
@@ -201,14 +203,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         moviesGrid.setAdapter(mAdapter);
         moviesGrid.setHasFixedSize(true);
-        mDb = AppDatabase.getInstance(getApplicationContext());
-
-        moviesGrid.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+        moviesGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
 
+                if(!recyclerView.canScrollVertically(1))
+
+                {
+                    Toast.makeText(mContext,"Reached the Bottom", Toast.LENGTH_SHORT).show();;
+                }
             }
+
+
         });
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
         setupViewModel();
 
@@ -219,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(INSTANCE_RESUME_CODE, resumeCode);
         outState.putInt(INSTANCE_VIEW_POSITION_CODE, viewHolderPosition);
+        outState.putString(INSTANCE_CATEGORY, current_Category);
         super.onSaveInstanceState(outState);
     }
 
