@@ -61,11 +61,16 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
     }
 
     public void addMovies(ArrayList<Movie> newMoviesArray) {
-        Timber.d("Movie 1 is: %s", newMoviesArray.get(0).getMovieName());
-        Timber.d("Movie 101 is: %s", newMoviesArray.get(100).getMovieName());
+        Timber.d("Movies array size is: %s", newMoviesArray.size());
 
-        for (int i = 100; i < 201; i++) {
-            movies.add(newMoviesArray.get(i));
+        int start = newMoviesArray.size() - 100;
+        int end = newMoviesArray.size();
+
+
+        while (start < end) {
+            Timber.d("adding %s", start + " " + newMoviesArray.get(start).getMovieName());
+            movies.add(newMoviesArray.get(start));
+            start++;
         }
     }
 
