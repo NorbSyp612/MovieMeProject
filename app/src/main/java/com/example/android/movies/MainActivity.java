@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 
@@ -21,6 +22,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageButton;
@@ -42,6 +46,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import android.app.SearchManager;
+import android.widget.Toolbar;
 
 import timber.log.Timber;
 
@@ -114,6 +121,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         //       }
         //       new apiCallFCM(this).execute(movieURL);
         //   }
+
+
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+        }
+
+       ;
 
         Bundle extras = getIntent().getExtras();
 
@@ -229,6 +244,24 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search_m:
+
+                super.onSearchRequested();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
