@@ -2,22 +2,21 @@ package com.example.android.movies.utilities;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.android.movies.Items.Movie;
-
 import java.util.ArrayList;
 
 public class SearchAdapter extends ArrayAdapter {
-    private ArrayList<Movie> dataList;
+    private ArrayList<String> dataList;
     private Context mContext;
     private int searchResultItemLayout;
 
-    public SearchAdapter(Context context, int resource, ArrayList<Movie> storeSourceDataLst) {
+    public SearchAdapter(Context context, int resource, ArrayList<String> storeSourceDataLst) {
         super(context, resource, storeSourceDataLst);
         dataList = storeSourceDataLst;
         mContext = context;
@@ -30,7 +29,7 @@ public class SearchAdapter extends ArrayAdapter {
     }
 
     @Override
-    public Movie getItem(int position) {
+    public String getItem(int position) {
         return dataList.get(position);
     }
 
@@ -43,7 +42,8 @@ public class SearchAdapter extends ArrayAdapter {
         }
 
         TextView resultItem = (TextView) view.findViewById(android.R.id.text1);
-    //    resultItem.setText(getItem(position));
+        resultItem.setText(getItem(position));
+        Log.d("TEST", getItem(position));
         return view;
     }
 }
