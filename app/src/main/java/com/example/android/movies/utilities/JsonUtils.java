@@ -25,15 +25,6 @@ import java.util.concurrent.ExecutionException;
 
 public class JsonUtils {
 
-    public static ArrayList<String> parseSearch (String apiResult) {
-        ArrayList<String> test = new ArrayList<>();
-        test.add(new String("test1"));
-        test.add(new String("test2"));
-        test.add(new String("test13"));
-        test.add(new String("test4"));
-
-        return test;
-    }
 
     public static ArrayList<String> getVideoLinks(String apiResult) {
 
@@ -243,6 +234,102 @@ public class JsonUtils {
                 addMovie.setGenre(movieGenre);
 
                 parsedResults.add(addMovie);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return parsedResults;
+    }
+
+    public static ArrayList<Movie> parseSearchResult(String apiResult) {
+
+        ArrayList<Movie> parsedResults = new ArrayList<>();
+
+        try {
+
+            if (apiResult == null) {
+                return parsedResults;
+            }
+
+            JSONObject jResult = new JSONObject(apiResult);
+
+            JSONArray jMovies = jResult.getJSONArray("results");
+
+            for (int i = 0; i < jMovies.length(); i++) {
+                Movie addMovie = new Movie();
+                JSONObject movie = jMovies.getJSONObject(i);
+
+                String movieName = movie.getString("title");
+                String movieImageURL = movie.getString("poster_path");
+                String movieBackdropURL = movie.getString("backdrop_path");
+                String movieSynopsis = movie.getString("overview");
+                String movieUserRating = movie.getString("vote_average");
+                String movieReleaseDate = movie.getString("release_date");
+                String movieId = movie.getString("id");
+                String movieGenre = "";
+
+                JSONArray genres = movie.getJSONArray("genre_ids");
+
+                int genreNum = 0;
+                int testNum = 0;
+
+                for (int b = 0; b < genres.length(); b++) {
+                    testNum = Integer.parseInt(genres.getString(b));
+
+                    if (testNum > genreNum) {
+                        genreNum = testNum;
+                    }
+                }
+
+                if (genreNum == 28) {
+                    movieGenre = "Action";
+                } else if (genreNum == 12) {
+                    movieGenre = "Adventure";
+                } else if (genreNum == 35) {
+                    movieGenre = "Comedy";
+                } else if (genreNum == 80) {
+                    movieGenre = "Crime";
+                } else if (genreNum == 18) {
+                    movieGenre = "Drama";
+                } else if (genreNum == 10751) {
+                    movieGenre = "Family";
+                } else if (genreNum == 14) {
+                    movieGenre = "Fantasy";
+                } else if (genreNum == 36) {
+                    movieGenre = "History";
+                } else if (genreNum == 27) {
+                    movieGenre = "Horror";
+                } else if (genreNum == 9648) {
+                    movieGenre = "Mystery";
+                } else if (genreNum == 10749) {
+                    movieGenre = "Romance";
+                } else if (genreNum == 878) {
+                    movieGenre = "SciFi";
+                } else if (genreNum == 53) {
+                    movieGenre = "Thriller";
+                } else if (genreNum == 37) {
+                    movieGenre = "Western";
+                }
+
+
+                addMovie.setMovieName(movieName);
+                addMovie.setImageURL(movieImageURL);
+                addMovie.setSynopsis(movieSynopsis);
+                addMovie.setUserRating(movieUserRating);
+                addMovie.setReleaseDate(movieReleaseDate);
+                addMovie.setId(movieId);
+                addMovie.setBackdropURL(movieBackdropURL);
+                addMovie.setGenre(movieGenre);
+
+                double tester = Double.parseDouble(movieUserRating);
+
+                Log.d("P", movieBackdropURL);
+
+                if (!movieBackdropURL.equals("null")) {
+                    parsedResults.add(addMovie);
+                }
             }
 
         } catch (JSONException e) {

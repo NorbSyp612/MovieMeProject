@@ -5,19 +5,16 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/Theme.AppCompat"
+    android:background="@color/colorAccent"
     tools:context=".utilities.SearchActivity">
-   <TextView
-       android:id="@+id/test_text"
-       android:textColor="@color/colorPrimary"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"/>
 
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/search_results"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:clipToPadding="false"
-       android:scrollbars="vertical"/>
+       android:scrollbars="vertical"
+       />
 
    <com.google.android.material.floatingactionbutton.FloatingActionButton
        android:id="@+id/refresh_fab"

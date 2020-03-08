@@ -28,11 +28,12 @@ import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SearchAdapter.ListItemClickListener {
 
-    public TextView tv;
     private RecyclerView mRecycle;
+    private ArrayList<Movie> movies;
     private String results;
+    private SearchAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,8 +41,6 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.searchable_layout);
 
         results = "";
-
-        tv = findViewById(R.id.test_text);
         mRecycle = findViewById(R.id.search_results);
 
         Context mContext = getApplicationContext();
@@ -56,6 +55,12 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    public void populateUI() {
+        int numMovies = movies.size();
+        mAdapter = new SearchAdapter(numMovies, this, movies);
+        mRecycle.setAdapter(mAdapter);
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
@@ -67,32 +72,39 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String searchQuery = intent.getStringExtra(SearchManager.QUERY);
-            String letsgo = getString(R.string.API_Search_Query_Base) + searchQuery;
+            setTitle(searchQuery);
+            String letsgo = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(1);
             URL testURL = NetworkUtils.jsonRequest(letsgo, one);
             try {
-                results = new search().execute(testURL).get();
+                movies = new search().execute(testURL).get();
+                populateUI();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
+    }
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
     }
 }
 
-class search extends AsyncTask<URL, String, String> {
+class search extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
-    private String apiResult = "";
+    private ArrayList<Movie> moviesResult;
 
     @Override
-    protected String doInBackground(URL... urls) {
+    protected ArrayList<Movie> doInBackground(URL... urls) {
         try {
-            apiResult = NetworkUtils.getResponseFromHttpUrl(urls[0]);
+            String apiResult = NetworkUtils.getResponseFromHttpUrl(urls[0]);
+            moviesResult = JsonUtils.parseSearchResult(apiResult);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return apiResult;
+        return moviesResult;
     }
+
 
 }
