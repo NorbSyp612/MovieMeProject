@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.MainActivity;
 import com.example.android.movies.R;
+import com.example.android.movies.database.AppDatabase;
+import com.example.android.movies.database.FavEntry;
 import com.example.android.movies.movieActivity;
 
 import java.io.IOException;
@@ -53,6 +55,12 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         mRecycle.setLayoutManager(layoutManager);
 
         handleSearch();
+    }
+
+    @Override
+    protected void onResume() {
+        MainActivity.getFavs();
+        super.onResume();
     }
 
     public void onFabClicked(View v) {
@@ -201,7 +209,41 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
+        if (!movies.isEmpty()) {
+            Context context = SearchActivity.this;
+            Class destination = movieActivity.class;
 
+            int viewHolderPosition = clickedItemIndex;
+
+            Timber.d("Viewholder position is: %s", viewHolderPosition);
+
+            final Intent goToMovieActivity = new Intent(context, destination);
+
+            goToMovieActivity.putExtra(getString(R.string.Movie_Name), movies.get(clickedItemIndex).getMovieName());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movies.get(clickedItemIndex).getImageURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movies.get(clickedItemIndex).getSynopsis());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movies.get(clickedItemIndex).getUserRating());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movies.get(clickedItemIndex).getReleaseDate());
+            goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenre());
+
+            String movieID = movies.get(clickedItemIndex).getId();
+            String isFavorite = getString(R.string.No);
+
+            int check = MainActivity.checkFav(movies.get(clickedItemIndex));
+
+            if (check == 1) {
+                isFavorite = getString(R.string.Yes);
+            }
+
+            goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
+
+            startActivity(goToMovieActivity);
+        } else {
+            Timber.d("ERROR");
+        }
     }
 }
 

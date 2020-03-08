@@ -444,6 +444,18 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         buttonClick = 0;
     }
 
+    public static int checkFav(Movie movie) {
+        int check = 0;
+
+        for (FavEntry a : favorites) {
+            if (a.getId().equals(movie.getId())) {
+                check = 1;
+            }
+        }
+
+        return check;
+    }
+
     public void setCategoryButtonsColor() {
 
         imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_black));
