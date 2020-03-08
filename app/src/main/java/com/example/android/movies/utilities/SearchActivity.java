@@ -3,20 +3,26 @@ package com.example.android.movies.utilities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.MainActivity;
+import com.example.android.movies.MainViewModel;
 import com.example.android.movies.R;
 import com.example.android.movies.database.AppDatabase;
 import com.example.android.movies.database.FavEntry;
@@ -27,6 +33,7 @@ import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -38,6 +45,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private ArrayList<Movie> movies;
     private String results;
     private SearchAdapter mAdapter;
+    static List<FavEntry> favorites;
     private static ArrayList<Movie> mainMovies = new ArrayList<>();
     private static ArrayList<Movie> favMovies = new ArrayList<>();
 
@@ -54,7 +62,36 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecycle.setLayoutManager(layoutManager);
 
+        setupViewModel();
         handleSearch();
+    }
+
+    private void setupViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<FavEntry> favEntries) {
+                Timber.d("onChanged viewModel");
+                favorites = favEntries;
+
+                favMovies.clear();
+
+                ArrayList<String> genres = new ArrayList<>();
+                ArrayList<String> ratings = new ArrayList<>();
+
+                String ratingsTotal = "";
+
+                for (FavEntry a : favorites) {
+                    Movie addMovie = new Movie();
+                    addMovie.setMovieName(a.getName());
+                    favMovies.add(addMovie);
+                    genres.add(a.getCategory());
+                    ratings.add(a.getRating());
+                    ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
+                }
+
+            }
+        });
     }
 
     @Override
@@ -232,11 +269,13 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             String movieID = movies.get(clickedItemIndex).getId();
             String isFavorite = getString(R.string.No);
 
-            int check = MainActivity.checkFav(movies.get(clickedItemIndex));
-
-            if (check == 1) {
-                isFavorite = getString(R.string.Yes);
+            for (FavEntry a : favorites) {
+                if (a.getId().equals(movieID)) {
+                    isFavorite = getString(R.string.Yes);
+                    Timber.d("onListItemClick marking favorite as YES");
+                }
             }
+
 
             goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
 
