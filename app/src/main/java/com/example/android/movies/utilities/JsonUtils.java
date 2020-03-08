@@ -27,9 +27,6 @@ public class JsonUtils {
 
     public static ArrayList<String> parseSearch (String apiResult) {
         ArrayList<String> test = new ArrayList<>();
-
-        Log.d("TEST", "parsing Search");
-
         test.add(new String("test1"));
         test.add(new String("test2"));
         test.add(new String("test13"));
