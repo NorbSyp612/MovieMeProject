@@ -327,7 +327,7 @@ public class JsonUtils {
 
                 Log.d("P", movieBackdropURL);
 
-                if (!movieBackdropURL.equals("null")) {
+                if (!movieBackdropURL.equals("null") && tester > .5) {
                     parsedResults.add(addMovie);
                 }
             }
