@@ -429,6 +429,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         });
     }
 
+    public static ArrayList<Movie> getMovies() {
+        return movies;
+    }
+
+    public static ArrayList<Movie> getFavs() {
+        return favMovies;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -1068,7 +1076,7 @@ public static class apiCallButton extends AsyncTask<URL, Void, String> {
 
     private WeakReference<MainActivity> mainReference;
 
-    apiCallButton(MainActivity context) {
+    public apiCallButton(MainActivity context) {
         mainReference = new WeakReference<>(context);
     }
 
