@@ -120,10 +120,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle(R.string.Most_Popular);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.MovieMe, R.string.MovieMe);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
 
         Intent intent = getIntent();
 
@@ -261,40 +263,95 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
 
-      @Override
-     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-          switch (item.getItemId()) {
-              case R.id.search_m:
-                  Log.d("TEST", "onSearchRequesteD");
-                  super.onSearchRequested();
-                  return true;
-              default:
-                  return super.onOptionsItemSelected(item);
-          }
-      }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search_m:
+                Log.d("TEST", "onSearchRequesteD");
+                super.onSearchRequested();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.drawer_favs:
-                Toast.makeText(this, "working", Toast.LENGTH_SHORT).show();
+                populateUIFavorites();
+                getSupportActionBar().setTitle(R.string.Favorites);
                 break;
             case R.id.drawer_pop:
-                Toast.makeText(this, "working", Toast.LENGTH_SHORT).show();
+                populateUI(getString(R.string.Most_Popular));
+                getSupportActionBar().setTitle(R.string.Most_Popular);
                 break;
             case R.id.drawer_top:
-                Toast.makeText(this, "working", Toast.LENGTH_SHORT).show();
+                populateUI(getString(R.string.Top_Rated));
+                getSupportActionBar().setTitle(R.string.Top_Rated);
                 break;
             case R.id.drawer_action:
-                Toast.makeText(this, "working", Toast.LENGTH_SHORT).show();
+                populateUI(getString(R.string.Action));
+                getSupportActionBar().setTitle(R.string.Action);
+                break;
+            case R.id.drawer_adventure:
+                populateUI(getString(R.string.Adventure));
+                getSupportActionBar().setTitle(R.string.Adventure);
+                break;
+            case R.id.drawer_comedy:
+                populateUI(getString(R.string.Comedy));
+                getSupportActionBar().setTitle(R.string.Comedy);
+                break;
+            case R.id.drawer_History:
+                populateUI(getString(R.string.History));
+                getSupportActionBar().setTitle(R.string.History);
+                break;
+            case R.id.drawer_horror:
+                populateUI(getString(R.string.Horror));
+                getSupportActionBar().setTitle(R.string.Horror);
+                break;
+            case R.id.drawer_drama:
+                populateUI(getString(R.string.Drama));
+                getSupportActionBar().setTitle(R.string.Drama);
+                break;
+            case R.id.drawer_fantasy:
+                populateUI(getString(R.string.Fantasy));
+                getSupportActionBar().setTitle(R.string.Fantasy);
+                break;
+            case R.id.drawer_mystery:
+                populateUI(getString(R.string.Mystery));
+                getSupportActionBar().setTitle(R.string.Mystery);
+                break;
+            case R.id.drawer_romance:
+                populateUI(getString(R.string.Romance));
+                getSupportActionBar().setTitle(R.string.Romance);
+                break;
+            case R.id.drawer_scifi:
+                populateUI(getString(R.string.Science_Fiction));
+                getSupportActionBar().setTitle(R.string.SciFi);
+                break;
+            case R.id.drawer_thriller:
+                populateUI(getString(R.string.Thriller));
+                getSupportActionBar().setTitle(R.string.Thriller);
+                break;
+            case R.id.drawer_western:
+                populateUI(getString(R.string.Western));
+                getSupportActionBar().setTitle(R.string.Western);
                 break;
             default:
                 break;
         }
+        drawerLayout.closeDrawers();
         return false;
     }
-
 
 
     @Override
@@ -489,54 +546,59 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void setCategoryButtonsColor() {
 
-        imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonFav.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonTop.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonAction.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonAdventure.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonComedy.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonHistory.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonHorror.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonDrama.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonFantasy.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonMystery.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonRomance.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonScifi.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonThriller.setBackground(getDrawable(R.drawable.circle_border_black));
-        imgButtonWestern.setBackground(getDrawable(R.drawable.circle_border_black));
+        int test = 5;
 
-        if (resumeCode == 1) {
-            imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 2) {
-            imgButtonTop.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 3) {
-            imgButtonFav.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 4) {
-            imgButtonAction.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 5) {
-            imgButtonAdventure.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 6) {
-            imgButtonComedy.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 7) {
-            imgButtonHistory.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 8) {
-            imgButtonHorror.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 9) {
-            imgButtonDrama.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 10) {
-            imgButtonFantasy.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 11) {
-            imgButtonMystery.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 12) {
-            imgButtonRomance.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 13) {
-            imgButtonScifi.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 14) {
-            imgButtonThriller.setBackground(getDrawable(R.drawable.circle_border_red));
-        } else if (resumeCode == 15) {
-            imgButtonWestern.setBackground(getDrawable(R.drawable.circle_border_red));
+        if (test == 4) {
+
+            imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonFav.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonTop.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonAction.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonAdventure.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonComedy.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonHistory.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonHorror.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonDrama.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonFantasy.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonMystery.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonRomance.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonScifi.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonThriller.setBackground(getDrawable(R.drawable.circle_border_black));
+            imgButtonWestern.setBackground(getDrawable(R.drawable.circle_border_black));
+
+            if (resumeCode == 1) {
+                imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 2) {
+                imgButtonTop.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 3) {
+                imgButtonFav.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 4) {
+                imgButtonAction.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 5) {
+                imgButtonAdventure.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 6) {
+                imgButtonComedy.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 7) {
+                imgButtonHistory.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 8) {
+                imgButtonHorror.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 9) {
+                imgButtonDrama.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 10) {
+                imgButtonFantasy.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 11) {
+                imgButtonMystery.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 12) {
+                imgButtonRomance.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 13) {
+                imgButtonScifi.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 14) {
+                imgButtonThriller.setBackground(getDrawable(R.drawable.circle_border_red));
+            } else if (resumeCode == 15) {
+                imgButtonWestern.setBackground(getDrawable(R.drawable.circle_border_red));
+            }
+
         }
-
     }
 
     public void populateUI(String category) {

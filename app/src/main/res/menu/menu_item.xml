@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/drawer_favs"
@@ -16,5 +17,49 @@
     <item
         android:id="@+id/drawer_action"
         android:title="@string/Action" />
+
+    <item
+        android:id="@+id/drawer_adventure"
+        android:title="@string/Adventure" />
+
+    <item
+        android:id="@+id/drawer_comedy"
+        android:title="@string/Comedy" />
+
+    <item
+        android:id="@+id/drawer_History"
+        android:title="@string/History" />
+
+    <item
+        android:id="@+id/drawer_horror"
+        android:title="@string/Horror" />
+
+    <item
+        android:id="@+id/drawer_drama"
+        android:title="@string/Drama" />
+
+    <item
+        android:id="@+id/drawer_fantasy"
+        android:title="@string/Fantasy" />
+
+    <item
+        android:id="@+id/drawer_mystery"
+        android:title="@string/Mystery" />
+
+    <item
+        android:id="@+id/drawer_romance"
+        android:title="@string/Romance" />
+
+    <item
+        android:id="@+id/drawer_scifi"
+        android:title="@string/Science_Fiction" />
+
+    <item
+        android:id="@+id/drawer_thriller"
+        android:title="@string/Thriller" />
+
+    <item
+        android:id="@+id/drawer_western"
+        android:title="@string/Western" />
 
 </menu>

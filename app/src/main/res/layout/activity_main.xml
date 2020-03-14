@@ -8,10 +8,10 @@
     tools:context=".MainActivity"
     tools:openDrawer="end">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -19,9 +19,12 @@
             android:layout_height="wrap_content"
             android:background="@color/colorAccent" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/toolbar_dropshadow" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
+    </LinearLayout>
 
 
     <com.google.android.material.navigation.NavigationView
@@ -36,84 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="50dp">
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="115dp"
-            android:clipToPadding="false"
-            android:elevation="6dp"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <include
-                    android:id="@+id/category_Fav"
-                    layout="@layout/movie_category_favorites"
-                    android:elevation="15dp" />
-
-                <include
-                    android:id="@+id/category_Pop"
-                    layout="@layout/movie_category_most_pop" />
-
-                <include
-                    android:id="@+id/category_Top"
-                    layout="@layout/movie_category_top" />
-
-                <include
-                    android:id="@+id/category_Action"
-                    layout="@layout/movie_category_action" />
-
-                <include
-                    android:id="@+id/category_Adventure"
-                    layout="@layout/movie_category_adventure" />
-
-                <include
-                    android:id="@+id/category_Comedy"
-                    layout="@layout/movie_category_comedy" />
-
-                <include
-                    android:id="@+id/category_History"
-                    layout="@layout/movie_category_history" />
-
-                <include
-                    android:id="@+id/category_Horror"
-                    layout="@layout/movie_category_horror" />
-
-                <include
-                    android:id="@+id/category_Drama"
-                    layout="@layout/movie_category_drama" />
-
-                <include
-                    android:id="@+id/category_Fantasy"
-                    layout="@layout/movie_category_fantasy" />
-
-                <include
-                    android:id="@+id/category_Mystery"
-                    layout="@layout/movie_category_mystery" />
-
-                <include
-                    android:id="@+id/category_Romance"
-                    layout="@layout/movie_category_romance" />
-
-                <include
-                    android:id="@+id/category_SciFi"
-                    layout="@layout/movie_category_scifi" />
-
-                <include
-                    android:id="@+id/category_Thriller"
-                    layout="@layout/movie_category_thriller" />
-
-                <include
-                    android:id="@+id/category_Western"
-                    layout="@layout/movie_category_western" />
-
-            </LinearLayout>
-
-        </HorizontalScrollView>
+        android:paddingTop="55dp">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_container"
@@ -131,7 +57,6 @@
 
 
     </LinearLayout>
-
 
 
 </androidx.drawerlayout.widget.DrawerLayout>
