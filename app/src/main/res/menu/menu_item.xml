@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/drawer_favs"
+        android:title="@string/Favorites" />
+
+    <item
+        android:id="@+id/drawer_pop"
+        android:title="@string/Most_Popular" />
+
+    <item
+        android:id="@+id/drawer_top"
+        android:title="@string/Top_Rated" />
+
+    <item
+        android:id="@+id/drawer_action"
+        android:title="@string/Action" />
+
+</menu>

@@ -1,10 +1,12 @@
 package com.example.android.movies;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 
@@ -26,11 +28,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.movies.Items.Movie;
@@ -40,10 +39,10 @@ import com.example.android.movies.utilities.JsonUtils;
 import com.example.android.movies.utilities.NetworkUtils;
 import com.example.android.movies.utilities.movieMeProcessor;
 import com.example.android.movies.utilities.moviesAdapter;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,13 +50,12 @@ import java.util.List;
 import java.util.Random;
 
 import android.app.SearchManager;
-import android.widget.Toolbar;
 
 import timber.log.Timber;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener {
+public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static ArrayList<Movie> movies = new ArrayList<>();
     private static ArrayList<Movie> favMovies = new ArrayList<>();
@@ -99,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private movieMeProcessor movieMeProcessor;
     private int ExtraCounter;
     private ListView listView;
+    DrawerLayout drawerLayout;
+    Toolbar toolbar;
+    NavigationView navigationView;
+    ActionBarDrawerToggle toggle;
 
     private Context mContext;
     private static int statusCode;
@@ -110,6 +112,18 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         setContentView(R.layout.activity_main);
 
         Timber.plant(new Timber.DebugTree());
+
+        drawerLayout = findViewById(R.id.drawer);
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.navigation_view);
+        navigationView.bringToFront();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.MovieMe, R.string.MovieMe);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
 
         Intent intent = getIntent();
 
@@ -247,24 +261,41 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return true;
-    }
+
+      @Override
+     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+          switch (item.getItemId()) {
+              case R.id.search_m:
+                  Log.d("TEST", "onSearchRequesteD");
+                  super.onSearchRequested();
+                  return true;
+              default:
+                  return super.onOptionsItemSelected(item);
+          }
+      }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.search_m:
-                Log.d("TEST", "onSearchRequesteD");
-                super.onSearchRequested();
-                return true;
+            case R.id.drawer_favs:
+                Toast.makeText(this, "working", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.drawer_pop:
+                Toast.makeText(this, "working", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.drawer_top:
+                Toast.makeText(this, "working", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.drawer_action:
+                Toast.makeText(this, "working", Toast.LENGTH_SHORT).show();
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                break;
         }
+        return false;
     }
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -1086,6 +1117,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public static ArrayList<Movie> getFavMovies() {
         return favMovies;
     }
+
 
     public static class apiCallButton extends AsyncTask<URL, Void, String> {
 
