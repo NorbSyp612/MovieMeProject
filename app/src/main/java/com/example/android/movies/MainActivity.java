@@ -509,66 +509,69 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void populateUI(String category) {
-        current_Category = category;
-        swipeLayout.setRefreshing(true);
-        if (category.equals(getString(R.string.Most_Popular))) {
-            setMoviesFromCategory(getString(R.string.Most_Popular));
-            setTitle(getString(R.string.Most_Popular));
-        } else if (category.equals(getString(R.string.Top_Rated))) {
-            setMoviesFromCategory(getString(R.string.Top_Rated));
-            setTitle(getString(R.string.Top_Rated));
-        } else if (category.equals(getString(R.string.Favorites))) {
-            setMoviesFavorites();
-            setTitle(getString(R.string.Favorites));
-        } else if (category.equals(getString(R.string.Action))) {
-            setMoviesFromCategory(getString(R.string.Action));
-            setTitle(getString(R.string.Action));
-        } else if (category.equals(getString(R.string.Adventure))) {
-            setMoviesFromCategory(getString(R.string.Adventure));
-            setTitle(getString(R.string.Adventure));
-        } else if (category.equals(getString(R.string.Comedy))) {
-            setMoviesFromCategory(getString(R.string.Comedy));
-            setTitle(getString(R.string.Comedy));
-        } else if (category.equals(getString(R.string.History))) {
-            setMoviesFromCategory(getString(R.string.History));
-            setTitle(getString(R.string.History));
-        } else if (category.equals(getString(R.string.Horror))) {
-            setMoviesFromCategory(getString(R.string.Horror));
-            setTitle(getString(R.string.Horror));
-        } else if (category.equals(getString(R.string.Drama))) {
-            setMoviesFromCategory(getString(R.string.Drama));
-            setTitle(getString(R.string.Drama));
-        } else if (category.equals(getString(R.string.Fantasy))) {
-            setMoviesFromCategory(getString(R.string.Fantasy));
-            setTitle(getString(R.string.Fantasy));
-        } else if (category.equals(getString(R.string.Mystery))) {
-            setMoviesFromCategory(getString(R.string.Mystery));
-            setTitle(getString(R.string.Mystery));
-        } else if (category.equals(getString(R.string.Romance))) {
-            setMoviesFromCategory(getString(R.string.Romance));
-            setTitle(getString(R.string.Romance));
-        } else if (category.equals(getString(R.string.Science_Fiction))) {
-            setMoviesFromCategory(getString(R.string.Science_Fiction));
-            setTitle(getString(R.string.Science_Fiction));
-        } else if (category.equals(getString(R.string.Thriller))) {
-            setMoviesFromCategory(getString(R.string.Thriller));
-            setTitle(getString(R.string.Thriller));
-        } else if (category.equals(getString(R.string.Western))) {
-            setMoviesFromCategory(getString(R.string.Western));
-            setTitle(getString(R.string.Western));
+        if (!swipeLayout.isRefreshing()) {
+            current_Category = category;
+            swipeLayout.setRefreshing(true);
+            if (category.equals(getString(R.string.Most_Popular))) {
+                setMoviesFromCategory(getString(R.string.Most_Popular));
+                setTitle(getString(R.string.Most_Popular));
+            } else if (category.equals(getString(R.string.Top_Rated))) {
+                setMoviesFromCategory(getString(R.string.Top_Rated));
+                setTitle(getString(R.string.Top_Rated));
+            } else if (category.equals(getString(R.string.Favorites))) {
+                setMoviesFavorites();
+                setTitle(getString(R.string.Favorites));
+            } else if (category.equals(getString(R.string.Action))) {
+                setMoviesFromCategory(getString(R.string.Action));
+                setTitle(getString(R.string.Action));
+            } else if (category.equals(getString(R.string.Adventure))) {
+                setMoviesFromCategory(getString(R.string.Adventure));
+                setTitle(getString(R.string.Adventure));
+            } else if (category.equals(getString(R.string.Comedy))) {
+                setMoviesFromCategory(getString(R.string.Comedy));
+                setTitle(getString(R.string.Comedy));
+            } else if (category.equals(getString(R.string.History))) {
+                setMoviesFromCategory(getString(R.string.History));
+                setTitle(getString(R.string.History));
+            } else if (category.equals(getString(R.string.Horror))) {
+                setMoviesFromCategory(getString(R.string.Horror));
+                setTitle(getString(R.string.Horror));
+            } else if (category.equals(getString(R.string.Drama))) {
+                setMoviesFromCategory(getString(R.string.Drama));
+                setTitle(getString(R.string.Drama));
+            } else if (category.equals(getString(R.string.Fantasy))) {
+                setMoviesFromCategory(getString(R.string.Fantasy));
+                setTitle(getString(R.string.Fantasy));
+            } else if (category.equals(getString(R.string.Mystery))) {
+                setMoviesFromCategory(getString(R.string.Mystery));
+                setTitle(getString(R.string.Mystery));
+            } else if (category.equals(getString(R.string.Romance))) {
+                setMoviesFromCategory(getString(R.string.Romance));
+                setTitle(getString(R.string.Romance));
+            } else if (category.equals(getString(R.string.Science_Fiction))) {
+                setMoviesFromCategory(getString(R.string.Science_Fiction));
+                setTitle(getString(R.string.Science_Fiction));
+            } else if (category.equals(getString(R.string.Thriller))) {
+                setMoviesFromCategory(getString(R.string.Thriller));
+                setTitle(getString(R.string.Thriller));
+            } else if (category.equals(getString(R.string.Western))) {
+                setMoviesFromCategory(getString(R.string.Western));
+                setTitle(getString(R.string.Western));
+            }
+
+            setCategoryButtonsColor();
         }
-
-        setCategoryButtonsColor();
-
     }
 
     public void populateUIFavorites() {
-        swipeLayout.setRefreshing(true);
-        asyncCount = 0;
-        current_Category = getString(R.string.Favorites);
+        if (!swipeLayout.isRefreshing()) {
+            swipeLayout.setRefreshing(true);
+            asyncCount = 0;
+            current_Category = getString(R.string.Favorites);
 
-        setMoviesFavorites();
-        setCategoryButtonsColor();
+            setMoviesFavorites();
+            setCategoryButtonsColor();
+        }
     }
 
     private static void scrollToPosition() {
@@ -1084,238 +1087,238 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return favMovies;
     }
 
-public static class apiCallButton extends AsyncTask<URL, Void, String> {
+    public static class apiCallButton extends AsyncTask<URL, Void, String> {
 
-    private WeakReference<MainActivity> mainReference;
+        private WeakReference<MainActivity> mainReference;
 
-    public apiCallButton(MainActivity context) {
-        mainReference = new WeakReference<>(context);
-    }
-
-    @Override
-    protected String doInBackground(URL... urls) {
-        Timber.d("doing in background");
-        URL apiCall = urls[0];
-        String apiResult = null;
-
-
-        try {
-            apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
-        } catch (IOException e) {
-            e.printStackTrace();
+        public apiCallButton(MainActivity context) {
+            mainReference = new WeakReference<>(context);
         }
 
-        return apiResult;
-    }
-
-    @Override
-    protected void onPostExecute(String apiResults) {
-        if (apiResults != null) {
-            MainActivity activity = mainReference.get();
-            if (activity == null || activity.isFinishing()) return;
-
-            activity.executeFavButton(apiResults);
-        }
-    }
-}
+        @Override
+        protected String doInBackground(URL... urls) {
+            Timber.d("doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
 
 
-public static class apiCall extends AsyncTask<URL, Void, String> {
-
-    private WeakReference<MainActivity> mainReference;
-
-    apiCall(MainActivity context) {
-        mainReference = new WeakReference<>(context);
-    }
-
-    @Override
-    protected String doInBackground(URL... urls) {
-        Timber.d("doing in background");
-        URL apiCall = urls[0];
-        String apiResult = null;
-
-
-        try {
-            apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return apiResult;
-    }
-
-    @Override
-    protected void onPostExecute(String apiResults) {
-
-        MainActivity activity = mainReference.get();
-        if (activity == null || activity.isFinishing()) return;
-
-        if (apiResults == null) {
-            Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
-        }
-
-        ArrayList<Movie> moviesAdd;
-        moviesAdd = JsonUtils.parseApiResult(apiResults);
-
-        for (Movie movie : moviesAdd) {
-
-            for (FavEntry a : favorites) {
-                if (a.getName().equals(movie.getMovieName())) {
-                    Timber.d("YES");
-                    movie.setFav(activity.mContext.getString(R.string.Yes));
-                }
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            movies.add(movie);
-            //   Timber.d("movies size is: %s", movies.size());
+
+            return apiResult;
         }
 
-        if (movies.size() > 99) {
-            MainActivity.execute();
-        }
+        @Override
+        protected void onPostExecute(String apiResults) {
+            if (apiResults != null) {
+                MainActivity activity = mainReference.get();
+                if (activity == null || activity.isFinishing()) return;
 
-    }
-}
-
-public static class apiCallExtra extends AsyncTask<URL, Void, String> {
-
-    private WeakReference<MainActivity> mainReference;
-
-    apiCallExtra(MainActivity context) {
-        mainReference = new WeakReference<>(context);
-    }
-
-    @Override
-    protected String doInBackground(URL... urls) {
-        Timber.d("doing in background");
-        URL apiCall = urls[0];
-        String apiResult = null;
-
-
-        try {
-            apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return apiResult;
-    }
-
-    @Override
-    protected void onPostExecute(String apiResults) {
-
-        MainActivity activity = mainReference.get();
-        if (activity == null || activity.isFinishing()) return;
-
-        if (apiResults == null) {
-            Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
-        }
-
-        ArrayList<Movie> moviesAdd = new ArrayList<Movie>();
-        moviesAdd = JsonUtils.parseApiResult(apiResults);
-
-        Log.d("TEST", "size is " + currentMovieSizeTest);
-        Log.d("TEST", "moviesAdd size is " + moviesAdd.size());
-
-        for (Movie movie : moviesAdd) {
-
-            for (FavEntry a : favorites) {
-                if (a.getName().equals(movie.getMovieName())) {
-                    Timber.d("YES");
-                    movie.setFav(activity.mContext.getString(R.string.Yes));
-                }
+                activity.executeFavButton(apiResults);
             }
-            movies.add(movie);
-            Log.d("TEST", "Added " + movie.getMovieName() + " size is now " + movies.size());
-            //   Timber.d("movies size is: %s", movies.size());
+        }
+    }
+
+
+    public static class apiCall extends AsyncTask<URL, Void, String> {
+
+        private WeakReference<MainActivity> mainReference;
+
+        apiCall(MainActivity context) {
+            mainReference = new WeakReference<>(context);
         }
 
-        if (movies.size() > currentMovieSizeTest) {
-            MainActivity.executeExtra();
+        @Override
+        protected String doInBackground(URL... urls) {
+            Timber.d("doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
         }
 
-    }
-}
-
-public static class apiCallFCM extends AsyncTask<URL, Void, String> {
-
-    private WeakReference<MainActivity> mainReference;
-
-    apiCallFCM(MainActivity context) {
-        mainReference = new WeakReference<>(context);
-    }
-
-    @Override
-    protected String doInBackground(URL... urls) {
-        Timber.d("doing in background");
-        URL apiCall = urls[0];
-        String apiResult = null;
-
-
-        try {
-            apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return apiResult;
-    }
-
-    @Override
-    protected void onPostExecute(String apiResults) {
-
-        MainActivity activity = mainReference.get();
-        if (activity == null || activity.isFinishing()) return;
-
-        Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
-        MainActivity.executeFCM(addMovie, activity.mContext);
-    }
-}
-
-public static class apiCallFavs extends AsyncTask<URL, Void, String> {
-
-    private WeakReference<MainActivity> mainReference;
-
-    apiCallFavs(MainActivity context) {
-        mainReference = new WeakReference<>(context);
-    }
-
-    @Override
-    protected String doInBackground(URL... urls) {
-        Timber.d("doing in background");
-        URL apiCall = urls[0];
-        String apiResult = null;
-
-
-        try {
-            apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return apiResult;
-    }
-
-    @Override
-    protected void onPostExecute(String apiResults) {
-
-        Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
-
-        if (addMovie != null) {
+        @Override
+        protected void onPostExecute(String apiResults) {
 
             MainActivity activity = mainReference.get();
             if (activity == null || activity.isFinishing()) return;
 
-            addMovie.setFav(activity.mContext.getString(R.string.Yes));
-            movies.add(addMovie);
-            //    Timber.d("movies size is: %s", movies.size());
-            //    Timber.d("fav movies size is: %s", favMovies.size());
-        }
+            if (apiResults == null) {
+                Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+            }
 
-        if (movies.size() == favMovies.size()) {
-            MainActivity.executeFavs();
-        }
+            ArrayList<Movie> moviesAdd;
+            moviesAdd = JsonUtils.parseApiResult(apiResults);
 
+            for (Movie movie : moviesAdd) {
+
+                for (FavEntry a : favorites) {
+                    if (a.getName().equals(movie.getMovieName())) {
+                        Timber.d("YES");
+                        movie.setFav(activity.mContext.getString(R.string.Yes));
+                    }
+                }
+                movies.add(movie);
+                //   Timber.d("movies size is: %s", movies.size());
+            }
+
+            if (movies.size() > 99) {
+                MainActivity.execute();
+            }
+
+        }
     }
-}
+
+    public static class apiCallExtra extends AsyncTask<URL, Void, String> {
+
+        private WeakReference<MainActivity> mainReference;
+
+        apiCallExtra(MainActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            Timber.d("doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+            MainActivity activity = mainReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            if (apiResults == null) {
+                Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+            }
+
+            ArrayList<Movie> moviesAdd = new ArrayList<Movie>();
+            moviesAdd = JsonUtils.parseApiResult(apiResults);
+
+            Log.d("TEST", "size is " + currentMovieSizeTest);
+            Log.d("TEST", "moviesAdd size is " + moviesAdd.size());
+
+            for (Movie movie : moviesAdd) {
+
+                for (FavEntry a : favorites) {
+                    if (a.getName().equals(movie.getMovieName())) {
+                        Timber.d("YES");
+                        movie.setFav(activity.mContext.getString(R.string.Yes));
+                    }
+                }
+                movies.add(movie);
+                Log.d("TEST", "Added " + movie.getMovieName() + " size is now " + movies.size());
+                //   Timber.d("movies size is: %s", movies.size());
+            }
+
+            if (movies.size() > currentMovieSizeTest) {
+                MainActivity.executeExtra();
+            }
+
+        }
+    }
+
+    public static class apiCallFCM extends AsyncTask<URL, Void, String> {
+
+        private WeakReference<MainActivity> mainReference;
+
+        apiCallFCM(MainActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            Timber.d("doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+            MainActivity activity = mainReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
+            MainActivity.executeFCM(addMovie, activity.mContext);
+        }
+    }
+
+    public static class apiCallFavs extends AsyncTask<URL, Void, String> {
+
+        private WeakReference<MainActivity> mainReference;
+
+        apiCallFavs(MainActivity context) {
+            mainReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            Timber.d("doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+            Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
+
+            if (addMovie != null) {
+
+                MainActivity activity = mainReference.get();
+                if (activity == null || activity.isFinishing()) return;
+
+                addMovie.setFav(activity.mContext.getString(R.string.Yes));
+                movies.add(addMovie);
+                //    Timber.d("movies size is: %s", movies.size());
+                //    Timber.d("fav movies size is: %s", favMovies.size());
+            }
+
+            if (movies.size() == favMovies.size()) {
+                MainActivity.executeFavs();
+            }
+
+        }
+    }
 }
 
