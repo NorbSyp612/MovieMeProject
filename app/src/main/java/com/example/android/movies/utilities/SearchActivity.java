@@ -53,6 +53,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searchable_layout);
+        
 
         results = "";
         mRecycle = findViewById(R.id.search_results);

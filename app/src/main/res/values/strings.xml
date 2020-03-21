@@ -108,6 +108,8 @@
     <string name="Thriller_ID">53</string>
     <string name="Western_ID">37</string>
 
+    <string name="Search_Hint">Movie Name</string>
+
     <string name="Return_Ratings">ReturnRatings</string>
     <string name="Widget_MovieID">WidgetMovieID</string>
     <string name="Fav_Button">Favorite Button</string>

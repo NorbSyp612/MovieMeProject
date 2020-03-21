@@ -2,6 +2,7 @@ package com.example.android.movies;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
@@ -263,20 +264,24 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search_m).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.search_m:
-                super.onSearchRequested();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+ //   @Override
+ //   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    //    switch (item.getItemId()) {
+  //          case R.id.search_m:
+      //          super.onSearchRequested();
+      //          return true;
+      //      default:
+  //              return super.onOptionsItemSelected(item);
+     //   }
+  //  }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
