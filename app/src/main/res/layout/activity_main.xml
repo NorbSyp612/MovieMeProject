@@ -8,23 +8,19 @@
     tools:context=".MainActivity"
     tools:openDrawer="end">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
+            android:elevation="5dp"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:background="@color/colorAccent" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="@drawable/toolbar_dropshadow" />
-
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
     <com.google.android.material.navigation.NavigationView
@@ -35,11 +31,11 @@
         app:headerLayout="@layout/header"
         app:menu="@menu/menu_item" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="55dp">
+        android:paddingTop="56dp">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_container"
@@ -55,8 +51,25 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/refresh_fab"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="@string/app_name"
+            android:background="@color/colorAccent"
+            android:elevation="6dp"
+            android:onClick="onFabClicked"
+            android:stateListAnimator="@animator/fab_state_list_anim"
+            app:pressedTranslationZ="6dp" />
 
-    </LinearLayout>
+
+    </RelativeLayout>
+
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -29,6 +29,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -79,21 +80,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private FavEntry movieEntry;
     private static int asyncCount;
     private int buttonClick;
-    private ImageButton imgButtonPop;
-    private ImageButton imgButtonFav;
-    private ImageButton imgButtonTop;
-    private ImageButton imgButtonAction;
-    private ImageButton imgButtonAdventure;
-    private ImageButton imgButtonComedy;
-    private ImageButton imgButtonHistory;
-    private ImageButton imgButtonHorror;
-    private ImageButton imgButtonDrama;
-    private ImageButton imgButtonFantasy;
-    private ImageButton imgButtonMystery;
-    private ImageButton imgButtonRomance;
-    private ImageButton imgButtonScifi;
-    private ImageButton imgButtonThriller;
-    private ImageButton imgButtonWestern;
     private movieMeProcessor movieMeProcessor;
     private int ExtraCounter;
     private ListView listView;
@@ -186,22 +172,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
 
         mContext = getApplicationContext();
-
-        imgButtonPop = findViewById(R.id.imageButton_pop);
-        imgButtonFav = findViewById(R.id.imageButton_favorites);
-        imgButtonTop = findViewById(R.id.imageButton_top);
-        imgButtonAction = findViewById(R.id.imageButton_action);
-        imgButtonAdventure = findViewById(R.id.imageButton_adventure);
-        imgButtonComedy = findViewById(R.id.imageButton_comedy);
-        imgButtonHistory = findViewById(R.id.imageButton_history);
-        imgButtonHorror = findViewById(R.id.imageButton_horror);
-        imgButtonDrama = findViewById(R.id.imageButton_drama);
-        imgButtonFantasy = findViewById(R.id.imageButton_fantasy);
-        imgButtonMystery = findViewById(R.id.imageButton_mystery);
-        imgButtonRomance = findViewById(R.id.imageButton_romance);
-        imgButtonScifi = findViewById(R.id.imageButton_scifi);
-        imgButtonThriller = findViewById(R.id.imageButton_thriller);
-        imgButtonWestern = findViewById(R.id.imageButton_western);
         swipeLayout = findViewById(R.id.swipe_container);
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -323,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.search_m:
-                Log.d("TEST", "onSearchRequesteD");
                 super.onSearchRequested();
                 return true;
             default:
@@ -415,7 +384,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         drawerLayout.closeDrawers();
         return false;
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -680,24 +648,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             moviesGrid.scrollToPosition(viewHolderPosition);
         }
     }
-
-    public void MostPopClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Most_Popular));
-    }
-
-    public void FavsClick(View view) {
-        viewHolderPosition = 0;
-        setTitle(getString(R.string.Favorites));
-
-        if (favMovies.size() == 0) {
-            Toast.makeText(this, getString(R.string.AddFavPls), Toast.LENGTH_SHORT).show();
-        } else {
-            Timber.d("Size: %s", favMovies.size());
-            populateUIFavorites();
-        }
-    }
-
 
     public void setMoviesExtra(String MoviesCategory) {
         resumeCode = 2;

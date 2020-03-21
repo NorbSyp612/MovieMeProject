@@ -8,12 +8,12 @@
 
     <ImageView
         android:id="@+id/search_poster"
-        android:layout_width="0dp"
-        android:layout_height="125dp"
+        android:layout_width="100dp"
+        android:layout_height="135dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -58,7 +58,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:ellipsize="end"
-        android:maxLines="3"
+        android:maxLines="4"
         android:singleLine="false"
         android:text="This is the story about how a bunch of hobbits go on an adventure going to keep going so I can reach the maximum number of lines"
         android:textColor="#808080"

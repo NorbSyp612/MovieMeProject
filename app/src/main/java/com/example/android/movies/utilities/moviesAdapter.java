@@ -4,12 +4,14 @@ import android.content.Context;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.R;
@@ -141,6 +143,14 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         void bind(int listIndex) {
             Context context = itemView.getContext();
             star_yellow.setVisibility(View.INVISIBLE);
+
+            int orientation = context.getResources().getConfiguration().orientation;
+
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                movieItemView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            } else {
+                movieItemView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            }
 
             if (!movies.isEmpty()) {
                 String imgURL = context.getString(R.string.API_Img_URL_185) + movies.get(listIndex).getImageURL();
