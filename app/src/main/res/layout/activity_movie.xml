@@ -46,6 +46,8 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:id="@+id/refresh_fab"
         android:layout_width="56dp"
         android:layout_height="56dp"
