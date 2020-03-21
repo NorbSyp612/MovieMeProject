@@ -207,7 +207,53 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                populateUI(current_Category);
+                if (current_Category.equals(getString(R.string.Most_Popular))) {
+                    setMoviesFromCategory(getString(R.string.Most_Popular));
+                    setTitle(getString(R.string.Most_Popular));
+                } else if (current_Category.equals(getString(R.string.Top_Rated))) {
+                    setMoviesFromCategory(getString(R.string.Top_Rated));
+                    setTitle(getString(R.string.Top_Rated));
+                } else if (current_Category.equals(getString(R.string.Favorites))) {
+                    setMoviesFavorites();
+                    setTitle(getString(R.string.Favorites));
+                } else if (current_Category.equals(getString(R.string.Action))) {
+                    setMoviesFromCategory(getString(R.string.Action));
+                    setTitle(getString(R.string.Action));
+                } else if (current_Category.equals(getString(R.string.Adventure))) {
+                    setMoviesFromCategory(getString(R.string.Adventure));
+                    setTitle(getString(R.string.Adventure));
+                } else if (current_Category.equals(getString(R.string.Comedy))) {
+                    setMoviesFromCategory(getString(R.string.Comedy));
+                    setTitle(getString(R.string.Comedy));
+                } else if (current_Category.equals(getString(R.string.History))) {
+                    setMoviesFromCategory(getString(R.string.History));
+                    setTitle(getString(R.string.History));
+                } else if (current_Category.equals(getString(R.string.Horror))) {
+                    setMoviesFromCategory(getString(R.string.Horror));
+                    setTitle(getString(R.string.Horror));
+                } else if (current_Category.equals(getString(R.string.Drama))) {
+                    setMoviesFromCategory(getString(R.string.Drama));
+                    setTitle(getString(R.string.Drama));
+                } else if (current_Category.equals(getString(R.string.Fantasy))) {
+                    setMoviesFromCategory(getString(R.string.Fantasy));
+                    setTitle(getString(R.string.Fantasy));
+                } else if (current_Category.equals(getString(R.string.Mystery))) {
+                    setMoviesFromCategory(getString(R.string.Mystery));
+                    setTitle(getString(R.string.Mystery));
+                } else if (current_Category.equals(getString(R.string.Romance))) {
+                    setMoviesFromCategory(getString(R.string.Romance));
+                    setTitle(getString(R.string.Romance));
+                } else if (current_Category.equals(getString(R.string.Science_Fiction))) {
+                    setMoviesFromCategory(getString(R.string.Science_Fiction));
+                    setTitle(getString(R.string.Science_Fiction));
+                } else if (current_Category.equals(getString(R.string.Thriller))) {
+                    setMoviesFromCategory(getString(R.string.Thriller));
+                    setTitle(getString(R.string.Thriller));
+                } else if (current_Category.equals(getString(R.string.Western))) {
+                    setMoviesFromCategory(getString(R.string.Western));
+                    setTitle(getString(R.string.Western));
+                }
+                swipeLayout.setRefreshing(false);
             }
         });
 
@@ -253,11 +299,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     currentMovieSizeTest = movies.size() + 99;
                     mAdapter.setNumberMovies(movies.size() + 100);
                     setMoviesExtra(current_Category);
-                    Log.d("TEST", "Movie size before everything " + movies.size());
+                    ;
                 }
             }
         });
         mDb = AppDatabase.getInstance(getApplicationContext());
+
+        current_Category = getString(R.string.Most_Popular);
 
         setupViewModel();
 
@@ -289,62 +337,77 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             case R.id.drawer_favs:
                 populateUIFavorites();
                 getSupportActionBar().setTitle(R.string.Favorites);
+                current_Category = getString(R.string.Favorites);
                 break;
             case R.id.drawer_pop:
                 populateUI(getString(R.string.Most_Popular));
                 getSupportActionBar().setTitle(R.string.Most_Popular);
+                current_Category = getString(R.string.Most_Popular);
                 break;
             case R.id.drawer_top:
                 populateUI(getString(R.string.Top_Rated));
                 getSupportActionBar().setTitle(R.string.Top_Rated);
+                current_Category = getString(R.string.Top_Rated);
                 break;
             case R.id.drawer_action:
                 populateUI(getString(R.string.Action));
                 getSupportActionBar().setTitle(R.string.Action);
+                current_Category = getString(R.string.Action);
                 break;
             case R.id.drawer_adventure:
                 populateUI(getString(R.string.Adventure));
                 getSupportActionBar().setTitle(R.string.Adventure);
+                current_Category = getString(R.string.Adventure);
                 break;
             case R.id.drawer_comedy:
                 populateUI(getString(R.string.Comedy));
                 getSupportActionBar().setTitle(R.string.Comedy);
+                current_Category = getString(R.string.Comedy);
                 break;
             case R.id.drawer_History:
                 populateUI(getString(R.string.History));
                 getSupportActionBar().setTitle(R.string.History);
+                current_Category = getString(R.string.History);
                 break;
             case R.id.drawer_horror:
                 populateUI(getString(R.string.Horror));
                 getSupportActionBar().setTitle(R.string.Horror);
+                current_Category = getString(R.string.Horror);
                 break;
             case R.id.drawer_drama:
                 populateUI(getString(R.string.Drama));
                 getSupportActionBar().setTitle(R.string.Drama);
+                current_Category = getString(R.string.Drama);
                 break;
             case R.id.drawer_fantasy:
                 populateUI(getString(R.string.Fantasy));
                 getSupportActionBar().setTitle(R.string.Fantasy);
+                current_Category = getString(R.string.Fantasy);
                 break;
             case R.id.drawer_mystery:
                 populateUI(getString(R.string.Mystery));
                 getSupportActionBar().setTitle(R.string.Mystery);
+                current_Category = getString(R.string.Mystery);
                 break;
             case R.id.drawer_romance:
                 populateUI(getString(R.string.Romance));
                 getSupportActionBar().setTitle(R.string.Romance);
+                current_Category = getString(R.string.Romance);
                 break;
             case R.id.drawer_scifi:
                 populateUI(getString(R.string.Science_Fiction));
                 getSupportActionBar().setTitle(R.string.SciFi);
+                current_Category = getString(R.string.SciFi);
                 break;
             case R.id.drawer_thriller:
                 populateUI(getString(R.string.Thriller));
                 getSupportActionBar().setTitle(R.string.Thriller);
+                current_Category = getString(R.string.Thriller);
                 break;
             case R.id.drawer_western:
                 populateUI(getString(R.string.Western));
                 getSupportActionBar().setTitle(R.string.Western);
+                current_Category = getString(R.string.Western);
                 break;
             default:
                 break;
@@ -544,67 +607,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return check;
     }
 
-    public void setCategoryButtonsColor() {
-
-        int test = 5;
-
-        if (test == 4) {
-
-            imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonFav.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonTop.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonAction.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonAdventure.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonComedy.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonHistory.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonHorror.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonDrama.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonFantasy.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonMystery.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonRomance.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonScifi.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonThriller.setBackground(getDrawable(R.drawable.circle_border_black));
-            imgButtonWestern.setBackground(getDrawable(R.drawable.circle_border_black));
-
-            if (resumeCode == 1) {
-                imgButtonPop.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 2) {
-                imgButtonTop.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 3) {
-                imgButtonFav.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 4) {
-                imgButtonAction.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 5) {
-                imgButtonAdventure.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 6) {
-                imgButtonComedy.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 7) {
-                imgButtonHistory.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 8) {
-                imgButtonHorror.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 9) {
-                imgButtonDrama.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 10) {
-                imgButtonFantasy.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 11) {
-                imgButtonMystery.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 12) {
-                imgButtonRomance.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 13) {
-                imgButtonScifi.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 14) {
-                imgButtonThriller.setBackground(getDrawable(R.drawable.circle_border_red));
-            } else if (resumeCode == 15) {
-                imgButtonWestern.setBackground(getDrawable(R.drawable.circle_border_red));
-            }
-
-        }
-    }
-
     public void populateUI(String category) {
         if (!swipeLayout.isRefreshing()) {
-            current_Category = category;
             swipeLayout.setRefreshing(true);
+            current_Category = category;
             if (category.equals(getString(R.string.Most_Popular))) {
                 setMoviesFromCategory(getString(R.string.Most_Popular));
                 setTitle(getString(R.string.Most_Popular));
@@ -651,8 +657,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 setMoviesFromCategory(getString(R.string.Western));
                 setTitle(getString(R.string.Western));
             }
-
-            setCategoryButtonsColor();
+            swipeLayout.setRefreshing(false);
         }
     }
 
@@ -663,7 +668,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             current_Category = getString(R.string.Favorites);
 
             setMoviesFavorites();
-            setCategoryButtonsColor();
         }
     }
 
@@ -694,70 +698,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
-    public void TopRatedClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Top_Rated));
-    }
-
-    public void AcitonClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Action));
-    }
-
-    public void AdventureClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Adventure));
-    }
-
-    public void ComedyClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Comedy));
-    }
-
-    public void HistoryClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.History));
-    }
-
-    public void HorrorClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Horror));
-    }
-
-    public void DramaClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Drama));
-    }
-
-    public void FantasyClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Fantasy));
-    }
-
-    public void MysteryClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Mystery));
-    }
-
-    public void RomanceClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Romance));
-    }
-
-    public void ScifiClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Science_Fiction));
-    }
-
-    public void ThrillerClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Thriller));
-    }
-
-    public void WesternClick(View view) {
-        viewHolderPosition = 0;
-        populateUI(getString(R.string.Western));
-    }
 
     public void setMoviesExtra(String MoviesCategory) {
         resumeCode = 2;
