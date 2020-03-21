@@ -243,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1)) {
-                    Toast.makeText(mContext, "Reached the Bottom", Toast.LENGTH_SHORT).show();
                     moviesGrid.setHasFixedSize(false);
                     currentMovieSizeTest = movies.size() + 99;
                     mAdapter.setNumberMovies(movies.size() + 100);

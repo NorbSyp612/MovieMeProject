@@ -9,11 +9,17 @@
     tools:openDrawer="end">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:orientation="vertical"
+        android:id="@+id/overview_coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
         <androidx.appcompat.widget.Toolbar
+            app:layout_scrollFlags="enterAlways|scroll"
             android:elevation="5dp"
             app:popupTheme="@style/AppBar"
             app:theme="@style/AppBar"
@@ -22,7 +28,7 @@
             android:layout_height="56dp"
             android:background="@color/colorAccent" />
 
-
+        </com.google.android.material.appbar.AppBarLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -51,7 +57,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                android:scrollbarThumbVertical="@drawable/scrollbar"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
