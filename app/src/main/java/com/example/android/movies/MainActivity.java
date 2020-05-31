@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-        
+
         Bundle extras = getIntent().getExtras();
 
         if (extras != null && extras.containsKey(getString(R.string.GoToMovie))) {
@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 } else if (current_Category.equals(getString(R.string.Favorites))) {
                     setMoviesFavorites();
                     setTitle(getString(R.string.Favorites));
+                    moviesGrid.setVerticalScrollbarPosition(0);
                 } else if (current_Category.equals(getString(R.string.Action))) {
                     setMoviesFromCategory(getString(R.string.Action));
                     setTitle(getString(R.string.Action));
@@ -242,12 +243,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1)) {
+                if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && current_Category != getString(R.string.Favorites)) {
                     moviesGrid.setHasFixedSize(false);
                     currentMovieSizeTest = movies.size() + 99;
                     mAdapter.setNumberMovies(movies.size() + 100);
                     setMoviesExtra(current_Category);
-                    ;
                 }
             }
         });
@@ -271,95 +271,125 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
 
- //   @Override
- //   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    //   @Override
+    //   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     //    switch (item.getItemId()) {
-  //          case R.id.search_m:
-      //          super.onSearchRequested();
-      //          return true;
-      //      default:
-  //              return super.onOptionsItemSelected(item);
-     //   }
-  //  }
+    //          case R.id.search_m:
+    //          super.onSearchRequested();
+    //          return true;
+    //      default:
+    //              return super.onOptionsItemSelected(item);
+    //   }
+    //  }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.drawer_favs:
-                populateUIFavorites();
-                getSupportActionBar().setTitle(R.string.Favorites);
-                current_Category = getString(R.string.Favorites);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUIFavorites();
+                    getSupportActionBar().setTitle(R.string.Favorites);
+                    current_Category = getString(R.string.Favorites);
+                    break;
+                }
             case R.id.drawer_pop:
-                populateUI(getString(R.string.Most_Popular));
-                getSupportActionBar().setTitle(R.string.Most_Popular);
-                current_Category = getString(R.string.Most_Popular);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Most_Popular));
+                    getSupportActionBar().setTitle(R.string.Most_Popular);
+                    current_Category = getString(R.string.Most_Popular);
+                    break;
+                }
             case R.id.drawer_top:
-                populateUI(getString(R.string.Top_Rated));
-                getSupportActionBar().setTitle(R.string.Top_Rated);
-                current_Category = getString(R.string.Top_Rated);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Top_Rated));
+                    getSupportActionBar().setTitle(R.string.Top_Rated);
+                    current_Category = getString(R.string.Top_Rated);
+                    break;
+                }
             case R.id.drawer_action:
-                populateUI(getString(R.string.Action));
-                getSupportActionBar().setTitle(R.string.Action);
-                current_Category = getString(R.string.Action);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Action));
+                    getSupportActionBar().setTitle(R.string.Action);
+                    current_Category = getString(R.string.Action);
+                    break;
+                }
             case R.id.drawer_adventure:
-                populateUI(getString(R.string.Adventure));
-                getSupportActionBar().setTitle(R.string.Adventure);
-                current_Category = getString(R.string.Adventure);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Adventure));
+                    getSupportActionBar().setTitle(R.string.Adventure);
+                    current_Category = getString(R.string.Adventure);
+                    break;
+                }
             case R.id.drawer_comedy:
-                populateUI(getString(R.string.Comedy));
-                getSupportActionBar().setTitle(R.string.Comedy);
-                current_Category = getString(R.string.Comedy);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Comedy));
+                    getSupportActionBar().setTitle(R.string.Comedy);
+                    current_Category = getString(R.string.Comedy);
+                    break;
+                }
             case R.id.drawer_History:
-                populateUI(getString(R.string.History));
-                getSupportActionBar().setTitle(R.string.History);
-                current_Category = getString(R.string.History);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.History));
+                    getSupportActionBar().setTitle(R.string.History);
+                    current_Category = getString(R.string.History);
+                    break;
+                }
             case R.id.drawer_horror:
-                populateUI(getString(R.string.Horror));
-                getSupportActionBar().setTitle(R.string.Horror);
-                current_Category = getString(R.string.Horror);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Horror));
+                    getSupportActionBar().setTitle(R.string.Horror);
+                    current_Category = getString(R.string.Horror);
+                    break;
+                }
             case R.id.drawer_drama:
-                populateUI(getString(R.string.Drama));
-                getSupportActionBar().setTitle(R.string.Drama);
-                current_Category = getString(R.string.Drama);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Drama));
+                    getSupportActionBar().setTitle(R.string.Drama);
+                    current_Category = getString(R.string.Drama);
+                    break;
+                }
             case R.id.drawer_fantasy:
-                populateUI(getString(R.string.Fantasy));
-                getSupportActionBar().setTitle(R.string.Fantasy);
-                current_Category = getString(R.string.Fantasy);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Fantasy));
+                    getSupportActionBar().setTitle(R.string.Fantasy);
+                    current_Category = getString(R.string.Fantasy);
+                    break;
+                }
             case R.id.drawer_mystery:
-                populateUI(getString(R.string.Mystery));
-                getSupportActionBar().setTitle(R.string.Mystery);
-                current_Category = getString(R.string.Mystery);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Mystery));
+                    getSupportActionBar().setTitle(R.string.Mystery);
+                    current_Category = getString(R.string.Mystery);
+                    break;
+                }
             case R.id.drawer_romance:
-                populateUI(getString(R.string.Romance));
-                getSupportActionBar().setTitle(R.string.Romance);
-                current_Category = getString(R.string.Romance);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Romance));
+                    getSupportActionBar().setTitle(R.string.Romance);
+                    current_Category = getString(R.string.Romance);
+                    break;
+                }
             case R.id.drawer_scifi:
-                populateUI(getString(R.string.Science_Fiction));
-                getSupportActionBar().setTitle(R.string.SciFi);
-                current_Category = getString(R.string.SciFi);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Science_Fiction));
+                    getSupportActionBar().setTitle(R.string.SciFi);
+                    current_Category = getString(R.string.SciFi);
+                    break;
+                }
             case R.id.drawer_thriller:
-                populateUI(getString(R.string.Thriller));
-                getSupportActionBar().setTitle(R.string.Thriller);
-                current_Category = getString(R.string.Thriller);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Thriller));
+                    getSupportActionBar().setTitle(R.string.Thriller);
+                    current_Category = getString(R.string.Thriller);
+                    break;
+                }
             case R.id.drawer_western:
-                populateUI(getString(R.string.Western));
-                getSupportActionBar().setTitle(R.string.Western);
-                current_Category = getString(R.string.Western);
-                break;
+                if (!swipeLayout.isRefreshing()) {
+                    populateUI(getString(R.string.Western));
+                    getSupportActionBar().setTitle(R.string.Western);
+                    current_Category = getString(R.string.Western);
+                    break;
+                }
             default:
                 break;
         }
