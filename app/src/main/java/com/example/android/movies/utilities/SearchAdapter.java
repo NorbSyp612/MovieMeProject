@@ -26,13 +26,15 @@ import timber.log.Timber;
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberViewHolder> {
 
     private ListItemClickListener onClickListener;
+    private ButtonItemClickListener onButtonClickListener;
     private static int viewHolderCount;
     private int numberMovies;
     private ArrayList<Movie> movies;
 
-    public SearchAdapter(int movies, ListItemClickListener onclick, ArrayList<Movie> moviesArray) {
+    public SearchAdapter(int movies, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray) {
         numberMovies = movies;
         onClickListener = onclick;
+        onButtonClickListener = buttonOnClick;
         viewHolderCount = 0;
         this.movies = moviesArray;
     }
@@ -40,6 +42,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
 
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex);
+    }
+
+    public interface ButtonItemClickListener {
+        void onButtonClick(int clickedItemIndex);
     }
 
     @Override
@@ -70,6 +76,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
         TextView searchTitle;
         TextView searchDetails;
         TextView searchOverview;
+        ImageButton favButton;
+        ImageView star_white;
+        ImageView star_yellow;
 
         public NumberViewHolder(View itemView) {
             super(itemView);
@@ -77,6 +86,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
             searchTitle = itemView.findViewById(R.id.search_title);
             searchDetails = itemView.findViewById(R.id.search_date);
             searchOverview = itemView.findViewById(R.id.search_overview);
+            star_white = itemView.findViewById(R.id.search_star_background_white);
+            star_yellow = itemView.findViewById(R.id.search_star_background_yellow);
+            favButton = itemView.findViewById(R.id.search_star_button);
+            favButton.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
 
@@ -84,7 +97,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            onClickListener.onListItemClick(clickedPosition);
+            if (favButton.isPressed()) {
+                Timber.d("ACTIVIATED");
+                if (star_yellow.getVisibility() == View.INVISIBLE) {
+                    star_yellow.setVisibility(View.VISIBLE);
+                } else if (star_yellow.getVisibility() == View.VISIBLE) {
+                    star_yellow.setVisibility(View.INVISIBLE);
+                }
+                onButtonClickListener.onButtonClick(clickedPosition);
+            } else {
+                onClickListener.onListItemClick(clickedPosition);
+            }
 
         }
 

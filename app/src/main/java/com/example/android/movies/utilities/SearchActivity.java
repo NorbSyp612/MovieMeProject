@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
 
-public class SearchActivity extends AppCompatActivity implements SearchAdapter.ListItemClickListener {
+public class SearchActivity extends AppCompatActivity implements SearchAdapter.ListItemClickListener, SearchAdapter.ButtonItemClickListener {
 
     private RecyclerView mRecycle;
     private ArrayList<Movie> movies;
@@ -217,7 +217,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
     public void populateUI() {
         int numMovies = movies.size();
-        mAdapter = new SearchAdapter(numMovies, this, movies);
+        mAdapter = new SearchAdapter(numMovies, this, this, movies);
         mRecycle.setAdapter(mAdapter);
     }
 
@@ -284,6 +284,11 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         } else {
             Timber.d("ERROR");
         }
+    }
+
+    @Override
+    public void onButtonClick(int clickedItemIndex) {
+        Log.d("pp", "Clicked fav button");
     }
 }
 
