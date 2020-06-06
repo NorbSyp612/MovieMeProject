@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         navigationView.setNavigationItemSelectedListener(this);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
 
+
         Bundle extras = getIntent().getExtras();
 
         if (extras != null && extras.containsKey(getString(R.string.GoToMovie))) {
@@ -281,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     //              return super.onOptionsItemSelected(item);
     //   }
     //  }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -575,6 +577,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         buttonClick = 0;
     }
 
+
     public static int checkFav(Movie movie) {
         int check = 0;
 
@@ -598,6 +601,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 setMoviesFromCategory(getString(R.string.Top_Rated));
                 setTitle(getString(R.string.Top_Rated));
             } else if (category.equals(getString(R.string.Favorites))) {
+                moviesGrid.scrollToPosition(0);
                 setMoviesFavorites();
                 setTitle(getString(R.string.Favorites));
             } else if (category.equals(getString(R.string.Action))) {
