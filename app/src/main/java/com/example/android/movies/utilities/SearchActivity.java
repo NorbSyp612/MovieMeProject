@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.android.movies.AppExecutors;
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.MainActivity;
 import com.example.android.movies.MainViewModel;
@@ -45,18 +48,34 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private ArrayList<Movie> movies;
     private String results;
     private SearchAdapter mAdapter;
+    private FavEntry movieEntry;
     static List<FavEntry> favorites;
     private static ArrayList<Movie> mainMovies = new ArrayList<>();
     private static ArrayList<Movie> favMovies = new ArrayList<>();
+    private int position;
+    private String instance_position;
+    private String favorite;
+    private AppDatabase mDb;
+    private int clicks;
+    private String instance_clicks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searchable_layout);
-        
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
+
+        clicks = 0;
+        instance_clicks = "Clicks";
+
 
         results = "";
         mRecycle = findViewById(R.id.search_results);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(instance_clicks)) {
+            clicks = savedInstanceState.getInt(instance_clicks, 0);
+        }
 
         Context mContext = getApplicationContext();
 
@@ -65,6 +84,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         setupViewModel();
         handleSearch();
+        populateUI();
+
     }
 
     private void setupViewModel() {
@@ -91,12 +112,18 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
 
+                if (clicks > 0) {
+                    populateUI();
+                    clicks = 0;
+                }
+
             }
         });
     }
 
     @Override
     protected void onResume() {
+        clicks = 1;
         MainActivity.getFavs();
         super.onResume();
     }
@@ -160,7 +187,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
         if (movieMeResults == null || movieMeResults.size() == 0) {
-         //   initiateFAB(mContext);
+            //   initiateFAB(mContext);
         } else {
             while (favCheck == 0) {
                 movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
@@ -193,6 +220,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     }
 
     public void goToMovieMeDetail(Movie movieMe) {
+        clicks++;
+
         Class destination = movieActivity.class;
 
         Context mContext = getApplicationContext();
@@ -210,15 +239,18 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID), movieMe.getId());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenre());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), mContext.getString(R.string.No));
+        goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), movieMe.getFav());
 
         mContext.startActivity(goToMovieActivity);
     }
 
     public void populateUI() {
         int numMovies = movies.size();
-        mAdapter = new SearchAdapter(numMovies, this, this, movies);
+        mAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
         mRecycle.setAdapter(mAdapter);
+        mRecycle.setHasFixedSize(false);
+        Timber.d("Setting position to %s", position);
+        mRecycle.scrollToPosition(position);
     }
 
     @Override
@@ -226,6 +258,12 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         setIntent(intent);
         handleSearch();
         super.onNewIntent(intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
+        outState.putInt(instance_clicks, clicks);
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     private void handleSearch() {
@@ -248,6 +286,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     @Override
     public void onListItemClick(int clickedItemIndex) {
         if (!movies.isEmpty()) {
+            position = clickedItemIndex;
             Context context = SearchActivity.this;
             Class destination = movieActivity.class;
 
@@ -287,8 +326,37 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     }
 
     @Override
-    public void onButtonClick(int clickedItemIndex) {
-        Log.d("pp", "Clicked fav button");
+    public void onButtonClick(final int clickedItemIndex) {
+
+        favorite = getString(R.string.No);
+
+        for (FavEntry a : favorites) {
+            if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
+                favorite = getString(R.string.Yes);
+                movieEntry = a;
+                Timber.d("Movie is a favorite");
+            }
+        }
+
+        if (!favorite.equals(getString(R.string.Yes))) {
+
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (favorite.equals(getString(R.string.Yes))) {
+                        mDb.favDao().deleteFav(movieEntry);
+                        favorite = getString(R.string.No);
+                    } else {
+                        FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating());
+                        mDb.favDao().insertFav(enterNewFavorite);
+                        favorite = getString(R.string.Yes);
+                    }
+                }
+            });
+        } else {
+            Timber.d("ERROR");
+        }
+
     }
 }
 

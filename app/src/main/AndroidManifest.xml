@@ -41,7 +41,9 @@
 
         <activity
             android:name=".utilities.SearchActivity"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTask">
+
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

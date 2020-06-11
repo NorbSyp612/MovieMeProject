@@ -30,13 +30,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
     private static int viewHolderCount;
     private int numberMovies;
     private ArrayList<Movie> movies;
+    private ArrayList<Movie> favMovies;
 
-    public SearchAdapter(int movies, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray) {
+    public SearchAdapter(int movies, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray, ArrayList<Movie> favoritesArray) {
         numberMovies = movies;
         onClickListener = onclick;
         onButtonClickListener = buttonOnClick;
         viewHolderCount = 0;
         this.movies = moviesArray;
+        this.favMovies = favoritesArray;
     }
 
 
@@ -114,15 +116,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
 
         void bind(int listIndex) {
             Context context = itemView.getContext();
+            star_yellow.setVisibility(View.INVISIBLE);
 
             if (!movies.isEmpty()) {
                 String imgURL = context.getString(R.string.API_Img_URL_185) + movies.get(listIndex).getImageURL();
-                Timber.d(imgURL);
 
                 Movie test = movies.get(listIndex);
-
-                Timber.d("TEST %s", test.getFav());
-
+                Timber.d(test.getMovieName());
 
                 searchPoster.setContentDescription(test.getMovieName());
                 Picasso.get()
@@ -136,6 +136,16 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
                 String rating = test.getUserRating();
                 String details = date + " - " + genre + " - " + rating + "/10";
 
+                for (Movie a : favMovies) {
+                    if (test.getMovieName().equals(a.getMovieName())) {
+                        Timber.d("FAVORITE FOUND: %s", test.getMovieName());
+                        star_yellow.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                if (test.getFav().equals("yes")) {
+                    star_yellow.setVisibility(View.VISIBLE);
+                }
                 searchTitle.setText(title);
                 searchOverview.setText(overview);
                 searchDetails.setText(details);
