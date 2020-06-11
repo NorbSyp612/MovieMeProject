@@ -325,9 +325,8 @@ public class JsonUtils {
 
                 double tester = Double.parseDouble(movieUserRating);
 
-                Log.d("P", movieBackdropURL);
 
-                if (!movieBackdropURL.equals("null") && tester > .5) {
+                if (!movieBackdropURL.equals("null") && tester > .5 && !movieImageURL.equals("null")) {
                     parsedResults.add(addMovie);
                 }
             }
