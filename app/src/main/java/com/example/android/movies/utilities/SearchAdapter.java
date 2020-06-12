@@ -31,6 +31,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
     private int numberMovies;
     private ArrayList<Movie> movies;
     private ArrayList<Movie> favMovies;
+    private NumberViewHolder nvh;
 
     public SearchAdapter(int movies, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray, ArrayList<Movie> favoritesArray) {
         numberMovies = movies;
@@ -43,13 +44,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
 
 
     public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
+        void onListItemClick(View itemView, int clickedItemIndex);
     }
 
     public interface ButtonItemClickListener {
-        void onButtonClick(int clickedItemIndex);
+        void onButtonClick(View itemView, int clickedItemIndex);
     }
-
 
     @Override
     public NumberViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,6 +66,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
 
     @Override
     public void onBindViewHolder(@NonNull SearchAdapter.NumberViewHolder holder, int position) {
+        nvh = holder;
         holder.bind(position);
     }
 
@@ -73,6 +74,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
     public int getItemCount() {
         return movies.size();
     }
+
 
     class NumberViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView searchPoster;
@@ -97,7 +99,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
         }
 
 
-
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
@@ -108,9 +109,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
                 } else if (star_yellow.getVisibility() == View.VISIBLE) {
                     star_yellow.setVisibility(View.INVISIBLE);
                 }
-                onButtonClickListener.onButtonClick(clickedPosition);
+                onButtonClickListener.onButtonClick(v, clickedPosition);
             } else {
-                onClickListener.onListItemClick(clickedPosition);
+                onClickListener.onListItemClick(v, clickedPosition);
             }
 
         }

@@ -58,6 +58,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private AppDatabase mDb;
     private int clicks;
     private String instance_clicks;
+    private View currentView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,23 +113,18 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
 
-                if (clicks > 0) {
-                    populateUI();
-                    clicks = 0;
-                }
-
-
-
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
 
     @Override
     protected void onResume() {
-        clicks = 1;
         MainActivity.getFavs();
         super.onResume();
     }
+
+
 
     public void onFabClicked(View v) {
         mainMovies = MainActivity.getMovies();
@@ -286,9 +282,11 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
+    public void onListItemClick(View itemView, int clickedItemIndex) {
         if (!movies.isEmpty()) {
-            position = clickedItemIndex;
+            clicks++;
+            currentView = itemView;
+            position = clickedItemIndex -1;
             Context context = SearchActivity.this;
             Class destination = movieActivity.class;
 
@@ -328,9 +326,13 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     }
 
     @Override
-    public void onButtonClick(final int clickedItemIndex) {
+    public void onButtonClick(View itemView, final int clickedItemIndex) {
 
+        clicks++;
+        position = clickedItemIndex -1;
+        currentView = itemView;
         favorite = getString(R.string.No);
+
 
         for (FavEntry a : favorites) {
             if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
