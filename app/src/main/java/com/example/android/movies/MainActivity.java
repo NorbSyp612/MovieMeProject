@@ -256,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         current_Category = getString(R.string.Most_Popular);
 
         setupViewModel();
+        populateUI(getString(R.string.Most_Popular));
 
     }
 
@@ -413,40 +414,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 Timber.d("onChanged viewModel");
                 favorites = favEntries;
-                movieMeProcessor = new movieMeProcessor(favorites);
-
-                double numAction = 0;
-                double numAdv = 0;
-                double numComedy = 0;
-                double numHistory = 0;
-                double numHorror = 0;
-                double numDrama = 0;
-                double numFantasy = 0;
-                double numMystery = 0;
-                double numRomance = 0;
-                double numSciFi = 0;
-                double numThriller = 0;
-                double numWestern = 0;
-
-                String probAction = "";
-                String probAdv = "";
-                String probComedy = "";
-                String probHistory = "";
-                String probHorror = "";
-                String probDrama = "";
-                String probFantasy = "";
-                String probMystery = "";
-                String probRomance = "";
-                String probScifi;
-                String probThriller;
-                String probWestern;
-
-                double ratingsTotal = 0;
 
                 favMovies.clear();
 
                 ArrayList<String> genres = new ArrayList<>();
                 ArrayList<String> ratings = new ArrayList<>();
+
+                String ratingsTotal = "";
 
                 for (FavEntry a : favorites) {
                     Movie addMovie = new Movie();
@@ -457,105 +431,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
 
-
-                for (String b : genres) {
-                    if (b.equals(getString(R.string.Action))) {
-                        numAction++;
-                    } else if (b.equals(getString(R.string.Adventure))) {
-                        numAdv++;
-                    } else if (b.equals(getString(R.string.Comedy))) {
-                        numComedy++;
-                    } else if (b.equals(getString(R.string.History))) {
-                        numHistory++;
-                    } else if (b.equals(getString(R.string.Horror))) {
-                        numHorror++;
-                    } else if (b.equals(getString(R.string.Drama))) {
-                        numDrama++;
-                    } else if (b.equals(getString(R.string.Fantasy))) {
-                        numFantasy++;
-                    } else if (b.equals(getString(R.string.Mystery))) {
-                        numMystery++;
-                    } else if (b.equals(getString(R.string.Romance))) {
-                        numRomance++;
-                    } else if (b.equals(getString(R.string.SciFi))) {
-                        numSciFi++;
-                    } else if (b.equals(getString(R.string.Thriller))) {
-                        numThriller++;
-                    } else if (b.equals(getString(R.string.Western))) {
-                        numWestern++;
-                    }
-                }
-
-
-                int genreSize = genres.size() + 1;
-                ratingsTotal = ratingsTotal / genreSize;
-                String returnRatings = "" + ratingsTotal;
-
-                probAction = "" + (numAction / genreSize);
-                probAdv = "" + (numAdv / genreSize);
-                probComedy = "" + (numComedy / genreSize);
-                probHistory = "" + (numHistory / genreSize);
-                probHorror = "" + (numHorror / genreSize);
-                probDrama = "" + (numDrama / genreSize);
-                probFantasy = "" + (numFantasy / genreSize);
-                probMystery = "" + (numMystery / genreSize);
-                probRomance = "" + (numRomance / genreSize);
-                probScifi = "" + (numSciFi / genreSize);
-                probThriller = "" + (numThriller / genreSize);
-                probWestern = "" + (numWestern / genreSize);
-                ;
-
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                editor.putString(getString(R.string.Return_Ratings), returnRatings);
-                editor.putString(getString(R.string.Action), probAction);
-                editor.putString(getString(R.string.Adventure), probAdv);
-                editor.putString(getString(R.string.Comedy), probComedy);
-                editor.putString(getString(R.string.History), probHistory);
-                editor.putString(getString(R.string.Horror), probHorror);
-                editor.putString(getString(R.string.Drama), probDrama);
-                editor.putString(getString(R.string.Fantasy), probFantasy);
-                editor.putString(getString(R.string.Mystery), probMystery);
-                editor.putString(getString(R.string.Romance), probRomance);
-                editor.putString(getString(R.string.SciFi), probScifi);
-                editor.putString(getString(R.string.Thriller), probThriller);
-                editor.putString(getString(R.string.Western), probWestern);
-
-                editor.apply();
-
-
-                Timber.d("Button click is: %s", buttonClick);
-
-                if (buttonClick == 0 && resumeCode == 1) {
-                    populateUI(getString(R.string.Most_Popular));
-                } else if (buttonClick == 0 && resumeCode == 2) {
-                    populateUI(getString(R.string.Top_Rated));
-                } else if (buttonClick == 0 && resumeCode == 4) {
-                    populateUI(getString(R.string.Action));
-                } else if (buttonClick == 0 && resumeCode == 5) {
-                    populateUI(getString(R.string.Adventure));
-                } else if (buttonClick == 0 && resumeCode == 6) {
-                    populateUI(getString(R.string.Comedy));
-                } else if (buttonClick == 0 && resumeCode == 7) {
-                    populateUI(getString(R.string.History));
-                } else if (buttonClick == 0 && resumeCode == 8) {
-                    populateUI(getString(R.string.Horror));
-                } else if (buttonClick == 0 && resumeCode == 9) {
-                    populateUI(getString(R.string.Drama));
-                } else if (buttonClick == 0 && resumeCode == 10) {
-                    populateUI(getString(R.string.Fantasy));
-                } else if (buttonClick == 0 && resumeCode == 11) {
-                    populateUI(getString(R.string.Mystery));
-                } else if (buttonClick == 0 && resumeCode == 12) {
-                    populateUI(getString(R.string.Romance));
-                } else if (buttonClick == 0 && resumeCode == 13) {
-                    populateUI(getString(R.string.Science_Fiction));
-                } else if (buttonClick == 0 && resumeCode == 14) {
-                    populateUI(getString(R.string.Thriller));
-                } else if (buttonClick == 0 && resumeCode == 15) {
-                    populateUI(getString(R.string.Western));
-                }
+                mAdapter.notifyDataSetChanged();
 
             }
         });
