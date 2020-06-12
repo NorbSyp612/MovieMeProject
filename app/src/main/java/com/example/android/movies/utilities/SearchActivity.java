@@ -117,6 +117,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     clicks = 0;
                 }
 
+
+
             }
         });
     }
@@ -338,24 +340,21 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             }
         }
 
-        if (!favorite.equals(getString(R.string.Yes))) {
 
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (favorite.equals(getString(R.string.Yes))) {
-                        mDb.favDao().deleteFav(movieEntry);
-                        favorite = getString(R.string.No);
-                    } else {
-                        FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating());
-                        mDb.favDao().insertFav(enterNewFavorite);
-                        favorite = getString(R.string.Yes);
-                    }
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (favorite.equals(getString(R.string.Yes))) {
+                    mDb.favDao().deleteFav(movieEntry);
+                    favorite = getString(R.string.No);
+                } else {
+                    FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating());
+                    mDb.favDao().insertFav(enterNewFavorite);
+                    favorite = getString(R.string.Yes);
                 }
-            });
-        } else {
-            Timber.d("ERROR");
-        }
+            }
+        });
+
 
     }
 }

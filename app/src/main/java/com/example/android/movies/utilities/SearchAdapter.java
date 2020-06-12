@@ -50,6 +50,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
         void onButtonClick(int clickedItemIndex);
     }
 
+
     @Override
     public NumberViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -94,6 +95,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
             favButton.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
+
 
 
         @Override

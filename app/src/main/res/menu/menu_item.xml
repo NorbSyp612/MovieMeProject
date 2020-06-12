@@ -5,7 +5,6 @@
     <item
         android:id="@+id/drawer_favs"
         android:title="@string/Favorites"
-        android:icon="@drawable/ic_star_yellow"
         app:itemIconTint="@color/colorAccent"/>
 
     <item

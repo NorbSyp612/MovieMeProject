@@ -16,15 +16,32 @@
             android:id="@+id/title_bar"
             android:elevation="4dp"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="wrap_content"
             android:background="@color/colorAccent"
             android:textColor="@color/color_text_primary"
             android:gravity="center_vertical"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
-            android:textSize="30sp"
+            android:textSize="25sp"
+            android:text="@string/User_Score"
+            android:minLines="2"
+            android:maxLines="4"
+            android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/movie_date_genre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="gravity"
+            android:textDirection="locale"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="0dp"
+            android:text="Comedy- 2019"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="@+id/movie_summary"
+            app:layout_constraintTop_toBottomOf="@+id/movie_rating" />
 
         <TextView
             android:id="@+id/movie_rating"
@@ -89,7 +106,7 @@
             android:textStyle="bold"
             android:textSize="22sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_rating" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_date_genre" />
 
         <TextView
             android:textDirection="locale"
