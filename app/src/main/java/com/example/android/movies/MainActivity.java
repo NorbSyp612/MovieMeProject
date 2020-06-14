@@ -414,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 favorites = favEntries;
                 movieMeProcessor = new movieMeProcessor(favorites);
 
+
                 double numAction = 0;
                 double numAdv = 0;
                 double numComedy = 0;
@@ -445,14 +446,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 favMovies.clear();
 
                 ArrayList<String> genres = new ArrayList<>();
-                ArrayList<String> ratings = new ArrayList<>();
 
                 for (FavEntry a : favorites) {
                     Movie addMovie = new Movie();
                     addMovie.setMovieName(a.getName());
                     favMovies.add(addMovie);
                     genres.add(a.getCategory());
-                    ratings.add(a.getRating());
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
 
