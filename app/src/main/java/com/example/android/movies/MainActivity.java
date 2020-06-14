@@ -257,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         setupViewModel();
         populateUI(getString(R.string.Most_Popular));
+        movieMeProcessor = new movieMeProcessor(favorites);
 
     }
 
