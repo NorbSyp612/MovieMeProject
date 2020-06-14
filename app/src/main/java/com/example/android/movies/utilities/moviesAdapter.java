@@ -62,6 +62,10 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
         movies = moviesArray;
     }
 
+    public ArrayList<Movie> getFavMovies() {
+        return favMovies;
+    }
+
     public void addMovies(ArrayList<Movie> newMoviesArray) {
         Timber.d("Movies array size is: %s", newMoviesArray.size());
 
@@ -167,9 +171,6 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
                     }
                 }
 
-                if (test.getFav().equals("yes")) {
-                    star_yellow.setVisibility(View.VISIBLE);
-                }
 
                 movieItemView.setContentDescription(test.getMovieName());
                 Picasso.get()

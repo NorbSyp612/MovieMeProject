@@ -414,7 +414,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 favorites = favEntries;
                 movieMeProcessor = new movieMeProcessor(favorites);
 
-
                 double numAction = 0;
                 double numAdv = 0;
                 double numComedy = 0;
@@ -448,11 +447,16 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 ArrayList<String> genres = new ArrayList<>();
 
                 for (FavEntry a : favorites) {
+                    Log.d("ALL", a.getName());
                     Movie addMovie = new Movie();
                     addMovie.setMovieName(a.getName());
                     favMovies.add(addMovie);
                     genres.add(a.getCategory());
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
+                }
+
+                for (Movie b : favMovies) {
+                    Log.d("ALL", "2 - " + b.getMovieName());
                 }
 
 
@@ -523,6 +527,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 editor.apply();
 
                 mAdapter.notifyDataSetChanged();
+                ArrayList<Movie> test = mAdapter.getFavMovies();
+
+                for (Movie c : test) {
+                    Log.d("A2", c.getMovieName());
+                }
 
             }
         });
@@ -619,7 +628,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             setMoviesFavorites();
         }
     }
-
 
 
     public void setMoviesExtra(String MoviesCategory) {
