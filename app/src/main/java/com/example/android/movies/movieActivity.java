@@ -43,6 +43,8 @@ import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
 
+import static com.example.android.movies.MainActivity.favorites;
+
 public class movieActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
     private TextView mDate_Rating;
@@ -300,6 +302,16 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
 
     public void onFavoriteClicked(View v) {
 
+        favorite = getString(R.string.No);
+
+        for (FavEntry a : favorites) {
+            if (a.getId().equals(mMovieID)) {
+                favorite = getString(R.string.Yes);
+                movieEntry = a;
+                Timber.d("Movie is a favorite");
+            }
+        }
+
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -308,12 +320,12 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     favorite = getString(R.string.No);
                 } else {
                     FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, mMovieGenre, mMovieRating);
-                    Timber.d("adding: %s", mMovieName);
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
                 }
             }
         });
+
 
     }
 

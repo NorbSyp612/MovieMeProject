@@ -272,16 +272,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
 
-    //   @Override
-    //   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    //    switch (item.getItemId()) {
-    //          case R.id.search_m:
-    //          super.onSearchRequested();
-    //          return true;
-    //      default:
-    //              return super.onOptionsItemSelected(item);
-    //   }
-    //  }
 
 
     @Override
@@ -785,6 +775,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), mContext.getString(R.string.No));
 
         mContext.startActivity(goToMovieActivity);
+    }
+
+    public static void updateIndex(int clickedItemIndex) {
+
     }
 
     @Override
