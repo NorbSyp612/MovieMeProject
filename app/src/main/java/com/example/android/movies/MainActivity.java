@@ -257,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         setupViewModel();
         populateUI(getString(R.string.Most_Popular));
-        movieMeProcessor = new movieMeProcessor(favorites);
 
     }
 
@@ -404,6 +403,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
                 Timber.d("onChanged viewModel");
+                mAdapter.notifyDataSetChanged();
+
+
                 favorites = favEntries;
 
                 favMovies.clear();
@@ -422,10 +424,119 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
 
-                mAdapter.notifyDataSetChanged();
+                movieMeProcessor = new movieMeProcessor(favorites);
+                setupProcessor();
 
             }
         });
+    }
+
+    private void setupProcessor() {
+        double numAction = 0;
+        double numAdv = 0;
+        double numComedy = 0;
+        double numHistory = 0;
+        double numHorror = 0;
+        double numDrama = 0;
+        double numFantasy = 0;
+        double numMystery = 0;
+        double numRomance = 0;
+        double numSciFi = 0;
+        double numThriller = 0;
+        double numWestern = 0;
+
+        String probAction = "";
+        String probAdv = "";
+        String probComedy = "";
+        String probHistory = "";
+        String probHorror = "";
+        String probDrama = "";
+        String probFantasy = "";
+        String probMystery = "";
+        String probRomance = "";
+        String probScifi;
+        String probThriller;
+        String probWestern;
+
+        double ratingsTotal = 0;
+
+        ArrayList<String> genres = new ArrayList<>();
+        ArrayList<String> ratings = new ArrayList<>();
+
+        for (FavEntry a : favorites) {
+            Movie addMovie = new Movie();
+            addMovie.setMovieName(a.getName());
+            favMovies.add(addMovie);
+            genres.add(a.getCategory());
+            ratings.add(a.getRating());
+            ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
+        }
+
+        for (String b : genres) {
+            if (b.equals(getString(R.string.Action))) {
+                numAction++;
+            } else if (b.equals(getString(R.string.Adventure))) {
+                numAdv++;
+            } else if (b.equals(getString(R.string.Comedy))) {
+                numComedy++;
+            } else if (b.equals(getString(R.string.History))) {
+                numHistory++;
+            } else if (b.equals(getString(R.string.Horror))) {
+                numHorror++;
+            } else if (b.equals(getString(R.string.Drama))) {
+                numDrama++;
+            } else if (b.equals(getString(R.string.Fantasy))) {
+                numFantasy++;
+            } else if (b.equals(getString(R.string.Mystery))) {
+                numMystery++;
+            } else if (b.equals(getString(R.string.Romance))) {
+                numRomance++;
+            } else if (b.equals(getString(R.string.SciFi))) {
+                numSciFi++;
+            } else if (b.equals(getString(R.string.Thriller))) {
+                numThriller++;
+            } else if (b.equals(getString(R.string.Western))) {
+                numWestern++;
+            }
+        }
+
+
+        int genreSize = genres.size() + 1;
+        ratingsTotal = ratingsTotal / genreSize;
+        String returnRatings = "" + ratingsTotal;
+
+        probAction = "" + (numAction / genreSize);
+        probAdv = "" + (numAdv / genreSize);
+        probComedy = "" + (numComedy / genreSize);
+        probHistory = "" + (numHistory / genreSize);
+        probHorror = "" + (numHorror / genreSize);
+        probDrama = "" + (numDrama / genreSize);
+        probFantasy = "" + (numFantasy / genreSize);
+        probMystery = "" + (numMystery / genreSize);
+        probRomance = "" + (numRomance / genreSize);
+        probScifi = "" + (numSciFi / genreSize);
+        probThriller = "" + (numThriller / genreSize);
+        probWestern = "" + (numWestern / genreSize);
+        ;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString(getString(R.string.Return_Ratings), returnRatings);
+        editor.putString(getString(R.string.Action), probAction);
+        editor.putString(getString(R.string.Adventure), probAdv);
+        editor.putString(getString(R.string.Comedy), probComedy);
+        editor.putString(getString(R.string.History), probHistory);
+        editor.putString(getString(R.string.Horror), probHorror);
+        editor.putString(getString(R.string.Drama), probDrama);
+        editor.putString(getString(R.string.Fantasy), probFantasy);
+        editor.putString(getString(R.string.Mystery), probMystery);
+        editor.putString(getString(R.string.Romance), probRomance);
+        editor.putString(getString(R.string.SciFi), probScifi);
+        editor.putString(getString(R.string.Thriller), probThriller);
+        editor.putString(getString(R.string.Western), probWestern);
+
+        editor.apply();
     }
 
     public static ArrayList<Movie> getMovies() {

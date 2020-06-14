@@ -202,16 +202,14 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     private void setupViewModel() {
-
-        factory = new AddFavViewModelFactory(mDb, mMovieID);
-
-        viewModel = ViewModelProviders.of(this, factory).get(AddFavViewModel.class);
-        viewModel.getFav().observe(this, new Observer<FavEntry>() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
             @Override
-            public void onChanged(@Nullable FavEntry favEntry) {
+            public void onChanged(@Nullable List<FavEntry> favEntries) {
+                Timber.d("onChanged viewModel");
+                favorites = favEntries;
                 setFavButton();
-                movieEntry = favEntry;
-                Timber.d("liveData onChange");
+
             }
         });
 
@@ -318,10 +316,12 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                 if (favorite.equals(getString(R.string.Yes))) {
                     mDb.favDao().deleteFav(movieEntry);
                     favorite = getString(R.string.No);
+                    Timber.d("Removing from favorites");
                 } else {
                     FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, mMovieGenre, mMovieRating);
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
+                    Timber.d("Adding to favorites");
                 }
             }
         });
