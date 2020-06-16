@@ -135,13 +135,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
                 String title = test.getMovieName();
                 String overview = test.getSynopsis();
                 String date = test.getReleaseDate();
-                date = date.substring(0,4);
+                if (date.length() > 4) {
+                    date = date.substring(0, 4);
+                }
                 String genre = test.getGenre();
                 String rating = test.getUserRating();
                 String details = "";
 
                 if (!genre.isEmpty()) {
-                     details = date + " - " + genre + " - " + rating + "/10";
+                    details = date + " - " + genre + " - " + rating + "/10";
                 } else {
                     details = date + " - " + rating + "/10";
                 }

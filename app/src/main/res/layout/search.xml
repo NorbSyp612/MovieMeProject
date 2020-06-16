@@ -5,6 +5,7 @@
     android:layout_height="wrap_content">
 
     <include
+        android:id="@+id/include2"
         layout="@layout/movie_search_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,5 +13,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/green_seperator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:drawable/bottom_bar"
+        android:backgroundTint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@+id/include2"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

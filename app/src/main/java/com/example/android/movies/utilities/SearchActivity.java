@@ -56,6 +56,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private static ArrayList<Movie> newMovies = new ArrayList<>();
     private int pageCount;
     private SwipeRefreshLayout swipeLayout;
+    private String baseQuery;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         String results = "";
         mRecycle = findViewById(R.id.search_results);
 
+        swipeLayout = findViewById(R.id.search_refresh);
+        swipeLayout.setRefreshing(true);
 
 
         if (savedInstanceState != null && savedInstanceState.containsKey(instance_clicks)) {
@@ -109,7 +113,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
 
-               mAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -119,7 +123,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         MainActivity.getFavs();
         super.onResume();
     }
-
 
 
     public void onFabClicked(View v) {
@@ -253,16 +256,18 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!recyclerView.canScrollVertically(1)) {
-
-
-
-                    //     currentMovieSizeTest = movies.size() + 99;
-                //    mAdapter.setNumberMovies(movies.size() + 100);
-                 //   setMoviesExtra(current_Category);
+                if (!recyclerView.canScrollVertically(1) && !swipeLayout.isRefreshing()) {
+                    Log.d("T5", "onscrollstate");
+                    swipeLayout.setRefreshing(true);
+                    String page = Integer.toString(pageCount);
+                    URL tester = NetworkUtils.jsonRequest(baseQuery, page);
+                    new extra(SearchActivity.this, tester).execute();
                 }
             }
         });
+
+
+        swipeLayout.setRefreshing(false);
     }
 
     @Override
@@ -283,9 +288,12 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String searchQuery = intent.getStringExtra(SearchManager.QUERY);
             setTitle(searchQuery);
-            String baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
+            baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(pageCount);
+            Log.d("T5", "Doing page count " + pageCount + " in handle search");
+            pageCount++;
             URL testURL = NetworkUtils.jsonRequest(baseQuery, one);
+            Log.d("T5", "First URL is " + testURL.toString());
             new search(this, testURL).execute();
         }
     }
@@ -295,7 +303,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         if (!movies.isEmpty()) {
             clicks++;
             currentView = itemView;
-            position = clickedItemIndex -1;
+            position = clickedItemIndex - 1;
             Context context = SearchActivity.this;
             Class destination = movieActivity.class;
 
@@ -338,7 +346,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     public void onButtonClick(View itemView, final int clickedItemIndex) {
 
         clicks++;
-        position = clickedItemIndex -1;
+        position = clickedItemIndex - 1;
         currentView = itemView;
         favorite = getString(R.string.No);
 
@@ -371,62 +379,108 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
     @Override
     public void onAsyncFinished(ArrayList<Movie> o) {
-        movies = o;
-        populateUI();
-    }
-}
 
-class search extends AsyncTask<URL, Void, ArrayList<Movie>> {
+        if (!o.isEmpty()) {
+            ArrayList<Movie> testArray = o;
+            Movie testMovie = testArray.get(0);
 
-    private OnAsyncFinished onAsyncFinished;
-    private ArrayList<Movie> moviesResult;
-    private URL testURL;
-
-    public search(OnAsyncFinished onAsyncFinished, URL url) {
-        this.onAsyncFinished = onAsyncFinished;
-        this.testURL = url;
-
-    }
-
-    @Override
-    protected ArrayList<Movie> doInBackground(URL... urls) {
-        try {
-            String apiResult = NetworkUtils.getResponseFromHttpUrl(this.testURL);
-            moviesResult = JsonUtils.parseSearchResult(apiResult);
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (testMovie.getMovieName().equals("Key")) {
+                Log.d("T5", "doing page: " + pageCount);
+                pageCount++;
+                testArray.remove(0);
+                movies.addAll(testArray);
+                mAdapter.notifyDataSetChanged();
+                swipeLayout.setRefreshing(false);
+            } else {
+                movies = o;
+                populateUI();
+            }
         }
-        return moviesResult;
     }
 
-    @Override
-    protected void onPostExecute(ArrayList<Movie> movies) {
-        super.onPostExecute(movies);
-        onAsyncFinished.onAsyncFinished(movies);
-    }
-}
+    static class search extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
-class apiCallButton extends AsyncTask<URL, Void, String> {
+        private OnAsyncFinished onAsyncFinished;
+        private ArrayList<Movie> moviesResult;
+        private URL testURL;
 
-    @Override
-    protected String doInBackground(URL... urls) {
-        Timber.d("doing in background");
-        URL apiCall = urls[0];
-        String apiResult = null;
+        public search(OnAsyncFinished onAsyncFinished, URL url) {
+            this.onAsyncFinished = onAsyncFinished;
+            this.testURL = url;
 
-
-        try {
-            apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
-        return apiResult;
+        @Override
+        protected ArrayList<Movie> doInBackground(URL... urls) {
+            try {
+                String apiResult = NetworkUtils.getResponseFromHttpUrl(this.testURL);
+                moviesResult = JsonUtils.parseSearchResult(apiResult);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return moviesResult;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Movie> movies) {
+            super.onPostExecute(movies);
+            onAsyncFinished.onAsyncFinished(movies);
+        }
     }
 
-    @Override
-    protected void onPostExecute(String apiResults) {
+    static class extra extends AsyncTask<URL, Void, ArrayList<Movie>> {
+        private OnAsyncFinished onAsyncFinished;
+        private ArrayList<Movie> moviesResult = new ArrayList<>();
+        private URL testURL;
 
+        public extra(OnAsyncFinished onAsyncFinished, URL url) {
+            this.onAsyncFinished = onAsyncFinished;
+            this.testURL = url;
+            Movie t = new Movie();
+            t.setMovieName("Key");
+            moviesResult.add(t);
+        }
+
+        @Override
+        protected ArrayList<Movie> doInBackground(URL... urls) {
+            try {
+                String apiResult = NetworkUtils.getResponseFromHttpUrl(this.testURL);
+                moviesResult.addAll(JsonUtils.parseSearchResult(apiResult));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return moviesResult;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Movie> movies) {
+            super.onPostExecute(movies);
+            onAsyncFinished.onAsyncFinished(movies);
+        }
+    }
+
+    class apiCallButton extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            Timber.d("doing in background");
+            URL apiCall = urls[0];
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+        }
     }
 }
 
