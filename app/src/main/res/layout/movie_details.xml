@@ -14,34 +14,42 @@
 
         <TextView
             android:id="@+id/title_bar"
-            android:elevation="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
-            android:textColor="@color/color_text_primary"
-            android:gravity="center_vertical"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:textSize="25sp"
-            android:text="@string/User_Score"
-            android:minLines="2"
-            android:maxLines="4"
+            android:elevation="4dp"
             android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="3"
+            android:minLines="1"
+            android:paddingStart="24dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="24dp"
+            android:text="@string/User_Score"
+            android:textColor="@color/color_text_primary"
+            android:textSize="25sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/movie_date_genre"
-            android:layout_width="wrap_content"
+            android:id="@+id/title_extras"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="gravity"
-            android:textDirection="locale"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="0dp"
-            android:text="Comedy- 2019"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="@+id/movie_summary"
-            app:layout_constraintTop_toBottomOf="@+id/movie_rating" />
+            android:background="@color/colorAccent"
+            android:elevation="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:minLines="1"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="8dp"
+            android:text="2019 - Comedy"
+            android:textColor="@color/color_text_primary"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="@+id/title_bar"
+            app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+
 
         <TextView
             android:id="@+id/movie_rating"
@@ -51,8 +59,8 @@
             android:layout_marginTop="16dp"
             android:textSize="40sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/title_bar"
-            app:layout_constraintTop_toBottomOf="@+id/title_bar"
+            app:layout_constraintStart_toStartOf="@+id/title_extras"
+            app:layout_constraintTop_toBottomOf="@+id/title_extras"
             tools:text="8.5/10" />
 
         <TextView
@@ -65,34 +73,34 @@
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/movie_rating"
-            app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+            app:layout_constraintTop_toBottomOf="@+id/title_extras" />
 
         <ImageView
-            android:contentDescription="@string/Fav_Button"
             android:id="@+id/button_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="@null"
+            android:contentDescription="@string/Fav_Button"
             android:onClick="onFavoriteClicked"
             android:src="@drawable/ic_star_yellow"
-            app:layout_constraintEnd_toEndOf="@+id/title_bar"
-            app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+            app:layout_constraintEnd_toEndOf="@+id/title_extras"
+            app:layout_constraintTop_toBottomOf="@+id/title_extras" />
 
         <ImageButton
-            android:contentDescription="@string/Fav_Button"
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="4dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="@null"
+            android:contentDescription="@string/Fav_Button"
+            android:elevation="4dp"
             android:onClick="onFavoriteClicked"
             android:src="@drawable/ic_star_border_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_bar"/>
+            app:layout_constraintTop_toBottomOf="@+id/title_extras" />
 
 
         <TextView
@@ -103,20 +111,20 @@
             android:layout_marginTop="8dp"
             android:text="@string/Overview"
             android:textColor="@color/colorAccent"
-            android:textStyle="bold"
             android:textSize="22sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_date_genre" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_rating" />
 
         <TextView
-            android:textDirection="locale"
-            android:textAlignment="gravity"
             android:id="@+id/movie_summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
+            android:textAlignment="gravity"
+            android:textDirection="locale"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Overview"
@@ -124,7 +132,6 @@
 
 
         <ImageView
-            android:contentDescription="@string/Sec_Sep"
             android:id="@+id/imageBar1"
             android:layout_width="325dp"
             android:layout_height="2dp"
@@ -135,6 +142,7 @@
             android:layout_marginRight="8dp"
             android:background="@android:drawable/bottom_bar"
             android:backgroundTint="@color/colorAccent"
+            android:contentDescription="@string/Sec_Sep"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -147,9 +155,9 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:text="@string/Trailers"
-            android:textSize="22sp"
-
             android:textColor="@color/colorAccent"
+
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageBar1" />
@@ -168,7 +176,6 @@
 
 
         <ImageView
-            android:contentDescription="@string/Sec_Sep"
             android:id="@+id/imageBar3"
             android:layout_width="325dp"
             android:layout_height="2dp"
@@ -177,6 +184,7 @@
             android:layout_marginEnd="8dp"
             android:background="@android:drawable/bottom_bar"
             android:backgroundTint="@color/colorAccent"
+            android:contentDescription="@string/Sec_Sep"
             android:paddingBottom="10dp"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
@@ -192,23 +200,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageBar3" />
 
-        <com.google.android.gms.ads.AdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
             android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
             android:layout_marginStart="0dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="16dp"
             android:background="@null"
             ads:adSize="BANNER"
             ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
-            app:layout_constraintTop_toBottomOf="@+id/include"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-        </com.google.android.gms.ads.AdView>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include"></com.google.android.gms.ads.AdView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

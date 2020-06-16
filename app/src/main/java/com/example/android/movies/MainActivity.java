@@ -1179,8 +1179,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             ArrayList<Movie> moviesAdd = new ArrayList<Movie>();
             moviesAdd = JsonUtils.parseApiResult(apiResults);
 
-            Log.d("TEST", "size is " + currentMovieSizeTest);
-            Log.d("TEST", "moviesAdd size is " + moviesAdd.size());
 
             for (Movie movie : moviesAdd) {
 
@@ -1191,8 +1189,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
                 movies.add(movie);
-                Log.d("TEST", "Added " + movie.getMovieName() + " size is now " + movies.size());
-                //   Timber.d("movies size is: %s", movies.size());
             }
 
             if (movies.size() > currentMovieSizeTest) {
