@@ -3,14 +3,11 @@ package com.example.android.movies.utilities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -33,7 +29,6 @@ import com.example.android.movies.database.FavEntry;
 import com.example.android.movies.movieActivity;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,7 +38,7 @@ import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
 
-public class SearchActivity extends AppCompatActivity implements SearchAdapter.ListItemClickListener, SearchAdapter.ButtonItemClickListener {
+public class SearchActivity extends AppCompatActivity implements SearchAdapter.ListItemClickListener, SearchAdapter.ButtonItemClickListener, OnAsyncFinished {
 
     private RecyclerView mRecycle;
     private ArrayList<Movie> movies;
@@ -90,7 +85,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         setupViewModel();
         handleSearch();
-        populateUI();
 
     }
 
@@ -118,7 +112,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
 
-                mAdapter.notifyDataSetChanged();
+           //     mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -261,32 +255,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1)) {
-                    mRecycle.setHasFixedSize(false);
-                    Log.d("t4", "Success");
-                    try {
-                        newMovies.clear();
-                        pageCount++;
-                        String add = Integer.toString(pageCount);
-                        testURL = NetworkUtils.jsonRequest(baseQuery, add);
-                        Log.d("T4", testURL.toString());
-                        newMovies = new search().execute(testURL).get();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (!newMovies.isEmpty()) {
-                        movies.addAll(newMovies);
-                    }
-
-                    mAdapter.notifyItemInserted(movies.size() - 9);
-                    mAdapter.notifyItemInserted(movies.size() - 8);
-                    mAdapter.notifyItemInserted(movies.size() - 7);
-                    mAdapter.notifyItemInserted(movies.size() - 6);
 
 
-                    Log.d("T4", "Empty?" + newMovies.isEmpty());
+
                     //     currentMovieSizeTest = movies.size() + 99;
                 //    mAdapter.setNumberMovies(movies.size() + 100);
                  //   setMoviesExtra(current_Category);
@@ -316,13 +287,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(pageCount);
             testURL = NetworkUtils.jsonRequest(baseQuery, one);
-            Log.d("t4", testURL.toString());
-            try {
-                movies = new search().execute(testURL).get();
-                populateUI();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
+            new search(this, testURL).execute();
         }
     }
 
@@ -404,16 +369,34 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
 
     }
+
+    @Override
+    public void onAsyncFinished(ArrayList<Movie> o) {
+        ArrayList<Movie> test = o;
+        movies = o;
+        populateUI();
+        for (Movie a : test) {
+            Log.d("T5", a.getMovieName());
+        }
+    }
 }
 
 class search extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
+    private OnAsyncFinished onAsyncFinished;
     private ArrayList<Movie> moviesResult;
+    private URL testURL;
+
+    public search(OnAsyncFinished onAsyncFinished, URL url) {
+        this.onAsyncFinished = onAsyncFinished;
+        this.testURL = url;
+
+    }
 
     @Override
     protected ArrayList<Movie> doInBackground(URL... urls) {
         try {
-            String apiResult = NetworkUtils.getResponseFromHttpUrl(urls[0]);
+            String apiResult = NetworkUtils.getResponseFromHttpUrl(this.testURL);
             moviesResult = JsonUtils.parseSearchResult(apiResult);
         } catch (IOException e) {
             e.printStackTrace();
@@ -421,7 +404,11 @@ class search extends AsyncTask<URL, Void, ArrayList<Movie>> {
         return moviesResult;
     }
 
-
+    @Override
+    protected void onPostExecute(ArrayList<Movie> movies) {
+        super.onPostExecute(movies);
+        onAsyncFinished.onAsyncFinished(movies);
+    }
 }
 
 class apiCallButton extends AsyncTask<URL, Void, String> {
@@ -447,3 +434,4 @@ class apiCallButton extends AsyncTask<URL, Void, String> {
 
     }
 }
+
