@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android.movies.AppExecutors;
 import com.example.android.movies.Items.Movie;
@@ -59,6 +60,11 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private int clicks;
     private String instance_clicks;
     private View currentView;
+    private static ArrayList<Movie> newMovies = new ArrayList<>();
+    private URL testURL;
+    private int pageCount;
+    private String baseQuery;
+    private static SwipeRefreshLayout swipeLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +75,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         clicks = 0;
         instance_clicks = "Clicks";
-
-
+        pageCount = 1;
         results = "";
         mRecycle = findViewById(R.id.search_results);
 
@@ -249,6 +254,45 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         mRecycle.setHasFixedSize(false);
         Timber.d("Setting position to %s", position);
         mRecycle.scrollToPosition(position);
+
+        mRecycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    mRecycle.setHasFixedSize(false);
+                    Log.d("t4", "Success");
+                    try {
+                        newMovies.clear();
+                        pageCount++;
+                        String add = Integer.toString(pageCount);
+                        testURL = NetworkUtils.jsonRequest(baseQuery, add);
+                        Log.d("T4", testURL.toString());
+                        newMovies = new search().execute(testURL).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (!newMovies.isEmpty()) {
+                        movies.addAll(newMovies);
+                    }
+
+                    mAdapter.notifyItemInserted(movies.size() - 9);
+                    mAdapter.notifyItemInserted(movies.size() - 8);
+                    mAdapter.notifyItemInserted(movies.size() - 7);
+                    mAdapter.notifyItemInserted(movies.size() - 6);
+
+
+                    Log.d("T4", "Empty?" + newMovies.isEmpty());
+                    //     currentMovieSizeTest = movies.size() + 99;
+                //    mAdapter.setNumberMovies(movies.size() + 100);
+                 //   setMoviesExtra(current_Category);
+                }
+            }
+        });
     }
 
     @Override
@@ -269,9 +313,10 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String searchQuery = intent.getStringExtra(SearchManager.QUERY);
             setTitle(searchQuery);
-            String letsgo = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
-            String one = Integer.toString(1);
-            URL testURL = NetworkUtils.jsonRequest(letsgo, one);
+            baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
+            String one = Integer.toString(pageCount);
+            testURL = NetworkUtils.jsonRequest(baseQuery, one);
+            Log.d("t4", testURL.toString());
             try {
                 movies = new search().execute(testURL).get();
                 populateUI();

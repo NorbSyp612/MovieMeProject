@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background"
     tools:context=".utilities.SearchActivity">
 
-   <com.google.android.material.floatingactionbutton.FloatingActionButton
-       android:id="@+id/refresh_fab"
-       android:layout_width="56dp"
-       android:layout_height="56dp"
-       android:layout_gravity="bottom|end"
-       android:layout_marginEnd="24dp"
-       android:layout_marginBottom="24dp"
-       android:background="@color/colorAccent"
-       android:contentDescription="@string/app_name"
-       android:elevation="6dp"
-       android:onClick="onFabClicked"
-       android:stateListAnimator="@animator/fab_state_list_anim"
-       app:pressedTranslationZ="6dp" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/refresh_fab"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/colorAccent"
+        android:contentDescription="@string/app_name"
+        android:elevation="6dp"
+        android:onClick="onFabClicked"
+        android:stateListAnimator="@animator/fab_state_list_anim"
+        app:pressedTranslationZ="6dp" />
 
-   <androidx.recyclerview.widget.RecyclerView
-       android:background="@color/colorAccent"
-       android:id="@+id/search_results"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:clipToPadding="false"
-       android:scrollbars="vertical"
-       android:scrollbarThumbVertical="@drawable/scrollbar"
-       />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/search_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:clipToPadding="false"
+            android:scrollbarThumbVertical="@drawable/scrollbar"
+            android:scrollbars="vertical"
+            />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>
