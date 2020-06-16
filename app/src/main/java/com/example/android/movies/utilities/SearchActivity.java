@@ -42,11 +42,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
     private RecyclerView mRecycle;
     private ArrayList<Movie> movies;
-    private String results;
     private SearchAdapter mAdapter;
     private FavEntry movieEntry;
     static List<FavEntry> favorites;
-    private static ArrayList<Movie> mainMovies = new ArrayList<>();
     private static ArrayList<Movie> favMovies = new ArrayList<>();
     private int position;
     private String instance_position;
@@ -56,10 +54,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private String instance_clicks;
     private View currentView;
     private static ArrayList<Movie> newMovies = new ArrayList<>();
-    private URL testURL;
     private int pageCount;
-    private String baseQuery;
-    private static SwipeRefreshLayout swipeLayout;
+    private SwipeRefreshLayout swipeLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +67,10 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         clicks = 0;
         instance_clicks = "Clicks";
         pageCount = 1;
-        results = "";
+        String results = "";
         mRecycle = findViewById(R.id.search_results);
+
+
 
         if (savedInstanceState != null && savedInstanceState.containsKey(instance_clicks)) {
             clicks = savedInstanceState.getInt(instance_clicks, 0);
@@ -83,7 +81,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecycle.setLayoutManager(layoutManager);
 
-        setupViewModel();
         handleSearch();
 
     }
@@ -112,7 +109,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
 
-           //     mAdapter.notifyDataSetChanged();
+               mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -126,7 +123,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
 
     public void onFabClicked(View v) {
-        mainMovies = MainActivity.getMovies();
+        ArrayList<Movie> mainMovies = MainActivity.getMovies();
         favMovies = MainActivity.getFavs();
 
         Context bContext = getApplicationContext();
@@ -249,6 +246,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         Timber.d("Setting position to %s", position);
         mRecycle.scrollToPosition(position);
 
+        setupViewModel();
+
         mRecycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -284,9 +283,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String searchQuery = intent.getStringExtra(SearchManager.QUERY);
             setTitle(searchQuery);
-            baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
+            String baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(pageCount);
-            testURL = NetworkUtils.jsonRequest(baseQuery, one);
+            URL testURL = NetworkUtils.jsonRequest(baseQuery, one);
             new search(this, testURL).execute();
         }
     }
@@ -372,12 +371,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
     @Override
     public void onAsyncFinished(ArrayList<Movie> o) {
-        ArrayList<Movie> test = o;
         movies = o;
         populateUI();
-        for (Movie a : test) {
-            Log.d("T5", a.getMovieName());
-        }
     }
 }
 
