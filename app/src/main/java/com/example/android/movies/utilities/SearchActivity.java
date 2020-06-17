@@ -69,7 +69,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         clicks = 0;
         instance_clicks = "Clicks";
         pageCount = 1;
-        String results = "";
         mRecycle = findViewById(R.id.search_results);
 
         swipeLayout = findViewById(R.id.search_refresh);
@@ -286,14 +285,13 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private void handleSearch() {
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            Log.d("T5","handling search");
             String searchQuery = intent.getStringExtra(SearchManager.QUERY);
             setTitle(searchQuery);
             baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(pageCount);
-            Log.d("T5", "Doing page count " + pageCount + " in handle search");
             pageCount++;
             URL testURL = NetworkUtils.jsonRequest(baseQuery, one);
-            Log.d("T5", "First URL is " + testURL.toString());
             new search(this, testURL).execute();
         }
     }
@@ -378,17 +376,12 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     }
 
     @Override
-    public void onAsyncFinished(ArrayList<Movie> o) {
+    public void onAsyncFinished(ArrayList<Movie> o, String key) {
 
         if (!o.isEmpty()) {
-            ArrayList<Movie> testArray = o;
-            Movie testMovie = testArray.get(0);
-
-            if (testMovie.getMovieName().equals("Key")) {
-                Log.d("T5", "doing page: " + pageCount);
+            if (key.equals("Key")) {
                 pageCount++;
-                testArray.remove(0);
-                movies.addAll(testArray);
+                movies.addAll(o);
                 mAdapter.notifyDataSetChanged();
                 swipeLayout.setRefreshing(false);
             } else {
@@ -424,7 +417,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
             super.onPostExecute(movies);
-            onAsyncFinished.onAsyncFinished(movies);
+            onAsyncFinished.onAsyncFinished(movies, "no");
         }
     }
 
@@ -436,9 +429,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         public extra(OnAsyncFinished onAsyncFinished, URL url) {
             this.onAsyncFinished = onAsyncFinished;
             this.testURL = url;
-            Movie t = new Movie();
-            t.setMovieName("Key");
-            moviesResult.add(t);
         }
 
         @Override
@@ -455,7 +445,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
             super.onPostExecute(movies);
-            onAsyncFinished.onAsyncFinished(movies);
+            onAsyncFinished.onAsyncFinished(movies, "Key");
         }
     }
 
