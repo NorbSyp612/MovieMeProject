@@ -39,6 +39,7 @@ import com.example.android.movies.database.AppDatabase;
 import com.example.android.movies.database.FavEntry;
 import com.example.android.movies.utilities.JsonUtils;
 import com.example.android.movies.utilities.NetworkUtils;
+import com.example.android.movies.utilities.OnAsyncFinished;
 import com.example.android.movies.utilities.movieMeProcessor;
 import com.example.android.movies.utilities.moviesAdapter;
 import com.google.android.material.navigation.NavigationView;
@@ -57,7 +58,7 @@ import timber.log.Timber;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener, NavigationView.OnNavigationItemSelectedListener, OnAsyncFinished {
 
     private static ArrayList<Movie> movies = new ArrayList<>();
     private static ArrayList<Movie> favMovies = new ArrayList<>();
@@ -269,18 +270,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
-
-
-    //   @Override
-    //   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    //    switch (item.getItemId()) {
-    //          case R.id.search_m:
-    //          super.onSearchRequested();
-    //          return true;
-    //      default:
-    //              return super.onOptionsItemSelected(item);
-    //   }
-    //  }
 
 
     @Override
@@ -756,6 +745,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         for (int i = 1; i < 6; i++) {
             String pageNum = Integer.toString(i);
             URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
+            Log.d("T6", testURL.toString());
+            Log.d("T5", "Test URL IS: " + testURL.toString());
             Timber.d("URL: %s", testURL);
             new apiCall(this).execute(testURL);
         }
@@ -1049,6 +1040,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return favMovies;
     }
 
+    @Override
+    public void onAsyncFinished(ArrayList<Movie> o, String key) {
+
+    }
+
 
     public static class apiCallButton extends AsyncTask<URL, Void, String> {
 
@@ -1114,7 +1110,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         protected void onPostExecute(String apiResults) {
 
             MainActivity activity = mainReference.get();
-            if (activity == null || activity.isFinishing()) return;
+         //   if (activity == null || activity.isFinishing()) return;
 
             if (apiResults == null) {
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
@@ -1122,6 +1118,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             ArrayList<Movie> moviesAdd;
             moviesAdd = JsonUtils.parseApiResult(apiResults);
+
+            Log.d("T5", "Movies array size is: " + moviesAdd.size());
 
             for (Movie movie : moviesAdd) {
 
@@ -1136,6 +1134,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
 
             if (movies.size() > 99) {
+                Log.d("T5", "Movie size over 99");
                 MainActivity.execute();
             }
 

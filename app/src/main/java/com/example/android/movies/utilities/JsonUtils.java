@@ -154,7 +154,6 @@ public class JsonUtils {
     }
 
     public static ArrayList<Movie> parseApiResult(String apiResult) {
-
         ArrayList<Movie> parsedResults = new ArrayList<>();
 
         try {
@@ -167,11 +166,14 @@ public class JsonUtils {
 
             JSONArray jMovies = jResult.getJSONArray("results");
 
+
+
             for (int i = 0; i < jMovies.length(); i++) {
                 Movie addMovie = new Movie();
                 JSONObject movie = jMovies.getJSONObject(i);
 
                 String movieName = movie.getString("title");
+                Log.d("T7", movieName);
                 String movieImageURL = movie.getString("poster_path");
                 String movieBackdropURL = movie.getString("backdrop_path");
                 String movieSynopsis = movie.getString("overview");

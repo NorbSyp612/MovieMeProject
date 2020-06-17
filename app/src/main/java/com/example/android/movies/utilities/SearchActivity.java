@@ -256,7 +256,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1) && !swipeLayout.isRefreshing()) {
-                    Log.d("T5", "onscrollstate");
                     swipeLayout.setRefreshing(true);
                     String page = Integer.toString(pageCount);
                     URL tester = NetworkUtils.jsonRequest(baseQuery, page);
@@ -285,7 +284,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private void handleSearch() {
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            Log.d("T5","handling search");
             String searchQuery = intent.getStringExtra(SearchManager.QUERY);
             setTitle(searchQuery);
             baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
