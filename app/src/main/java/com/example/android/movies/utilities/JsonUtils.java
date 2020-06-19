@@ -173,7 +173,6 @@ public class JsonUtils {
                 JSONObject movie = jMovies.getJSONObject(i);
 
                 String movieName = movie.getString("title");
-                Log.d("T7", movieName);
                 String movieImageURL = movie.getString("poster_path");
                 String movieBackdropURL = movie.getString("backdrop_path");
                 String movieSynopsis = movie.getString("overview");
