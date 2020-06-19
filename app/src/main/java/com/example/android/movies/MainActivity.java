@@ -68,16 +68,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private static SwipeRefreshLayout swipeLayout;
     private static final int NUM_LIST_MOVIES = 100;
     private static int currentMovieSizeTest;
-    private String isFavorite;
     private AppDatabase mDb;
     static List<FavEntry> favorites;
     private static int resumeCode;
-    private String movieID;
     private String INSTANCE_RESUME_CODE = "RESUME_CODE";
     private String INSTANCE_VIEW_POSITION_CODE = "POSITION CODE";
     private static String INSTANCE_CATEGORY;
     private static String current_Category;
-    private static int viewHolderPosition;
     private static int NUM_LIST_MOVIES_FAVORITES;
     private String favorite;
     private FavEntry movieEntry;
@@ -91,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     private int pageNumber;
+    private int extraTest;
 
     private Context mContext;
     private static int statusCode;
@@ -673,21 +671,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             sortedBy = getString(R.string.API_Query_Genre_Western) + getString(R.string.API_Search_Part5);
         }
 
-        Log.d("TEST", "Extra Counter is : " + ExtraCounter);
 
-        int start = ExtraCounter + 5;
-        int end = start + 5;
-
-        Log.d("TEST", "Start is: " + start + " and end is " + end);
-
-        for (int i = start; i < end; i++) {
-            String pageNum = Integer.toString(i);
-            URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
-            Timber.d("URL: %s", testURL);
-            new apiCallExtra(this).execute(testURL);
-        }
-
-        ExtraCounter = start;
+        extraTest = movies.size() + 100;
+        String pageNum = Integer.toString(pageNumber);
+        URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
+        new apiCallExtra(this, this, testURL).execute();
 
     }
 
@@ -745,10 +733,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
 
-            pageNumber = 1;
-            String pageNum = Integer.toString(pageNumber);
-            URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
-            new apiCall(this, this, testURL).execute();
+        pageNumber = 1;
+        String pageNum = Integer.toString(pageNumber);
+        URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
+        new apiCall(this, this, testURL).execute();
 
     }
 
@@ -812,9 +800,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             Context context = MainActivity.this;
             Class destination = movieActivity.class;
 
-            viewHolderPosition = clickedItemIndex;
-
-            Timber.d("Viewholder position is: %s", viewHolderPosition);
+            Timber.d("Viewholder position is: %s", clickedItemIndex);
 
             final Intent goToMovieActivity = new Intent(context, destination);
 
@@ -828,8 +814,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
             goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenre());
 
-            movieID = movies.get(clickedItemIndex).getId();
-            isFavorite = getString(R.string.No);
+            String movieID = movies.get(clickedItemIndex).getId();
+            String isFavorite = getString(R.string.No);
 
             for (FavEntry a : favorites) {
                 if (a.getId().equals(movieID)) {
@@ -991,7 +977,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
     }
 
-    public static void executeFavs() {
+    public void executeFavs() {
         Timber.d("executing favs");
         mAdapter.setNumberMovies(favMovies.size());
         mAdapter.setMovies(movies);
@@ -1000,7 +986,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
 
-    public  void execute() {
+    public void execute() {
         Timber.d("is empty: %s", favMovies.isEmpty());
         asyncCount = 0;
         mAdapter.setNumberMovies(NUM_LIST_MOVIES);
@@ -1009,7 +995,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         swipeLayout.setRefreshing(false);
     }
 
-    public static void executeExtra() {
+    public void executeExtra() {
 
         Log.d("TEST", "Size of movies array at start of executeXtra " + movies.size());
 
@@ -1045,14 +1031,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         String result = "";
         pageNumber++;
         String pageNum = Integer.toString(pageNumber);
+        int remove;
+
+        if (pageNumber > 9) {
+            remove = 2;
+        } else {
+            remove = 1;
+        }
 
         if (url != null && url.length() > 0) {
-            result = ((url.substring(0, url.length() - 1)) + pageNum);
+            result = ((url.substring(0, url.length() - remove)) + pageNum);
         }
 
 
-
         if (o.size() < 100) {
+            Log.d("T7", "Doing under 100");
             URL newUrl = NetworkUtils.jsonRequest(result, pageNum);
             try {
                 newUrl = new URL(result);
@@ -1061,6 +1054,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
             Log.d("T7", "URL is: " + newUrl.toString());
             new apiCall(this, this, newUrl).execute();
+        } else if (o.size() > 100) {
+            Log.d("T7", "Doing over 100");
+            if (o.size() < extraTest) {
+                URL newUrl = NetworkUtils.jsonRequest(result, pageNum);
+                try {
+                    newUrl = new URL(result);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                Log.d("T7", "URL is: " + newUrl.toString());
+                new apiCallExtra(this, this, newUrl).execute();
+            } else {
+                executeExtra();
+            }
+
         } else {
             execute();
         }
@@ -1114,14 +1122,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mainReference = new WeakReference<>(context);
             this.onAsyncFinished = onAsyncFinished;
             this.link = url;
-            Log.d("T7", "Link is: " + this.link.toString());
         }
 
         @Override
         protected String doInBackground(URL... urls) {
             String apiResult = null;
 
-        //    Log.d("T7", "Trying URL: " + this.link.toString());
+            //    Log.d("T7", "Trying URL: " + this.link.toString());
 
             try {
                 apiResult = NetworkUtils.getResponseFromHttpUrl(this.link);
@@ -1138,9 +1145,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             MainActivity activity = mainReference.get();
 
             if (apiResults == null) {
-              //    Toast.makeText(activity.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
             }
-
 
 
             ArrayList<Movie> moviesAdd;
@@ -1165,20 +1171,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public static class apiCallExtra extends AsyncTask<URL, Void, String> {
 
         private WeakReference<MainActivity> mainReference;
+        private OnAsyncFinished onAsyncFinished;
+        private URL link;
 
-        apiCallExtra(MainActivity context) {
+        apiCallExtra(MainActivity context, OnAsyncFinished on, URL url) {
             mainReference = new WeakReference<>(context);
+            this.onAsyncFinished = on;
+            this.link = url;
         }
 
         @Override
         protected String doInBackground(URL... urls) {
-            Timber.d("doing in background");
-            URL apiCall = urls[0];
             String apiResult = null;
 
-
             try {
-                apiResult = NetworkUtils.getResponseFromHttpUrl(apiCall);
+                apiResult = NetworkUtils.getResponseFromHttpUrl(this.link);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1196,7 +1203,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
             }
 
-            ArrayList<Movie> moviesAdd = new ArrayList<Movie>();
+            ArrayList<Movie> moviesAdd;
             moviesAdd = JsonUtils.parseApiResult(apiResults);
 
 
@@ -1211,9 +1218,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 movies.add(movie);
             }
 
-            if (movies.size() > currentMovieSizeTest) {
-                MainActivity.executeExtra();
-            }
+
+            this.onAsyncFinished.onAsyncFinished(movies, this.link.toString());
+
 
         }
     }
@@ -1294,7 +1301,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
 
             if (movies.size() == favMovies.size()) {
-                MainActivity.executeFavs();
+             //   MainActivity.executeFavs();
             }
 
         }
