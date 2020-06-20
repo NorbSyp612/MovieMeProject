@@ -87,6 +87,13 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecycle.setLayoutManager(layoutManager);
 
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeLayout.setRefreshing(false);
+            }
+        });
+
         handleSearch();
 
     }
