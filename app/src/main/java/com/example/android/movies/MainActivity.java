@@ -1054,10 +1054,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     e.printStackTrace();
                 }
                 new apiCall(this, this, newUrl).execute();
-            } else if (first && o.size() > 100) {
+            } else if (first && o.size() >= 100) {
                 execute();
+                Log.d("T7", "executing");
                 first = false;
-            } else if (o.size() > 100) {
+            } else if (o.size() >= 100) {
                 if (o.size() < extraTest) {
                     URL newUrl = NetworkUtils.jsonRequest(result, pageNum);
                     try {

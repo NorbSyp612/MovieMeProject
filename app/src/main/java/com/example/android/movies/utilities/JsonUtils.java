@@ -167,7 +167,6 @@ public class JsonUtils {
             JSONArray jMovies = jResult.getJSONArray("results");
 
 
-
             for (int i = 0; i < jMovies.length(); i++) {
                 Movie addMovie = new Movie();
                 JSONObject movie = jMovies.getJSONObject(i);
@@ -180,6 +179,7 @@ public class JsonUtils {
                 String movieReleaseDate = movie.getString("release_date");
                 String movieId = movie.getString("id");
                 String movieGenre = "";
+                String genreString = "";
 
                 JSONArray genres = movie.getJSONArray("genre_ids");
 
@@ -187,41 +187,43 @@ public class JsonUtils {
                 int testNum;
 
                 for (int b = 0; b < genres.length(); b++) {
-                    testNum = Integer.parseInt(genres.getString(b));
+                    genreNum = Integer.parseInt(genres.getString(b));
 
-                    if (testNum > genreNum) {
-                        genreNum = testNum;
+                    if (genreNum == 28) {
+                        movieGenre = "Action";
+                    } else if (genreNum == 12) {
+                        movieGenre = "Adventure";
+                    } else if (genreNum == 35) {
+                        movieGenre = "Comedy";
+                    } else if (genreNum == 80) {
+                        movieGenre = "Crime";
+                    } else if (genreNum == 18) {
+                        movieGenre = "Drama";
+                    } else if (genreNum == 10751) {
+                        movieGenre = "Family";
+                    } else if (genreNum == 14) {
+                        movieGenre = "Fantasy";
+                    } else if (genreNum == 36) {
+                        movieGenre = "History";
+                    } else if (genreNum == 27) {
+                        movieGenre = "Horror";
+                    } else if (genreNum == 9648) {
+                        movieGenre = "Mystery";
+                    } else if (genreNum == 10749) {
+                        movieGenre = "Romance";
+                    } else if (genreNum == 878) {
+                        movieGenre = "SciFi";
+                    } else if (genreNum == 53) {
+                        movieGenre = "Thriller";
+                    } else if (genreNum == 37) {
+                        movieGenre = "Western";
                     }
-                }
 
-                if (genreNum == 28) {
-                    movieGenre = "Action";
-                } else if (genreNum == 12) {
-                    movieGenre = "Adventure";
-                } else if (genreNum == 35) {
-                    movieGenre = "Comedy";
-                } else if (genreNum == 80) {
-                    movieGenre = "Crime";
-                } else if (genreNum == 18) {
-                    movieGenre = "Drama";
-                } else if (genreNum == 10751) {
-                    movieGenre = "Family";
-                } else if (genreNum == 14) {
-                    movieGenre = "Fantasy";
-                } else if (genreNum == 36) {
-                    movieGenre = "History";
-                } else if (genreNum == 27) {
-                    movieGenre = "Horror";
-                } else if (genreNum == 9648) {
-                    movieGenre = "Mystery";
-                } else if (genreNum == 10749) {
-                    movieGenre = "Romance";
-                } else if (genreNum == 878) {
-                    movieGenre = "SciFi";
-                } else if (genreNum == 53) {
-                    movieGenre = "Thriller";
-                } else if (genreNum == 37) {
-                    movieGenre = "Western";
+                    if (b > 0) {
+                        genreString = genreString + ", " + movieGenre;
+                    } else {
+                        genreString = movieGenre;
+                    }
                 }
 
 
@@ -232,7 +234,7 @@ public class JsonUtils {
                 addMovie.setReleaseDate(movieReleaseDate);
                 addMovie.setId(movieId);
                 addMovie.setBackdropURL(movieBackdropURL);
-                addMovie.setGenre(movieGenre);
+                addMovie.setGenre(genreString);
 
                 if (!movieBackdropURL.isEmpty() && !movieGenre.isEmpty() && Double.parseDouble(movieUserRating) > 2) {
                     parsedResults.add(addMovie);
