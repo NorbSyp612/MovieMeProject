@@ -67,6 +67,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         mDb = AppDatabase.getInstance(getApplicationContext());
 
+        movies = new ArrayList<>();
         clicks = 0;
         instance_clicks = "Clicks";
         pageCount = 1;
@@ -290,7 +291,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             setTitle(searchQuery);
             baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(pageCount);
-            pageCount++;
+          //  pageCount++;
             URL testURL = NetworkUtils.jsonRequest(baseQuery, one);
             new search(this, testURL).execute();
         }
@@ -388,9 +389,21 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     mAdapter.notifyDataSetChanged();
                     swipeLayout.setRefreshing(false);
                 } else {
-                    movies = o;
-                    populateUI();
+                    if (pageCount < 5) {
+                        pageCount++;
+                        movies.addAll(o);
+                        Log.d("T8", "Now doing page " + pageCount);
+                        String page = Integer.toString(pageCount);
+                        URL tester = NetworkUtils.jsonRequest(baseQuery, page);
+                        Log.d("T8", "URL is " + tester);
+                        new search(this, tester).execute();
+                    } else {
+                        populateUI();
+                    }
                 }
+            } else {
+                Log.d("T8", "EMPTY");
+                populateUI();
             }
         }
     }
@@ -404,6 +417,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         public search(OnAsyncFinished onAsyncFinished, URL url) {
             this.onAsyncFinished = onAsyncFinished;
             this.testURL = url;
+            Log.d("T8", "performing async search");
 
         }
 
@@ -420,8 +434,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
+            Log.d("T8", "on post execute");
             super.onPostExecute(movies);
-
             onAsyncFinished.onAsyncFinished(movies, "no");
         }
     }
