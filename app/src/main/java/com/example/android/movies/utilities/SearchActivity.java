@@ -57,6 +57,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private int pageCount;
     private SwipeRefreshLayout swipeLayout;
     private String baseQuery;
+    private static boolean done;
 
 
     @Override
@@ -70,6 +71,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         instance_clicks = "Clicks";
         pageCount = 1;
         mRecycle = findViewById(R.id.search_results);
+        done = false;
 
         swipeLayout = findViewById(R.id.search_refresh);
         swipeLayout.setRefreshing(true);
@@ -376,15 +378,19 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     @Override
     public void onAsyncFinished(ArrayList<Movie> o, String key) {
 
-        if (!o.isEmpty()) {
-            if (key.equals("Key")) {
-                pageCount++;
-                movies.addAll(o);
-                mAdapter.notifyDataSetChanged();
-                swipeLayout.setRefreshing(false);
-            } else {
-                movies = o;
-                populateUI();
+        if (done) {
+            swipeLayout.setRefreshing(false);
+        } else {
+            if (!o.isEmpty()) {
+                if (key.equals("Key")) {
+                    pageCount++;
+                    movies.addAll(o);
+                    mAdapter.notifyDataSetChanged();
+                    swipeLayout.setRefreshing(false);
+                } else {
+                    movies = o;
+                    populateUI();
+                }
             }
         }
     }
@@ -415,6 +421,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
             super.onPostExecute(movies);
+
             onAsyncFinished.onAsyncFinished(movies, "no");
         }
     }
@@ -443,6 +450,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
             super.onPostExecute(movies);
+            if (movies.isEmpty()) {
+                SearchActivity.done = true;
+            }
             onAsyncFinished.onAsyncFinished(movies, "Key");
         }
     }
