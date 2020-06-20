@@ -51,6 +51,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import android.app.SearchManager;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private static ArrayList<Movie> favMovies = new ArrayList<>();
     private static RecyclerView moviesGrid;
     private static moviesAdapter mAdapter;
-    private static SwipeRefreshLayout swipeLayout;
+    private SwipeRefreshLayout swipeLayout;
     private static final int NUM_LIST_MOVIES = 100;
     private static int currentMovieSizeTest;
     private AppDatabase mDb;
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     ActionBarDrawerToggle toggle;
     private int pageNumber;
     private int extraTest;
+    private boolean first;
+    private boolean extra;
 
     private Context mContext;
     private static int statusCode;
@@ -226,8 +229,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             spanCount = 4;
-        } else {
-            spanCount = 2;
         }
 
         ExtraCounter = 1;
@@ -244,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && current_Category != getString(R.string.Favorites)) {
+                if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                     moviesGrid.setHasFixedSize(false);
                     currentMovieSizeTest = movies.size() + 99;
                     mAdapter.setNumberMovies(movies.size() + 100);
@@ -278,105 +279,105 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             case R.id.drawer_favs:
                 if (!swipeLayout.isRefreshing()) {
                     populateUIFavorites();
-                    getSupportActionBar().setTitle(R.string.Favorites);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Favorites);
                     current_Category = getString(R.string.Favorites);
                     break;
                 }
             case R.id.drawer_pop:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Most_Popular));
-                    getSupportActionBar().setTitle(R.string.Most_Popular);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Most_Popular);
                     current_Category = getString(R.string.Most_Popular);
                     break;
                 }
             case R.id.drawer_top:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Top_Rated));
-                    getSupportActionBar().setTitle(R.string.Top_Rated);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Top_Rated);
                     current_Category = getString(R.string.Top_Rated);
                     break;
                 }
             case R.id.drawer_action:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Action));
-                    getSupportActionBar().setTitle(R.string.Action);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Action);
                     current_Category = getString(R.string.Action);
                     break;
                 }
             case R.id.drawer_adventure:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Adventure));
-                    getSupportActionBar().setTitle(R.string.Adventure);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Adventure);
                     current_Category = getString(R.string.Adventure);
                     break;
                 }
             case R.id.drawer_comedy:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Comedy));
-                    getSupportActionBar().setTitle(R.string.Comedy);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Comedy);
                     current_Category = getString(R.string.Comedy);
                     break;
                 }
             case R.id.drawer_History:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.History));
-                    getSupportActionBar().setTitle(R.string.History);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.History);
                     current_Category = getString(R.string.History);
                     break;
                 }
             case R.id.drawer_horror:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Horror));
-                    getSupportActionBar().setTitle(R.string.Horror);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Horror);
                     current_Category = getString(R.string.Horror);
                     break;
                 }
             case R.id.drawer_drama:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Drama));
-                    getSupportActionBar().setTitle(R.string.Drama);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Drama);
                     current_Category = getString(R.string.Drama);
                     break;
                 }
             case R.id.drawer_fantasy:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Fantasy));
-                    getSupportActionBar().setTitle(R.string.Fantasy);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Fantasy);
                     current_Category = getString(R.string.Fantasy);
                     break;
                 }
             case R.id.drawer_mystery:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Mystery));
-                    getSupportActionBar().setTitle(R.string.Mystery);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Mystery);
                     current_Category = getString(R.string.Mystery);
                     break;
                 }
             case R.id.drawer_romance:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Romance));
-                    getSupportActionBar().setTitle(R.string.Romance);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Romance);
                     current_Category = getString(R.string.Romance);
                     break;
                 }
             case R.id.drawer_scifi:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Science_Fiction));
-                    getSupportActionBar().setTitle(R.string.SciFi);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.SciFi);
                     current_Category = getString(R.string.SciFi);
                     break;
                 }
             case R.id.drawer_thriller:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Thriller));
-                    getSupportActionBar().setTitle(R.string.Thriller);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Thriller);
                     current_Category = getString(R.string.Thriller);
                     break;
                 }
             case R.id.drawer_western:
                 if (!swipeLayout.isRefreshing()) {
                     populateUI(getString(R.string.Western));
-                    getSupportActionBar().setTitle(R.string.Western);
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Western);
                     current_Category = getString(R.string.Western);
                     break;
                 }
@@ -436,7 +437,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 ArrayList<String> genres = new ArrayList<>();
 
                 for (FavEntry a : favorites) {
-                    Log.d("ALL", a.getName());
                     Movie addMovie = new Movie();
                     addMovie.setMovieName(a.getName());
                     favMovies.add(addMovie);
@@ -445,7 +445,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
 
                 for (Movie b : favMovies) {
-                    Log.d("ALL", "2 - " + b.getMovieName());
                 }
 
 
@@ -519,7 +518,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 ArrayList<Movie> test = mAdapter.getFavMovies();
 
                 for (Movie c : test) {
-                    Log.d("A2", c.getMovieName());
                 }
 
             }
@@ -548,6 +546,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         for (FavEntry a : favorites) {
             if (a.getId().equals(movie.getId())) {
                 check = 1;
+                break;
             }
         }
 
@@ -997,8 +996,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void executeExtra() {
 
-        Log.d("TEST", "Size of movies array at start of executeXtra " + movies.size());
-
         Timber.d("exeuctingExtra");
         asyncCount = 0;
         // mAdapter.addMovies(movies);
@@ -1028,13 +1025,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     @Override
     public void onAsyncFinished(ArrayList<Movie> o, String url) {
 
+        Log.d("T7", "Async finished. Movie array size is: " + o.size());
+
         if (url.equals("Key")) {
             executeFavs();
         } else {
-
             String result = "";
             pageNumber++;
             String pageNum = Integer.toString(pageNumber);
+            Log.d("T7", "Doing page " + pageNum);
             int remove;
 
             if (pageNumber > 9) {
@@ -1047,8 +1046,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 result = ((url.substring(0, url.length() - remove)) + pageNum);
             }
 
-
-            if (o.size() < 100) {
+            if (first && o.size() < 100) {
                 URL newUrl = NetworkUtils.jsonRequest(result, pageNum);
                 try {
                     newUrl = new URL(result);
@@ -1056,6 +1054,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     e.printStackTrace();
                 }
                 new apiCall(this, this, newUrl).execute();
+            } else if (first && o.size() > 100) {
+                execute();
+                first = false;
             } else if (o.size() > 100) {
                 if (o.size() < extraTest) {
                     URL newUrl = NetworkUtils.jsonRequest(result, pageNum);
@@ -1068,10 +1069,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 } else {
                     executeExtra();
                 }
-
-            } else {
-                execute();
             }
+
+
         }
     }
 
@@ -1144,6 +1144,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         protected void onPostExecute(String apiResults) {
 
             MainActivity activity = mainReference.get();
+            activity.first = true;
 
             if (apiResults == null) {
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();

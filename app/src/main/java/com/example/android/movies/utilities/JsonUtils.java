@@ -184,7 +184,7 @@ public class JsonUtils {
                 JSONArray genres = movie.getJSONArray("genre_ids");
 
                 int genreNum = 0;
-                int testNum = 0;
+                int testNum;
 
                 for (int b = 0; b < genres.length(); b++) {
                     testNum = Integer.parseInt(genres.getString(b));
@@ -234,7 +234,10 @@ public class JsonUtils {
                 addMovie.setBackdropURL(movieBackdropURL);
                 addMovie.setGenre(movieGenre);
 
-                parsedResults.add(addMovie);
+                if (!movieBackdropURL.isEmpty() && !movieGenre.isEmpty() && Double.parseDouble(movieUserRating) > 2) {
+                    parsedResults.add(addMovie);
+                }
+
             }
 
         } catch (JSONException e) {
@@ -274,7 +277,7 @@ public class JsonUtils {
                 JSONArray genres = movie.getJSONArray("genre_ids");
 
                 int genreNum = 0;
-                int testNum = 0;
+                int testNum;
 
                 for (int b = 0; b < genres.length(); b++) {
                     testNum = Integer.parseInt(genres.getString(b));

@@ -38,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -61,6 +62,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private String mMovieID;
     private String mMovieGenre;
     private String mMovieRating;
+    private String mReleaseDate;
     private ImageView mFavButtonBackground;
     private String favorite;
     private FavEntry movieEntry;
@@ -74,6 +76,8 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private AdView mAdView;
     private TextView mTitleBar;
     private Context mContext;
+    private TextView subTitleString;
+    private String extras;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -144,11 +148,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             movieTrailerResults = new apiCallMovieID().execute(movieTrailerURL).get();
             movieReviewResults = new apiCallMovieID().execute(movieReviewURL).get();
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (MalformedURLException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -162,6 +162,12 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mMovieName = fromMain.getStringExtra(movieName);
         mMovieGenre = fromMain.getStringExtra(getResources().getString(R.string.Movie_Genre));
         mMovieRating = fromMain.getStringExtra(getResources().getString(R.string.Movie_Rating));
+        mReleaseDate = fromMain.getStringExtra(getResources().getString(R.string.Movie_Release_Date));
+        mReleaseDate = mReleaseDate.substring(0, 4);
+
+        extras = mReleaseDate + " - " + mMovieGenre;
+
+        subTitleString.setText(extras);
 
         mDate_Rating.setText(movieRatingOutOfTen);
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
@@ -226,7 +232,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             if (!movieTrailerURLS.isEmpty()) {
                 player.cueVideo(movieTrailerURLS.get(0));
             } else {
-                playerFragment.getView().setVisibility(View.GONE);
+                Objects.requireNonNull(playerFragment.getView()).setVisibility(View.GONE);
             }
         }
     }
@@ -253,6 +259,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         playerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.movie_Play_First_Trailer);
         mTitleBar = findViewById(R.id.title_bar);
         mAdView = findViewById(R.id.adView);
+        subTitleString = findViewById(R.id.title_extras);
     }
 
     @Override
