@@ -278,10 +278,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         switch (item.getItemId()) {
             case R.id.drawer_favs:
                 if (!swipeLayout.isRefreshing()) {
-                    populateUIFavorites();
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Favorites);
-                    current_Category = getString(R.string.Favorites);
-                    break;
+                    if (favMovies.isEmpty()) {
+                        Toast.makeText(this, getString(R.string.AddFavPls), Toast.LENGTH_SHORT).show();
+                        swipeLayout.setRefreshing(false);
+                    } else {
+                        populateUIFavorites();
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Favorites);
+                        current_Category = getString(R.string.Favorites);
+                        break;
+                    }
                 }
             case R.id.drawer_pop:
                 if (!swipeLayout.isRefreshing()) {
@@ -977,11 +982,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void executeFavs() {
+
         Timber.d("executing favs");
         mAdapter.setNumberMovies(favMovies.size());
         mAdapter.setMovies(movies);
         moviesGrid.setAdapter(mAdapter);
         swipeLayout.setRefreshing(false);
+
     }
 
 

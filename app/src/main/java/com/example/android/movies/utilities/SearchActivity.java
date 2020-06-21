@@ -135,52 +135,46 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
 
     public void onFabClicked(View v) {
-        ArrayList<Movie> mainMovies = MainActivity.getMovies();
-        favMovies = MainActivity.getFavs();
-
+        //   ArrayList<Movie> mainMovies = MainActivity.getMovies();
+        //   favMovies = MainActivity.getFavs();
         Context bContext = getApplicationContext();
 
-        if (!mainMovies.isEmpty()) {
-
-
-            if (favMovies.isEmpty()) {
-                Toast.makeText(bContext, bContext.getString(R.string.AddFavPls), Toast.LENGTH_SHORT).show();
-            } else if (favMovies.size() < 10) {
-                Toast.makeText(bContext, bContext.getString(R.string.AddMoreThanTen), Toast.LENGTH_SHORT).show();
-            } else {
-                String movieIDQuery = "";
-
-                ArrayList<String> result = movieMeProcessor.process(bContext);
-                Timber.d(result.get(0));
-                Random rand = new Random();
-
-
-                movieIDQuery = bContext.getString(R.string.API_Search_Part1) + bContext.getString(R.string.API_key) + bContext.getString(R.string.API_Search_Part2)
-                        + (rand.nextInt(10) + 1) + bContext.getString(R.string.API_Search_Part3) + result.get(1) + bContext.getString(R.string.API_Search_Part4) + result.get(0)
-                        + bContext.getString(R.string.API_Search_Part5);
-
-                Timber.d(movieIDQuery);
-
-                URL testURL = null;
-                try {
-                    testURL = new URL(movieIDQuery);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    String results = new apiCallButton().execute(testURL).get();
-                    executeFavButton(results);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Timber.d(movieIDQuery);
-            }
+        if (favorites.isEmpty()) {
+            Toast.makeText(bContext, bContext.getString(R.string.AddFavPls), Toast.LENGTH_SHORT).show();
+        } else if (favorites.size() < 10) {
+            Toast.makeText(bContext, bContext.getString(R.string.AddMoreThanTen), Toast.LENGTH_SHORT).show();
         } else {
-            Timber.d("ERROR");
+            String movieIDQuery = "";
+
+            ArrayList<String> result = movieMeProcessor.process(bContext);
+            Timber.d(result.get(0));
+            Random rand = new Random();
+
+
+            movieIDQuery = bContext.getString(R.string.API_Search_Part1) + bContext.getString(R.string.API_key) + bContext.getString(R.string.API_Search_Part2)
+                    + (rand.nextInt(10) + 1) + bContext.getString(R.string.API_Search_Part3) + result.get(1) + bContext.getString(R.string.API_Search_Part4) + result.get(0)
+                    + bContext.getString(R.string.API_Search_Part5);
+
+            Timber.d(movieIDQuery);
+
+            URL testURL = null;
+            try {
+                testURL = new URL(movieIDQuery);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            try {
+                String results = new apiCallButton().execute(testURL).get();
+                executeFavButton(results);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            Timber.d(movieIDQuery);
         }
+
     }
 
     public void executeFavButton(String apiResults) {
@@ -298,7 +292,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             setTitle(searchQuery);
             baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(pageCount);
-          //  pageCount++;
+            //  pageCount++;
             URL testURL = NetworkUtils.jsonRequest(baseQuery, one);
             new search(this, testURL).execute();
         }
