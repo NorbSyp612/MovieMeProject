@@ -137,6 +137,23 @@ public class JsonUtils {
             String movieId = jResult.getString("id");
             String movieBackdropURL = jResult.getString("backdrop_path");
 
+            JSONArray genres = jResult.getJSONArray("genres");
+
+            String movieGenre = "";
+            String genreString = "";
+
+            for (int b = 0; b < genres.length(); b++) {
+                JSONObject jResltTwo = new JSONObject();
+                jResltTwo = genres.getJSONObject(b);
+                movieGenre = jResltTwo.getString("name");
+
+                if (b > 0) {
+                    genreString = genreString + ", " + movieGenre;
+                } else {
+                    genreString = movieGenre;
+                }
+            }
+
             movie.setMovieName(movieName);
             movie.setImageURL(movieImageURL);
             movie.setSynopsis(movieSynopsis);
@@ -144,6 +161,7 @@ public class JsonUtils {
             movie.setReleaseDate(movieReleaseDate);
             movie.setId(movieId);
             movie.setBackdropURL(movieBackdropURL);
+            movie.setGenresString(genreString);
 
 
         } catch (JSONException e) {
@@ -184,7 +202,6 @@ public class JsonUtils {
                 JSONArray genres = movie.getJSONArray("genre_ids");
 
                 int genreNum = 0;
-                int testNum;
 
                 for (int b = 0; b < genres.length(); b++) {
                     genreNum = Integer.parseInt(genres.getString(b));

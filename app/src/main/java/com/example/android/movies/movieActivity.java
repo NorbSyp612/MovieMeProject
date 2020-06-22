@@ -431,7 +431,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID), movieMe.getId());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenre());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenresString());
         goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), mContext.getString(R.string.No));
 
         mContext.startActivity(goToMovieActivity);

@@ -238,7 +238,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID), movieMe.getId());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenre());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenresString());
         goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), movieMe.getFav());
 
         mContext.startActivity(goToMovieActivity);
@@ -321,7 +321,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
             goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
             goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
-            goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenre());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenresString());
 
             String movieID = movies.get(clickedItemIndex).getId();
             String isFavorite = getString(R.string.No);
@@ -472,7 +472,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         }
     }
 
-    class apiCallButton extends AsyncTask<URL, Void, String> {
+    static class apiCallButton extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... urls) {

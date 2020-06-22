@@ -863,7 +863,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID_URL), movieMe.getMovieIdURL());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_ID), movieMe.getId());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Backdrop), movieMe.getBackdropURL());
-        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenre());
+        goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Genre), movieMe.getGenresString());
         goToMovieActivity.putExtra(mContext.getString(R.string.Is_Fav_Key), mContext.getString(R.string.No));
 
         mContext.startActivity(goToMovieActivity);
@@ -1289,6 +1289,7 @@ public static class apiCallFavs extends AsyncTask<URL, Void, String> {
         mainReference = new WeakReference<>(context);
         this.onAsyncFinished = on;
         this.link = url;
+        Log.d("T9", this.link.toString());
     }
 
     @Override
@@ -1300,6 +1301,7 @@ public static class apiCallFavs extends AsyncTask<URL, Void, String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         return apiResult;
     }
