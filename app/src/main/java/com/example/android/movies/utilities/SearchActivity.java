@@ -418,7 +418,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         public search(OnAsyncFinished onAsyncFinished, URL url) {
             this.onAsyncFinished = onAsyncFinished;
             this.testURL = url;
-            Log.d("T8", "performing async search");
+            Log.d("T8", "performing async search + " + url.toString());
 
         }
 

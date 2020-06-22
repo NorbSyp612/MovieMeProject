@@ -1034,7 +1034,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public static int getNumFavs() {
-        return favMovies.size();
+        return favorites.size();
     }
 
     public static ArrayList<Movie> getFavMovies() {
