@@ -234,7 +234,8 @@ public class JsonUtils {
                 addMovie.setReleaseDate(movieReleaseDate);
                 addMovie.setId(movieId);
                 addMovie.setBackdropURL(movieBackdropURL);
-                addMovie.setGenre(genreString);
+                addMovie.setGenre(movieGenre);
+                addMovie.setGenresString(genreString);
 
                 if (!movieBackdropURL.isEmpty() && !movieGenre.isEmpty() && Double.parseDouble(movieUserRating) > 2) {
                     parsedResults.add(addMovie);

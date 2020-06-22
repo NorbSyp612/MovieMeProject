@@ -125,8 +125,8 @@ public class movieMeProcessor {
         map.put(context.getString(R.string.Adventure), probAdv);
         map.put(context.getString(R.string.Comedy), probComedy);
         map.put(context.getString(R.string.History), probHistory);
-        map.put(context.getString(R.string.Horror), probHorror);
         map.put(context.getString(R.string.Drama), probDrama);
+        map.put(context.getString(R.string.Horror), probHorror);
         map.put(context.getString(R.string.Fantasy), probFantasy);
         map.put(context.getString(R.string.Mystery), probMystery);
         map.put(context.getString(R.string.Romance), probRomance);

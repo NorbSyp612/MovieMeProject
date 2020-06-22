@@ -15,6 +15,15 @@ public class Movie {
     private String backdropURL;
     private String isFav;
     private String genre;
+    private String genresString;
+
+    public void setGenresString(String set) {
+        genresString = set;
+    }
+
+    public String getGenresString() {
+        return genresString;
+    }
 
     public void setGenre(String set) {
         genre = set;
