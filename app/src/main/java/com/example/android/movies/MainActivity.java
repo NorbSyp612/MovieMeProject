@@ -573,6 +573,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 setTitle(getString(R.string.Top_Rated));
             } else if (category.equals(getString(R.string.Favorites))) {
                 setMoviesFavorites();
+
                 setTitle(getString(R.string.Favorites));
             } else if (category.equals(getString(R.string.Action))) {
                 setMoviesFromCategory(getString(R.string.Action));
@@ -756,6 +757,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (favorites.isEmpty()) {
             Timber.d("is empty");
             setTitle(getString(R.string.Most_Popular));
+            Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Most_Popular);
             setMoviesFromCategory(getString(R.string.Most_Popular));
         } else {
 
@@ -1012,6 +1014,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         mAdapter.setNumberMovies(NUM_LIST_MOVIES);
         mAdapter.setMovies(movies);
         moviesGrid.setAdapter(mAdapter);
+        setTitle(getString(R.string.Most_Popular));
         swipeLayout.setRefreshing(false);
     }
 
