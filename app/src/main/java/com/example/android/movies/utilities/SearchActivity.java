@@ -3,9 +3,11 @@ package com.example.android.movies.utilities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -108,10 +110,38 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
                 favMovies.clear();
 
+                double numAction = 0;
+                double numAdv = 0;
+                double numComedy = 0;
+                double numHistory = 0;
+                double numHorror = 0;
+                double numDrama = 0;
+                double numFantasy = 0;
+                double numMystery = 0;
+                double numRomance = 0;
+                double numSciFi = 0;
+                double numThriller = 0;
+                double numWestern = 0;
+
+                String probAction = "";
+                String probAdv = "";
+                String probComedy = "";
+                String probHistory = "";
+                String probHorror = "";
+                String probDrama = "";
+                String probFantasy = "";
+                String probMystery = "";
+                String probRomance = "";
+                String probScifi;
+                String probThriller;
+                String probWestern;
+
+                double ratingsTotal = 0;
+
+                favMovies.clear();
+
                 ArrayList<String> genres = new ArrayList<>();
                 ArrayList<String> ratings = new ArrayList<>();
-
-                String ratingsTotal = "";
 
                 for (FavEntry a : favorites) {
                     Movie addMovie = new Movie();
@@ -121,6 +151,77 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     ratings.add(a.getRating());
                     ratingsTotal = ratingsTotal + Double.parseDouble(a.getRating());
                 }
+
+                for (String b : genres) {
+                    if (b.equals(getString(R.string.Action))) {
+                        numAction++;
+                    } else if (b.equals(getString(R.string.Adventure))) {
+                        numAdv++;
+                    } else if (b.equals(getString(R.string.Comedy))) {
+                        numComedy++;
+                    } else if (b.equals(getString(R.string.History))) {
+                        numHistory++;
+                    } else if (b.equals(getString(R.string.Horror))) {
+                        numHorror++;
+                    } else if (b.equals(getString(R.string.Drama))) {
+                        numDrama++;
+                    } else if (b.equals(getString(R.string.Fantasy))) {
+                        numFantasy++;
+                    } else if (b.equals(getString(R.string.Mystery))) {
+                        numMystery++;
+                    } else if (b.equals(getString(R.string.Romance))) {
+                        numRomance++;
+                    } else if (b.equals(getString(R.string.SciFi))) {
+                        numSciFi++;
+                    } else if (b.equals(getString(R.string.Thriller))) {
+                        numThriller++;
+                    } else if (b.equals(getString(R.string.Western))) {
+                        numWestern++;
+                    }
+                }
+
+                int genreSize = genres.size() + 1;
+                Timber.d("Genre size is : %s", String.valueOf(genreSize));
+                ratingsTotal = ratingsTotal / genreSize;
+                Timber.d("ratings total is: %s", ratingsTotal);
+                String returnRatings = "" + ratingsTotal;
+                Timber.d("return ratins is: %s", returnRatings);
+
+                probAction = "" + (numAction / genreSize);
+                probAdv = "" + (numAdv / genreSize);
+                probComedy = "" + (numComedy / genreSize);
+                probHistory = "" + (numHistory / genreSize);
+                probHorror = "" + (numHorror / genreSize);
+                probDrama = "" + (numDrama / genreSize);
+                probFantasy = "" + (numFantasy / genreSize);
+                probMystery = "" + (numMystery / genreSize);
+                probRomance = "" + (numRomance / genreSize);
+                probScifi = "" + (numSciFi / genreSize);
+                probThriller = "" + (numThriller / genreSize);
+                probWestern = "" + (numWestern / genreSize);
+
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.putString(getString(R.string.Return_Ratings), returnRatings);
+                editor.putString(getString(R.string.Action), probAction);
+                editor.putString(getString(R.string.Adventure), probAdv);
+                editor.putString(getString(R.string.Comedy), probComedy);
+                editor.putString(getString(R.string.History), probHistory);
+                editor.putString(getString(R.string.Horror), probHorror);
+                editor.putString(getString(R.string.Drama), probDrama);
+                editor.putString(getString(R.string.Fantasy), probFantasy);
+                editor.putString(getString(R.string.Mystery), probMystery);
+                editor.putString(getString(R.string.Romance), probRomance);
+                editor.putString(getString(R.string.SciFi), probScifi);
+                editor.putString(getString(R.string.Thriller), probThriller);
+                editor.putString(getString(R.string.Western), probWestern);
+
+                Timber.d(probAction);
+                Timber.d(probAdv);
+
+                editor.apply();
 
                 mAdapter.notifyDataSetChanged();
             }
@@ -145,7 +246,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             Toast.makeText(bContext, bContext.getString(R.string.AddMoreThanTen), Toast.LENGTH_SHORT).show();
         } else {
             String movieIDQuery = "";
-
+            Timber.d("Going to get movie from processor now");
+            movieMeProcessor.setFavs(favorites);
             ArrayList<String> result = movieMeProcessor.process(bContext);
             Timber.d(result.get(0));
             Random rand = new Random();

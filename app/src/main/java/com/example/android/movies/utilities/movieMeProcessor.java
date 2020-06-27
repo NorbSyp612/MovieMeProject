@@ -170,6 +170,10 @@ public class movieMeProcessor {
         return finalGenreAndRating;
     }
 
+    public static void setFavs(List<FavEntry> favs) {
+        favorites = favs;
+    }
+
     private static String getGenreId(String genre, Context context) {
         if (genre.equals(context.getString(R.string.Action))) {
             return context.getString(R.string.Action_ID);
