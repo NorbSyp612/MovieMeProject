@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private int extraTest;
     private boolean first;
     private boolean extra;
+    private MenuItem grid_check;
+    private MenuItem list_check;
 
     private Context mContext;
     private static int statusCode;
@@ -244,16 +246,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         int test123 = 0;
 
-        if (test123 == 0) {
-            moviesGrid = findViewById(R.id.movie_items);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-            moviesGrid.setLayoutManager(layoutManager);
-            int numMovies = movies.size();
-            sAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
-            moviesGrid.setAdapter(sAdapter);
-            moviesGrid.setHasFixedSize(false);
-        } else {
+        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+            //   grid_check.setChecked(true);
+            //    list_check.setChecked(false);
+        }
 
+        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
             moviesGrid = findViewById(R.id.movie_items);
             GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
             moviesGrid.setLayoutManager(layoutManager);
@@ -274,6 +272,35 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
             });
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            moviesGrid = findViewById(R.id.movie_items);
+            GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
+            moviesGrid.setLayoutManager(layoutManager);
+            mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
+
+            moviesGrid.setAdapter(mAdapter);
+            moviesGrid.setHasFixedSize(false);
+            moviesGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+
+                    if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
+                        moviesGrid.setHasFixedSize(false);
+                        currentMovieSizeTest = movies.size() + 99;
+                        mAdapter.setNumberMovies(movies.size() + 100);
+                        setMoviesExtra(current_Category);
+                    }
+                }
+            });
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            moviesGrid = findViewById(R.id.movie_items);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+            moviesGrid.setLayoutManager(layoutManager);
+            int numMovies = movies.size();
+            sAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
+            moviesGrid.setAdapter(sAdapter);
+            moviesGrid.setHasFixedSize(false);
         }
         mDb = AppDatabase.getInstance(getApplicationContext());
 
@@ -287,6 +314,22 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        grid_check = (MenuItem) menu.findItem(R.id.grid_view);
+        list_check = (MenuItem) menu.findItem(R.id.list_view);
+
+        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+            grid_check.setChecked(true);
+            list_check.setChecked(false);
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            grid_check.setChecked(true);
+            list_check.setChecked(false);
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+            grid_check.setChecked(false);
+            list_check.setChecked(true);
+        }
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search_m).getActionView();
@@ -546,8 +589,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 editor.apply();
 
-                //  mAdapter.notifyDataSetChanged();
-                sAdapter.notifyDataSetChanged();
+                if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+                    mAdapter.notifyDataSetChanged();
+                } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+                    mAdapter.notifyDataSetChanged();
+                } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+                    sAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -569,19 +617,26 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
         switch (item.getItemId()) {
             case R.id.grid_view:
+                editor.putString(getString(R.string.View_Key), getString(R.string.Grid));
                 if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
+                    list_check.setChecked(false);
                 }
                 return true;
             case R.id.list_view:
+                editor.putString(getString(R.string.View_Key), getString(R.string.list));
                 if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
+                    grid_check.setChecked(false);
                 }
                 return true;
         }
@@ -1052,16 +1107,26 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void execute() {
         Timber.d("is empty: %s", favMovies.isEmpty());
         asyncCount = 0;
-        //     mAdapter.setNumberMovies(NUM_LIST_MOVIES);
-        //   mAdapter.setMovies(movies);
-        //   moviesGrid.setAdapter(mAdapter);
-        //     sAdapter.setNumberMovies(NUM_LIST_MOVIES);
-       //    sAdapter.setMovies(movies);
-       //    moviesGrid.setAdapter(sAdapter);
-        sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
-        moviesGrid.setAdapter(sAdapter);
-        setTitle(getString(R.string.Most_Popular));
-        swipeLayout.setRefreshing(false);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+            mAdapter.setNumberMovies(NUM_LIST_MOVIES);
+            mAdapter.setMovies(movies);
+            moviesGrid.setAdapter(mAdapter);
+            swipeLayout.setRefreshing(false);
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            mAdapter.setNumberMovies(NUM_LIST_MOVIES);
+            mAdapter.setMovies(movies);
+            moviesGrid.setAdapter(mAdapter);
+            swipeLayout.setRefreshing(false);
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+            sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
+            moviesGrid.setAdapter(sAdapter);
+            setTitle(getString(R.string.Most_Popular));
+            swipeLayout.setRefreshing(false);
+        }
+
     }
 
     public void executeExtra() {

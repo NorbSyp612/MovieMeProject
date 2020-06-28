@@ -13,6 +13,7 @@
     <string name="Grid">Grid</string>
     <string name="list">List</string>
     <string name="Search_Here">Search Here!</string>
+    <string name="View_Key">view_key</string>
 
     <string name="player_error">Error initializing YouTube player: %s</string>
     <string name="seek_to">Jump To</string>
