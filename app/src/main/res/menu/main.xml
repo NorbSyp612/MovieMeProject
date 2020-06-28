@@ -6,7 +6,24 @@
     <item
         android:id="@+id/search_m"
         android:icon="@drawable/search"
-        android:title="Search here!"
+        android:title="@string/Search_Here"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+
+    <item
+        android:id="@+id/grid_view"
+        android:checkable="true"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        android:title="@string/Grid"
+        android:checked="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort"
+        android:checkable="true"
+        android:checked="false"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        android:title="@string/list"
+        app:showAsAction="never" />
 </menu>

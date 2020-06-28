@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/drawer_favs"
-        android:title="@string/Favorites"
-        app:itemIconTint="@color/colorAccent"/>
+        android:title="@string/Favorites"/>
 
     <item
         android:id="@+id/drawer_pop"
