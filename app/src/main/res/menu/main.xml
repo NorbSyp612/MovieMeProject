@@ -20,7 +20,7 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/sort"
+        android:id="@+id/list_view"
         android:checkable="true"
         android:checked="false"
         android:icon="@drawable/ic_baseline_more_vert_24"
