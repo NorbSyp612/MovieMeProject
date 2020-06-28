@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         Timber.plant(new Timber.DebugTree());
 
+
+
         drawerLayout = findViewById(R.id.drawer);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation_view);
@@ -166,7 +168,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         swipeLayout = findViewById(R.id.swipe_container);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        Log.d("T5", "pref now is: " + sharedPreferences.getString(getString(R.string.View_Key), ""));
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -293,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
             });
-        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             moviesGrid = findViewById(R.id.movie_items);
             LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
             moviesGrid.setLayoutManager(layoutManager);
@@ -308,6 +311,69 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         setupViewModel();
         populateUI(current_Category);
+    }
+
+    public void setUIType() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        int orientation = getResources().getConfiguration().orientation;
+        int spanCount = 2;
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            spanCount = 4;
+        }
+
+        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+            moviesGrid = findViewById(R.id.movie_items);
+            GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
+            moviesGrid.setLayoutManager(layoutManager);
+            mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
+
+            moviesGrid.setAdapter(mAdapter);
+            moviesGrid.setHasFixedSize(false);
+            moviesGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+
+                    if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
+                        moviesGrid.setHasFixedSize(false);
+                        currentMovieSizeTest = movies.size() + 99;
+                        mAdapter.setNumberMovies(movies.size() + 100);
+                        setMoviesExtra(current_Category);
+                    }
+                }
+            });
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            moviesGrid = findViewById(R.id.movie_items);
+            GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
+            moviesGrid.setLayoutManager(layoutManager);
+            mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
+
+            moviesGrid.setAdapter(mAdapter);
+            moviesGrid.setHasFixedSize(false);
+            moviesGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+
+                    if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
+                        moviesGrid.setHasFixedSize(false);
+                        currentMovieSizeTest = movies.size() + 99;
+                        mAdapter.setNumberMovies(movies.size() + 100);
+                        setMoviesExtra(current_Category);
+                    }
+                }
+            });
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+            moviesGrid = findViewById(R.id.movie_items);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+            moviesGrid.setLayoutManager(layoutManager);
+            int numMovies = movies.size();
+            sAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
+            moviesGrid.setAdapter(sAdapter);
+            moviesGrid.setHasFixedSize(false);
+        }
+
     }
 
     @Override
@@ -333,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search_m).getActionView();
+        assert searchManager != null;
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
@@ -623,21 +690,27 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         switch (item.getItemId()) {
             case R.id.grid_view:
                 editor.putString(getString(R.string.View_Key), getString(R.string.Grid));
+                editor.apply();
                 if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
                     list_check.setChecked(false);
                 }
+                setUIType();
+                populateUI(current_Category);
                 return true;
             case R.id.list_view:
                 editor.putString(getString(R.string.View_Key), getString(R.string.list));
+                editor.apply();
                 if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
                     grid_check.setChecked(false);
                 }
+                setUIType();
+                populateUI(current_Category);
                 return true;
         }
         return super.onOptionsItemSelected(item);
