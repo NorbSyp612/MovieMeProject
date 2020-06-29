@@ -14,22 +14,33 @@ public class FavEntry {
     private String name;
     private String category;
     private String rating;
+    private String genre;
 
     @Ignore
-    public FavEntry(String id, String name, String category, String rating) {
+    public FavEntry(String id, String name, String category, String rating, String genre) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.rating = rating;
+        this.genre = genre;
     }
 
 
-    public FavEntry(int key, String id, String name, String category, String rating) {
+    public FavEntry(int key, String id, String name, String category, String rating, String genre) {
         this.key = key;
         this.id = id;
         this.name = name;
         this.category = category;
         this.rating = rating;
+        this.genre = genre;
+    }
+
+    public String getGenre() {
+        return this.genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public int getKey() {

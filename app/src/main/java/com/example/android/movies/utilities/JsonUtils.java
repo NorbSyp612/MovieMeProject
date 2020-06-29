@@ -130,6 +130,7 @@ public class JsonUtils {
 
 
             String movieName = jResult.getString("title");
+            Log.d("T9", movieName);
             String movieImageURL = jResult.getString("poster_path");
             String movieSynopsis = jResult.getString("overview");
             String movieUserRating = jResult.getString("vote_average");
@@ -137,15 +138,57 @@ public class JsonUtils {
             String movieId = jResult.getString("id");
             String movieBackdropURL = jResult.getString("backdrop_path");
 
-            JSONArray genres = jResult.getJSONArray("genres");
-
             String movieGenre = "";
             String genreString = "";
 
+            JSONArray genres = jResult.getJSONArray("genres");
+
+            int genreNum = 0;
+            int testNum;
+
             for (int b = 0; b < genres.length(); b++) {
-                JSONObject jResltTwo = new JSONObject();
-                jResltTwo = genres.getJSONObject(b);
-                movieGenre = jResltTwo.getString("name");
+                JSONObject genreObject = genres.getJSONObject(b);
+                genreNum = genreObject.getInt("id");
+                Log.d("T9", "genreNum is " + genreNum);
+
+                if (genreNum == 28) {
+                    movieGenre = "Action";
+                } else if (genreNum == 12) {
+                    movieGenre = "Adventure";
+                } else if (genreNum == 35) {
+                    movieGenre = "Comedy";
+                } else if (genreNum == 80) {
+                    movieGenre = "Crime";
+                } else if (genreNum == 18) {
+                    movieGenre = "Drama";
+                } else if (genreNum == 10751) {
+                    movieGenre = "Family";
+                } else if (genreNum == 14) {
+                    movieGenre = "Fantasy";
+                } else if (genreNum == 36) {
+                    movieGenre = "History";
+                } else if (genreNum == 27) {
+                    movieGenre = "Horror";
+                } else if (genreNum == 9648) {
+                    movieGenre = "Mystery";
+                } else if (genreNum == 10749) {
+                    movieGenre = "Romance";
+                } else if (genreNum == 878) {
+                    movieGenre = "SciFi";
+                } else if (genreNum == 53) {
+                    movieGenre = "Thriller";
+                } else if (genreNum == 37) {
+                    movieGenre = "Western";
+                } else if (genreNum == 16) {
+                    movieGenre = "Animation";
+                } else if (genreNum == 10402) {
+                    movieGenre = "Music";
+                } else if (genreNum == 10770) {
+                    movieGenre = "TV Movie";
+                } else if (genreNum == 10752) {
+                    movieGenre = "War";
+                }
+
 
                 if (b > 0) {
                     genreString = genreString + ", " + movieGenre;
@@ -154,6 +197,8 @@ public class JsonUtils {
                 }
             }
 
+            Log.d("T9", genreString);
+
             movie.setMovieName(movieName);
             movie.setImageURL(movieImageURL);
             movie.setSynopsis(movieSynopsis);
@@ -161,6 +206,7 @@ public class JsonUtils {
             movie.setReleaseDate(movieReleaseDate);
             movie.setId(movieId);
             movie.setBackdropURL(movieBackdropURL);
+            movie.setGenre(genreString);
             movie.setGenresString(genreString);
 
 

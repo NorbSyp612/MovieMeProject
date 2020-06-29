@@ -139,6 +139,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
                     date = date.substring(0, 4);
                 }
                 String genre = test.getGenre();
+                Log.d("T9", "Genre is" +  genre);
                 String rating = test.getUserRating();
                 String details = "";
 

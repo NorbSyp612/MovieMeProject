@@ -325,7 +325,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     favorite = getString(R.string.No);
                     Timber.d("Removing from favorites");
                 } else {
-                    FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, mMovieGenre, mMovieRating);
+                    FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, mMovieGenre, mMovieRating, mMovieGenre);
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
                     Timber.d("Adding to favorites");

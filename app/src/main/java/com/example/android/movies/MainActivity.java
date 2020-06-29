@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         Timber.plant(new Timber.DebugTree());
 
 
-
         drawerLayout = findViewById(R.id.drawer);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation_view);
@@ -687,32 +686,41 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        switch (item.getItemId()) {
-            case R.id.grid_view:
-                editor.putString(getString(R.string.View_Key), getString(R.string.Grid));
-                editor.apply();
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                } else {
-                    item.setChecked(true);
-                    list_check.setChecked(false);
-                }
-                setUIType();
-                populateUI(current_Category);
-                return true;
-            case R.id.list_view:
-                editor.putString(getString(R.string.View_Key), getString(R.string.list));
-                editor.apply();
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                } else {
-                    item.setChecked(true);
-                    grid_check.setChecked(false);
-                }
-                setUIType();
-                populateUI(current_Category);
-                return true;
+        if (!swipeLayout.isRefreshing()) {
+            switch (item.getItemId()) {
+                case R.id.grid_view:
+                    editor.putString(getString(R.string.View_Key), getString(R.string.Grid));
+                    editor.apply();
+                    if (item.isChecked()) {
+                        item.setChecked(false);
+                    } else {
+                        item.setChecked(true);
+                        list_check.setChecked(false);
+                    }
+                    setUIType();
+                    if (current_Category.equals(getString(R.string.Favorites))) {
+                        Log.d("T8", "Populating UI FAVS");
+                        populateUIFavorites();
+                    } else {
+                        Log.d("T8", "Populating UI");
+                        populateUI(current_Category);
+                    }
+                    return true;
+                case R.id.list_view:
+                    editor.putString(getString(R.string.View_Key), getString(R.string.list));
+                    editor.apply();
+                    if (item.isChecked()) {
+                        item.setChecked(false);
+                    } else {
+                        item.setChecked(true);
+                        grid_check.setChecked(false);
+                    }
+                    setUIType();
+                    populateUI(current_Category);
+                    return true;
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -1063,7 +1071,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         mDb.favDao().deleteFav(movieEntry);
                         favorite = getString(R.string.No);
                     } else {
-                        FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating());
+                        FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating(), movies.get(clickedItemIndex).getGenre());
                         mDb.favDao().insertFav(enterNewFavorite);
                         favorite = getString(R.string.Yes);
                     }
@@ -1168,11 +1176,26 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void executeFavs() {
 
-        Timber.d("executing favs");
-        mAdapter.setNumberMovies(favMovies.size());
-        mAdapter.setMovies(movies);
-        moviesGrid.setAdapter(mAdapter);
-        swipeLayout.setRefreshing(false);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+            Log.d("T8", "Setting adapter for GRID");
+            mAdapter.setNumberMovies(favMovies.size());
+            mAdapter.setMovies(movies);
+            moviesGrid.setAdapter(mAdapter);
+            swipeLayout.setRefreshing(false);
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            Log.d("T8", "Setting adapter for GRID");
+            mAdapter.setNumberMovies(favMovies.size());
+            mAdapter.setMovies(movies);
+            moviesGrid.setAdapter(mAdapter);
+            swipeLayout.setRefreshing(false);
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+            Log.d("T8", "Setting adapter for LIST");
+            sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
+            moviesGrid.setAdapter(sAdapter);
+            swipeLayout.setRefreshing(false);
+        }
 
     }
 
@@ -1196,7 +1219,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
             moviesGrid.setAdapter(sAdapter);
-            setTitle(getString(R.string.Most_Popular));
             swipeLayout.setRefreshing(false);
         }
 
@@ -1280,13 +1302,74 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     @Override
-    public void onButtonClick(View itemView, int clickedItemIndex) {
+    public void onButtonClick(View itemView, final int clickedItemIndex) {
+        if (!movies.isEmpty()) {
 
+            favorite = getString(R.string.No);
+            buttonClick = 1;
+
+            for (FavEntry a : favorites) {
+                if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
+                    favorite = getString(R.string.Yes);
+                    movieEntry = a;
+                    Timber.d("Movie is a favorite");
+                }
+            }
+
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (favorite.equals(getString(R.string.Yes))) {
+                        mDb.favDao().deleteFav(movieEntry);
+                        favorite = getString(R.string.No);
+                    } else {
+                        FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating(), movies.get(clickedItemIndex).getGenre());
+                        mDb.favDao().insertFav(enterNewFavorite);
+                        favorite = getString(R.string.Yes);
+                    }
+                }
+            });
+        } else {
+            Timber.d("ERROR");
+        }
     }
 
     @Override
     public void onListItemClick(View itemView, int clickedItemIndex) {
+        if (!movies.isEmpty()) {
+            Context context = MainActivity.this;
+            Class destination = movieActivity.class;
 
+            Timber.d("Viewholder position is: %s", clickedItemIndex);
+
+            final Intent goToMovieActivity = new Intent(context, destination);
+
+            goToMovieActivity.putExtra(getString(R.string.Movie_Name), movies.get(clickedItemIndex).getMovieName());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Img_Url), movies.get(clickedItemIndex).getImageURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Synopsis), movies.get(clickedItemIndex).getSynopsis());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Rating), movies.get(clickedItemIndex).getUserRating());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Release_Date), movies.get(clickedItemIndex).getReleaseDate());
+            goToMovieActivity.putExtra(getString(R.string.Movie_ID_URL), movies.get(clickedItemIndex).getMovieIdURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_ID), movies.get(clickedItemIndex).getId());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Backdrop), movies.get(clickedItemIndex).getBackdropURL());
+            goToMovieActivity.putExtra(getString(R.string.Movie_Genre), movies.get(clickedItemIndex).getGenresString());
+
+            String movieID = movies.get(clickedItemIndex).getId();
+            String isFavorite = getString(R.string.No);
+
+            for (FavEntry a : favorites) {
+                if (a.getId().equals(movieID)) {
+                    isFavorite = getString(R.string.Yes);
+                    Timber.d("onListItemClick marking favorite as YES");
+                }
+            }
+
+            goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
+
+            startActivity(goToMovieActivity);
+        } else {
+            Timber.d("ERROR");
+        }
     }
 
 
@@ -1509,12 +1592,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
 
             if (addMovie != null) {
-
+                Log.d("T9", "Not Null in adding post execute");
                 MainActivity activity = mainReference.get();
                 if (activity == null || activity.isFinishing()) return;
 
                 addMovie.setFav(activity.mContext.getString(R.string.Yes));
                 movies.add(addMovie);
+                Log.d("T9", "Genre is: " + addMovie.getGenresString());
+            } else {
+                Log.d("T9", "Movie is NULL");
             }
 
             if (movies.size() == favMovies.size()) {
