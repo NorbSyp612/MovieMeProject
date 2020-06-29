@@ -16,20 +16,6 @@
         <meta-data android:name="android.app.default_searchable"
             android:value=".utilities.SearchActivity"/>
 
-        <receiver android:name=".utilities.MovieMeWidgetProvider">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_movieme_provider_info" />
-        </receiver>
-
-
-        <service
-            android:name=".utilities.WidgetUpdateService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppThemeWithoutTitle">
