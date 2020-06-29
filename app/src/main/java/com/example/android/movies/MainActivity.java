@@ -168,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        Log.d("T5", "pref now is: " + sharedPreferences.getString(getString(R.string.View_Key), ""));
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -303,6 +302,20 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             sAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
             moviesGrid.setAdapter(sAdapter);
             moviesGrid.setHasFixedSize(false);
+            moviesGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+
+                    if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
+                        moviesGrid.setHasFixedSize(false);
+                        currentMovieSizeTest = movies.size() + 99;
+                        //      sAdapter.setNumberMovies(movies.size() + 100);
+                        setMoviesExtra(current_Category);
+                    }
+                }
+            });
+
         }
         mDb = AppDatabase.getInstance(getApplicationContext());
 
@@ -689,6 +702,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (!swipeLayout.isRefreshing()) {
             switch (item.getItemId()) {
                 case R.id.grid_view:
+                    if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid)) ||
+                            sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+                        return true;
+                    }
                     editor.putString(getString(R.string.View_Key), getString(R.string.Grid));
                     editor.apply();
                     if (item.isChecked()) {
@@ -707,6 +724,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                     return true;
                 case R.id.list_view:
+                    if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list)) ||
+                            sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+                        return true;
+                    }
                     editor.putString(getString(R.string.View_Key), getString(R.string.list));
                     editor.apply();
                     if (item.isChecked()) {
@@ -932,7 +953,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         movies = new ArrayList<>();
 
         if (favorites.isEmpty()) {
-            Timber.d("is empty");
             setTitle(getString(R.string.Most_Popular));
             Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Most_Popular);
             setMoviesFromCategory(getString(R.string.Most_Popular));
@@ -1226,20 +1246,48 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void executeExtra() {
 
-        Timber.d("exeuctingExtra");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+
         asyncCount = 0;
-        // mAdapter.addMovies(movies);
-        mAdapter.notifyItemInserted(movies.size() - 99);
-        mAdapter.notifyItemInserted(movies.size() - 98);
-        mAdapter.notifyItemInserted(movies.size() - 97);
-        mAdapter.notifyItemInserted(movies.size() - 96);
-        mAdapter.notifyItemInserted(movies.size() - 95);
-        mAdapter.notifyItemInserted(movies.size() - 94);
-        mAdapter.notifyItemInserted(movies.size() - 93);
-        mAdapter.notifyItemInserted(movies.size() - 92);
-        mAdapter.notifyItemInserted(movies.size() - 91);
-        mAdapter.notifyItemInserted(movies.size() - 90);
-        swipeLayout.setRefreshing(false);
+        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+            mAdapter.notifyItemInserted(movies.size() - 99);
+            mAdapter.notifyItemInserted(movies.size() - 98);
+            mAdapter.notifyItemInserted(movies.size() - 97);
+            mAdapter.notifyItemInserted(movies.size() - 96);
+            mAdapter.notifyItemInserted(movies.size() - 95);
+            mAdapter.notifyItemInserted(movies.size() - 94);
+            mAdapter.notifyItemInserted(movies.size() - 93);
+            mAdapter.notifyItemInserted(movies.size() - 92);
+            mAdapter.notifyItemInserted(movies.size() - 91);
+            mAdapter.notifyItemInserted(movies.size() - 90);
+            swipeLayout.setRefreshing(false);
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            mAdapter.notifyItemInserted(movies.size() - 99);
+            mAdapter.notifyItemInserted(movies.size() - 98);
+            mAdapter.notifyItemInserted(movies.size() - 97);
+            mAdapter.notifyItemInserted(movies.size() - 96);
+            mAdapter.notifyItemInserted(movies.size() - 95);
+            mAdapter.notifyItemInserted(movies.size() - 94);
+            mAdapter.notifyItemInserted(movies.size() - 93);
+            mAdapter.notifyItemInserted(movies.size() - 92);
+            mAdapter.notifyItemInserted(movies.size() - 91);
+            mAdapter.notifyItemInserted(movies.size() - 90);
+            swipeLayout.setRefreshing(false);
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+            sAdapter.notifyItemInserted(movies.size() - 99);
+            sAdapter.notifyItemInserted(movies.size() - 98);
+            sAdapter.notifyItemInserted(movies.size() - 97);
+            sAdapter.notifyItemInserted(movies.size() - 96);
+            sAdapter.notifyItemInserted(movies.size() - 95);
+            sAdapter.notifyItemInserted(movies.size() - 94);
+            sAdapter.notifyItemInserted(movies.size() - 93);
+            sAdapter.notifyItemInserted(movies.size() - 92);
+            sAdapter.notifyItemInserted(movies.size() - 91);
+            sAdapter.notifyItemInserted(movies.size() - 90);
+            swipeLayout.setRefreshing(false);
+        }
+
+
     }
 
     public static int getNumFavs() {
