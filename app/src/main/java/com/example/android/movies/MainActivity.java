@@ -326,6 +326,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void setUIType() {
+        Log.d("T8", "Setting UI Type");
+        movies.clear();
+        moviesGrid.removeAllViews();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         int orientation = getResources().getConfiguration().orientation;
         int spanCount = 2;
@@ -339,7 +342,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
             moviesGrid.setLayoutManager(layoutManager);
             mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
-
             moviesGrid.setAdapter(mAdapter);
             moviesGrid.setHasFixedSize(false);
             moviesGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -360,7 +362,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
             moviesGrid.setLayoutManager(layoutManager);
             mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
-
             moviesGrid.setAdapter(mAdapter);
             moviesGrid.setHasFixedSize(false);
             moviesGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -384,6 +385,19 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             sAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
             moviesGrid.setAdapter(sAdapter);
             moviesGrid.setHasFixedSize(false);
+            moviesGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+
+                    if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
+                        moviesGrid.setHasFixedSize(false);
+                        currentMovieSizeTest = movies.size() + 99;
+                        mAdapter.setNumberMovies(movies.size() + 100);
+                        setMoviesExtra(current_Category);
+                    }
+                }
+            });
         }
 
     }
@@ -549,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
-                Timber.d("onChanged viewModel");
+                Log.d("T9", "ON CHANGE");
                 favorites = favEntries;
                 Processor = new movieMeProcessor(favorites);
 
@@ -668,11 +682,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 editor.apply();
 
-                if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+                if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty() && !swipeLayout.isRefreshing()) {
                     mAdapter.notifyDataSetChanged();
-                } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+                } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid)) && !swipeLayout.isRefreshing()) {
                     mAdapter.notifyDataSetChanged();
-                } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+                } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list)) && !swipeLayout.isRefreshing()) {
                     sAdapter.notifyDataSetChanged();
                 }
             }
@@ -715,13 +729,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         list_check.setChecked(false);
                     }
                     setUIType();
-                    if (current_Category.equals(getString(R.string.Favorites))) {
-                        Log.d("T8", "Populating UI FAVS");
-                        populateUIFavorites();
-                    } else {
-                        Log.d("T8", "Populating UI");
-                        populateUI(current_Category);
-                    }
+                    populateUI(current_Category);
+
                     return true;
                 case R.id.list_view:
                     if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list)) ||
@@ -759,6 +768,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void populateUI(String category) {
+        Log.d("T8", "Populating UI");
         if (!swipeLayout.isRefreshing()) {
             Timber.d("populating UI from category");
             swipeLayout.setRefreshing(true);
@@ -770,8 +780,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 setMoviesFromCategory(getString(R.string.Top_Rated));
                 setTitle(getString(R.string.Top_Rated));
             } else if (category.equals(getString(R.string.Favorites))) {
+                Log.d("T8", "Popuating UI favs");
                 setMoviesFavorites();
-
                 setTitle(getString(R.string.Favorites));
             } else if (category.equals(getString(R.string.Action))) {
                 setMoviesFromCategory(getString(R.string.Action));
@@ -949,6 +959,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void setMoviesFavorites() {
+        Log.d("T8", "Setting UI Favorites");
         resumeCode = 3;
         movies = new ArrayList<>();
 
@@ -973,6 +984,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
 
                 new apiCallFavs(this, this, movieURL).execute();
+                Log.d("T8", "Executed api call fav");
             }
         }
 
@@ -1196,6 +1208,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void executeFavs() {
 
+        Log.d("T8", "executing favs");
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
@@ -1232,13 +1246,14 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            Log.d("T8", "Swapping");
             mAdapter.setNumberMovies(NUM_LIST_MOVIES);
             mAdapter.setMovies(movies);
-            moviesGrid.setAdapter(mAdapter);
+            moviesGrid.swapAdapter(mAdapter, false);
             swipeLayout.setRefreshing(false);
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
-            moviesGrid.setAdapter(sAdapter);
+            moviesGrid.swapAdapter(sAdapter, false);
             swipeLayout.setRefreshing(false);
         }
 
@@ -1617,17 +1632,20 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mainReference = new WeakReference<>(context);
             this.onAsyncFinished = on;
             this.link = url;
-            Log.d("T9", this.link.toString());
         }
 
         @Override
         protected String doInBackground(URL... urls) {
             String apiResult = null;
 
+            Log.d("T9", "doing in background");
+
             try {
                 apiResult = NetworkUtils.getResponseFromHttpUrl(this.link);
+                Log.d("T9", apiResult);
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.d("T9", "fail");
             }
 
 
@@ -1637,21 +1655,24 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         @Override
         protected void onPostExecute(String apiResults) {
 
+            Log.d("T9", "on post execute");
+
             Movie addMovie = JsonUtils.parseFavoriteMovie(apiResults);
+            Log.d("T9", "Add movie name is: " + addMovie.getMovieName());
 
             if (addMovie != null) {
-                Log.d("T9", "Not Null in adding post execute");
                 MainActivity activity = mainReference.get();
                 if (activity == null || activity.isFinishing()) return;
 
                 addMovie.setFav(activity.mContext.getString(R.string.Yes));
                 movies.add(addMovie);
-                Log.d("T9", "Genre is: " + addMovie.getGenresString());
+                Log.d("T8", "Genre is: " + addMovie.getGenresString());
             } else {
-                Log.d("T9", "Movie is NULL");
+                Log.d("T8", "Movie is NULL");
             }
 
             if (movies.size() == favMovies.size()) {
+                Log.d("T8", "arrays equal on async finished");
                 this.onAsyncFinished.onAsyncFinished(movies, "Key");
             }
 

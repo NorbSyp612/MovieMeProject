@@ -118,6 +118,8 @@ public class JsonUtils {
     public static Movie parseFavoriteMovie(String apiResult) {
         Movie movie = new Movie();
 
+        Log.d("T9", "Parsing fav movie");
+
         try {
 
             if (apiResult == null) {
