@@ -2,7 +2,6 @@ package com.example.android.movies;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -63,22 +61,17 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private String mMovieID;
     private String mMovieGenre;
     private String mMovieRating;
-    private String mReleaseDate;
     private ImageView mFavButtonBackground;
     private String favorite;
     private FavEntry movieEntry;
     private ImageView mToolbarPoster;
-    private CollapsingToolbarLayout mCollapseLayout;
     private YouTubePlayerFragment playerFragment;
     private YouTubePlayer mPlayer;
-    AddFavViewModel viewModel;
-    AddFavViewModelFactory factory;
     private int buttonPressed;
     private AdView mAdView;
     private TextView mTitleBar;
     private Context mContext;
     private TextView subTitleString;
-    private String extras;
 
     public static final String INSTANCE_MOVIE_ID = "MovieId";
     private static final String INSTANCE_FAV = "InstanceFAV";
@@ -163,10 +156,11 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mMovieName = fromMain.getStringExtra(movieName);
         mMovieGenre = fromMain.getStringExtra(getResources().getString(R.string.Movie_Genre));
         mMovieRating = fromMain.getStringExtra(getResources().getString(R.string.Movie_Rating));
-        mReleaseDate = fromMain.getStringExtra(getResources().getString(R.string.Movie_Release_Date));
+        String mReleaseDate = fromMain.getStringExtra(getResources().getString(R.string.Movie_Release_Date));
+        assert mReleaseDate != null;
         mReleaseDate = mReleaseDate.substring(0, 4);
 
-        extras = mReleaseDate + " - " + mMovieGenre;
+        String extras = mReleaseDate + " - " + mMovieGenre;
 
         subTitleString.setText(extras);
 
@@ -256,7 +250,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mTrailerText = findViewById(R.id.textView);
         mTopImageBar = findViewById(R.id.imageBar1);
         mToolbarPoster = findViewById(R.id.movie_toolbar_poster);
-        mCollapseLayout = findViewById(R.id.collapsing_toolbar_layout);
         playerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.movie_Play_First_Trailer);
         mTitleBar = findViewById(R.id.title_bar);
         mAdView = findViewById(R.id.adView);
@@ -344,20 +337,18 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     public void initiateFAB(Context context) {
         Timber.d("Fav clicked");
 
-        Context bContext = context;
+        if (MainActivity.getNumFavs() < 10)
+            Toast.makeText(context, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
+        else {
+            String movieIDQuery;
 
-        if (MainActivity.getNumFavs() < 10) {
-            Toast.makeText(bContext, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
-        } else {
-            String movieIDQuery = "";
-            String resultsString = "";
-
-            ArrayList<String> result = movieMeProcessor.process(context);
+            movieMeProcessor processor = new movieMeProcessor(favorites);
+            ArrayList<String> result = processor.process(context);
             Random rand = new Random();
 
-            movieIDQuery = bContext.getString(R.string.API_Search_Part1) + bContext.getString(R.string.API_key) + bContext.getString(R.string.API_Search_Part2)
-                    + (rand.nextInt(10) + 1) + bContext.getString(R.string.API_Search_Part3) + result.get(1) + bContext.getString(R.string.API_Search_Part4) + result.get(0)
-                    + bContext.getString(R.string.API_Search_Part5);
+            movieIDQuery = context.getString(R.string.API_Search_Part1) + context.getString(R.string.API_key) + context.getString(R.string.API_Search_Part2)
+                    + (rand.nextInt(10) + 1) + context.getString(R.string.API_Search_Part3) + result.get(1) + context.getString(R.string.API_Search_Part4) + result.get(0)
+                    + context.getString(R.string.API_Search_Part5);
 
             Timber.d(movieIDQuery);
 
@@ -391,11 +382,12 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                 for (Movie b : favMovies) {
                     if (b.getMovieName().equals(movieMe.getMovieName())) {
                         favCheck = 0;
+                        break;
                     }
 
                 }
 
-                if (movieMe.getBackdropURL() == "") {
+                if (movieMe.getBackdropURL().equals("")) {
                     favCheck = 0;
                 }
 

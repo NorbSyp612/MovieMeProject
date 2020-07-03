@@ -25,7 +25,7 @@ public class movieMeProcessor {
         rand = new Random();
     }
 
-    public static ArrayList<String> process(Context context) {
+    public ArrayList<String> process(Context context) {
 
         ArrayList<String> genres = new ArrayList<>();
 

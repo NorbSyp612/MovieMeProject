@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,14 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android.movies.AppExecutors;
 import com.example.android.movies.Items.Movie;
-import com.example.android.movies.MainActivity;
 import com.example.android.movies.MainViewModel;
 import com.example.android.movies.R;
 import com.example.android.movies.database.AppDatabase;
@@ -50,13 +47,10 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     static List<FavEntry> favorites;
     private static ArrayList<Movie> favMovies = new ArrayList<>();
     private int position;
-    private String instance_position;
     private String favorite;
     private AppDatabase mDb;
     private int clicks;
     private String instance_clicks;
-    private View currentView;
-    private static ArrayList<Movie> newMovies = new ArrayList<>();
     private int pageCount;
     private SwipeRefreshLayout swipeLayout;
     private String baseQuery;
@@ -124,22 +118,20 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                 double numThriller = 0;
                 double numWestern = 0;
 
-                String probAction = "";
-                String probAdv = "";
-                String probComedy = "";
-                String probHistory = "";
-                String probHorror = "";
-                String probDrama = "";
-                String probFantasy = "";
-                String probMystery = "";
-                String probRomance = "";
+                String probAction;
+                String probAdv;
+                String probComedy;
+                String probHistory;
+                String probHorror;
+                String probDrama;
+                String probFantasy;
+                String probMystery;
+                String probRomance;
                 String probScifi;
                 String probThriller;
                 String probWestern;
 
                 double ratingsTotal = 0;
-
-                favMovies.clear();
 
                 ArrayList<String> genres = new ArrayList<>();
                 ArrayList<String> ratings = new ArrayList<>();
@@ -245,10 +237,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         } else if (favorites.size() < 10) {
             Toast.makeText(bContext, bContext.getString(R.string.AddMoreThanTen), Toast.LENGTH_SHORT).show();
         } else {
-            String movieIDQuery = "";
-            Timber.d("Going to get movie from processor now");
-            movieMeProcessor.setFavs(favorites);
-            ArrayList<String> result = movieMeProcessor.process(bContext);
+            String movieIDQuery;
+            movieMeProcessor processor = new movieMeProcessor(favorites);
+            ArrayList<String> result = processor.process(bContext);
             Timber.d(result.get(0));
             Random rand = new Random();
 
@@ -268,9 +259,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             try {
                 String results = new apiCallButton().execute(testURL).get();
                 executeFavButton(results);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -288,10 +277,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         ArrayList<Movie> movieMeResults;
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
-        if (movieMeResults == null || movieMeResults.size() == 0) {
-            //   initiateFAB(mContext);
-        } else {
-            while (favCheck == 0) {
+        while (favCheck == 0) {
                 movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 
                 favCheck = 1;
@@ -299,11 +285,12 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                 for (Movie b : favMovies) {
                     if (b.getMovieName().equals(movieMe.getMovieName())) {
                         favCheck = 0;
+                        break;
                     }
 
                 }
 
-                if (movieMe.getBackdropURL() == "") {
+                if (movieMe.getBackdropURL().equals("")) {
                     favCheck = 0;
                 }
 
@@ -318,7 +305,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             if (movieMe.getMovieName() != null) {
                 goToMovieMeDetail(movieMe);
             }
-        }
+
     }
 
     public void goToMovieMeDetail(Movie movieMe) {
@@ -404,14 +391,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     public void onListItemClick(View itemView, int clickedItemIndex) {
         if (!movies.isEmpty()) {
             clicks++;
-            currentView = itemView;
             position = clickedItemIndex - 1;
             Context context = SearchActivity.this;
             Class destination = movieActivity.class;
-
-            int viewHolderPosition = clickedItemIndex;
-
-            Timber.d("Viewholder position is: %s", viewHolderPosition);
 
             final Intent goToMovieActivity = new Intent(context, destination);
 
@@ -449,7 +431,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         clicks++;
         position = clickedItemIndex - 1;
-        currentView = itemView;
         favorite = getString(R.string.No);
 
 
@@ -495,17 +476,14 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     if (pageCount < 5) {
                         pageCount++;
                         movies.addAll(o);
-                        Log.d("T8", "Now doing page " + pageCount);
                         String page = Integer.toString(pageCount);
                         URL tester = NetworkUtils.jsonRequest(baseQuery, page);
-                        Log.d("T8", "URL is " + tester);
                         new search(this, tester).execute();
                     } else {
                         populateUI();
                     }
                 }
             } else {
-                Log.d("T8", "EMPTY");
                 populateUI();
             }
         }
@@ -520,7 +498,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         public search(OnAsyncFinished onAsyncFinished, URL url) {
             this.onAsyncFinished = onAsyncFinished;
             this.testURL = url;
-            Log.d("T8", "performing async search + " + url.toString());
 
         }
 
@@ -537,7 +514,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
-            Log.d("T8", "on post execute");
             super.onPostExecute(movies);
             onAsyncFinished.onAsyncFinished(movies, "no");
         }
@@ -578,7 +554,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         @Override
         protected String doInBackground(URL... urls) {
-            Timber.d("doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
 
