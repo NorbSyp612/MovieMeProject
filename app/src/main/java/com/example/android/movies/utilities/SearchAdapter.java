@@ -33,13 +33,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
     private ArrayList<Movie> favMovies;
     private NumberViewHolder nvh;
 
-    public SearchAdapter(int movies, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray, ArrayList<Movie> favoritesArray) {
-        numberMovies = movies;
+    public SearchAdapter(int movs, ListItemClickListener onclick, ButtonItemClickListener buttonOnClick, ArrayList<Movie> moviesArray, ArrayList<Movie> favoritesArray) {
+        numberMovies = movs;
         onClickListener = onclick;
         onButtonClickListener = buttonOnClick;
         viewHolderCount = 0;
-        this.movies = moviesArray;
-        this.favMovies = favoritesArray;
+        movies = moviesArray;
+        favMovies = favoritesArray;
     }
 
 
@@ -49,6 +49,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
 
     public interface ButtonItemClickListener {
         void onButtonClick(View itemView, int clickedItemIndex);
+    }
+
+    public void setMovies(ArrayList<Movie> movs) {
+        movies = movs;
+    }
+
+    public void setFavMovies(ArrayList<Movie> favs) {
+        favMovies = favs;
+        for (Movie a : favMovies) {
+            Timber.d(a.getMovieName());
+        }
     }
 
     @Override
@@ -102,11 +113,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
+            Timber.d(movies.get(clickedPosition).getMovieName());
             if (favButton.isPressed()) {
                 Timber.d("ACTIVIATED");
                 if (star_yellow.getVisibility() == View.INVISIBLE) {
                     star_yellow.setVisibility(View.VISIBLE);
-                } else if (star_yellow.getVisibility() == View.VISIBLE) {
+                } else {
+                    Timber.d("INVISIBLE");
                     star_yellow.setVisibility(View.INVISIBLE);
                 }
                 onButtonClickListener.onButtonClick(v, clickedPosition);
@@ -125,7 +138,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
                 String imgURL = context.getString(R.string.API_Img_URL_185) + movies.get(listIndex).getImageURL();
 
                 Movie test = movies.get(listIndex);
-                Timber.d(test.getMovieName());
 
                 searchPoster.setContentDescription(test.getMovieName());
                 Picasso.get()
@@ -139,7 +151,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
                     date = date.substring(0, 4);
                 }
                 String genre = test.getGenre();
-                Log.d("T9", "Genre is" +  genre);
                 String rating = test.getUserRating();
                 String details = "";
 
@@ -151,14 +162,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
 
                 for (Movie a : favMovies) {
                     if (test.getMovieName().equals(a.getMovieName())) {
-                        Timber.d("FAVORITE FOUND: %s", test.getMovieName());
                         star_yellow.setVisibility(View.VISIBLE);
                     }
                 }
 
-                if (test.getFav().equals("yes")) {
-                    star_yellow.setVisibility(View.VISIBLE);
-                }
                 searchTitle.setText(title);
                 searchOverview.setText(overview);
                 searchDetails.setText(details);

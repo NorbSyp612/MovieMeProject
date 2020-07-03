@@ -687,7 +687,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid)) && !swipeLayout.isRefreshing()) {
                     mAdapter.notifyDataSetChanged();
                 } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list)) && !swipeLayout.isRefreshing()) {
-                    Log.d("T4", "notifying sadapter");
                     sAdapter.notifyDataSetChanged();
                 }
             }
@@ -1368,12 +1367,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 public void run() {
                     if (favorite.equals(getString(R.string.Yes))) {
                         mDb.favDao().deleteFav(movieEntry);
-                        Log.d("T4", "Deleting fav");
                         favorite = getString(R.string.No);
                     } else {
                         FavEntry enterNewFavorite = new FavEntry(movies.get(clickedItemIndex).getId(), movies.get(clickedItemIndex).getMovieName(), movies.get(clickedItemIndex).getGenre(), movies.get(clickedItemIndex).getUserRating(), movies.get(clickedItemIndex).getGenre());
                         mDb.favDao().insertFav(enterNewFavorite);
-                        Log.d("T4", "Inserting fav");
                         favorite = getString(R.string.Yes);
                     }
                 }
