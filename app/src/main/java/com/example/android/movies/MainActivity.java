@@ -1071,7 +1071,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 Toast.makeText(context, context.getString(R.string.AddMoreThanTen), Toast.LENGTH_SHORT).show();
             } else {
                 String movieIDQuery;
-                movieMeProcessor processor = new movieMeProcessor(favorites);
+                movieMeProcessor processor = new movieMeProcessor();
                 ArrayList<String> result = processor.process(context);
                 Timber.d("Scucess");
                 Timber.d(result.get(0));

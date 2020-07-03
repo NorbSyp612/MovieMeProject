@@ -5,11 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.example.android.movies.R;
-import com.example.android.movies.database.FavEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.Collections;
 
@@ -17,11 +15,9 @@ import timber.log.Timber;
 
 public class movieMeProcessor {
 
-    private static List<FavEntry> favorites;
     private static Random rand;
 
-    public movieMeProcessor(List<FavEntry> favs) {
-        favorites = favs;
+    public movieMeProcessor() {
         rand = new Random();
     }
 
@@ -56,20 +52,20 @@ public class movieMeProcessor {
 
         ArrayList<String> finalGenreAndRating = new ArrayList<>();
 
-        double probAction = 0;
-        double probAdv = 0;
-        double probComedy = 0;
-        double probHistory = 0;
-        double probHorror = 0;
-        double probDrama = 0;
-        double probFantasy = 0;
-        double probMystery = 0;
-        double probRomance = 0;
-        double probScifi = 0;
-        double probThriller = 0;
-        double probWestern = 0;
+        double probAction;
+        double probAdv;
+        double probComedy;
+        double probHistory;
+        double probHorror;
+        double probDrama;
+        double probFantasy;
+        double probMystery;
+        double probRomance;
+        double probScifi;
+        double probThriller;
+        double probWestern;
 
-        double ratingsTotal = 0;
+        double ratingsTotal;
 
         int categoryCheck = 0;
 
@@ -170,9 +166,6 @@ public class movieMeProcessor {
         return finalGenreAndRating;
     }
 
-    public static void setFavs(List<FavEntry> favs) {
-        favorites = favs;
-    }
 
     private static String getGenreId(String genre, Context context) {
         if (genre.equals(context.getString(R.string.Action))) {

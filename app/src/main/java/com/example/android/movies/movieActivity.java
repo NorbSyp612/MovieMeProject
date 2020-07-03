@@ -342,7 +342,7 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         else {
             String movieIDQuery;
 
-            movieMeProcessor processor = new movieMeProcessor(favorites);
+            movieMeProcessor processor = new movieMeProcessor();
             ArrayList<String> result = processor.process(context);
             Random rand = new Random();
 

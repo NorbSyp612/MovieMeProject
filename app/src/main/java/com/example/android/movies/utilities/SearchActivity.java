@@ -238,7 +238,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             Toast.makeText(bContext, bContext.getString(R.string.AddMoreThanTen), Toast.LENGTH_SHORT).show();
         } else {
             String movieIDQuery;
-            movieMeProcessor processor = new movieMeProcessor(favorites);
+            movieMeProcessor processor = new movieMeProcessor();
             ArrayList<String> result = processor.process(bContext);
             Timber.d(result.get(0));
             Random rand = new Random();

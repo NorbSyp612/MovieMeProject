@@ -91,7 +91,7 @@ public class WidgetUpdateService extends JobIntentService {
 
         AppDatabase mDb = AppDatabase.getInstance(getApplicationContext());
 
-        com.example.android.movies.utilities.movieMeProcessor movieMeProcessor = new movieMeProcessor(mDb.favDao().loadAllFavs().getValue());
+        com.example.android.movies.utilities.movieMeProcessor movieMeProcessor = new movieMeProcessor();
 
         String movieIDQuery = "";
 
