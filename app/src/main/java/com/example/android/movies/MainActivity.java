@@ -1245,16 +1245,19 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mAdapter.setMovies(movies);
             moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
+            moviesGrid.scrollToPosition(0);
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
             Log.d("T8", "Swapping");
             mAdapter.setNumberMovies(NUM_LIST_MOVIES);
             mAdapter.setMovies(movies);
             moviesGrid.swapAdapter(mAdapter, false);
             swipeLayout.setRefreshing(false);
+            moviesGrid.scrollToPosition(0);
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
             moviesGrid.swapAdapter(sAdapter, false);
             swipeLayout.setRefreshing(false);
+            moviesGrid.scrollToPosition(0);
         }
 
     }
