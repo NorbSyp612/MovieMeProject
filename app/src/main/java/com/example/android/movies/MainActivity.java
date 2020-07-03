@@ -838,6 +838,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void setMoviesExtra(String MoviesCategory) {
         resumeCode = 2;
 
+        Log.d("T4", "Setting movies for : " + MoviesCategory);
         swipeLayout.setRefreshing(true);
 
         String sortedBy = "";
@@ -876,7 +877,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (MoviesCategory.equals(getString(R.string.Romance))) {
             resumeCode = 12;
             sortedBy = getString(R.string.API_Query_Genre_Romance) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.Science_Fiction))) {
+        } else if (MoviesCategory.equals(getString(R.string.SciFi))) {
+            Log.d("T4", "Doing scifi extra");
             resumeCode = 13;
             sortedBy = getString(R.string.API_Query_Genre_Science_Fiction) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Thriller))) {
@@ -888,6 +890,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
 
+        Log.d("T4", sortedBy);
         extraTest = movies.size() + 100;
         String pageNum = Integer.toString(pageNumber);
         URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
@@ -1250,12 +1253,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             Log.d("T8", "Swapping");
             mAdapter.setNumberMovies(NUM_LIST_MOVIES);
             mAdapter.setMovies(movies);
-            moviesGrid.swapAdapter(mAdapter, false);
+            moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
             moviesGrid.scrollToPosition(0);
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
-            moviesGrid.swapAdapter(sAdapter, false);
+            moviesGrid.setAdapter(sAdapter);
             swipeLayout.setRefreshing(false);
             moviesGrid.scrollToPosition(0);
         }
@@ -1543,6 +1546,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mainReference = new WeakReference<>(context);
             this.onAsyncFinished = on;
             this.link = url;
+            Log.d("T4", url.toString());
         }
 
         @Override
