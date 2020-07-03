@@ -6,6 +6,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
@@ -31,8 +32,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -60,8 +59,6 @@ import android.app.SearchManager;
 
 import timber.log.Timber;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE;
 
 public class MainActivity extends AppCompatActivity implements moviesAdapter.ListItemClickListener, moviesAdapter.ButtonItemClickListener, NavigationView.OnNavigationItemSelectedListener, OnAsyncFinished, SearchAdapter.ButtonItemClickListener, SearchAdapter.ListItemClickListener {
 
@@ -87,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private static int asyncCount;
     private int buttonClick;
     private movieMeProcessor Processor;
-    private int ExtraCounter;
     private ListView listView;
     DrawerLayout drawerLayout;
     Toolbar toolbar;
@@ -111,13 +107,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         Timber.plant(new Timber.DebugTree());
 
-
         drawerLayout = findViewById(R.id.drawer);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation_view);
         navigationView.bringToFront();
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.Most_Popular);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.MovieMe, R.string.MovieMe);
@@ -179,10 +174,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     setMoviesFromCategory(getString(R.string.Top_Rated));
                     setTitle(getString(R.string.Top_Rated));
                 } else if (current_Category.equals(getString(R.string.Favorites))) {
-                    // populateUIFavorites();
                     setMoviesFavorites();
-                    //    setTitle(getString(R.string.Favorites));
-                    //    moviesGrid.setVerticalScrollbarPosition(0);
                 } else if (current_Category.equals(getString(R.string.Action))) {
                     setMoviesFromCategory(getString(R.string.Action));
                     setTitle(getString(R.string.Action));
@@ -227,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
             current_Category = savedInstanceState.getString(INSTANCE_CATEGORY);
-            Timber.d("Resume code: %s", resumeCode);
         } else {
             resumeCode = 1;
         }
@@ -241,15 +232,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             spanCount = 4;
-        }
-
-        ExtraCounter = 1;
-
-        int test123 = 0;
-
-        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
-            //   grid_check.setChecked(true);
-            //    list_check.setChecked(false);
         }
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
@@ -310,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                         moviesGrid.setHasFixedSize(false);
                         currentMovieSizeTest = movies.size() + 99;
-                        //      sAdapter.setNumberMovies(movies.size() + 100);
                         setMoviesExtra(current_Category);
                     }
                 }
@@ -326,7 +307,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void setUIType() {
-        Log.d("T8", "Setting UI Type");
         movies.clear();
         moviesGrid.removeAllViews();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -409,8 +389,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        grid_check = (MenuItem) menu.findItem(R.id.grid_view);
-        list_check = (MenuItem) menu.findItem(R.id.list_view);
+        grid_check = menu.findItem(R.id.grid_view);
+        list_check = menu.findItem(R.id.list_view);
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
             grid_check.setChecked(true);
@@ -559,11 +539,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     private void setupViewModel() {
-        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
-                Log.d("T4", "ON CHANGE");
                 favorites = favEntries;
                 Processor = new movieMeProcessor(favorites);
 
@@ -580,15 +559,15 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 double numThriller = 0;
                 double numWestern = 0;
 
-                String probAction = "";
-                String probAdv = "";
-                String probComedy = "";
-                String probHistory = "";
-                String probHorror = "";
-                String probDrama = "";
-                String probFantasy = "";
-                String probMystery = "";
-                String probRomance = "";
+                String probAction;
+                String probAdv;
+                String probComedy;
+                String probHistory;
+                String probHorror;
+                String probDrama;
+                String probFantasy;
+                String probMystery;
+                String probRomance;
                 String probScifi;
                 String probThriller;
                 String probWestern;
@@ -697,9 +676,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return movies;
     }
 
-    public static ArrayList<Movie> getFavs() {
-        return favMovies;
-    }
+    //  public static ArrayList<Movie> getFavs() {
+    //      return favMovies;
+    //  }
 
     @Override
     protected void onResume() {
@@ -754,18 +733,18 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return super.onOptionsItemSelected(item);
     }
 
-    public static int checkFav(Movie movie) {
-        int check = 0;
-
-        for (FavEntry a : favorites) {
-            if (a.getId().equals(movie.getId())) {
-                check = 1;
-                break;
-            }
-        }
-
-        return check;
-    }
+    // public static int checkFav(Movie movie) {
+    //      int check = 0;
+    //
+    //     for (FavEntry a : favorites) {
+    //        if (a.getId().equals(movie.getId())) {
+    //            check = 1;
+    //            break;
+    //        }
+    //    }
+    //
+    //     return check;
+    // }
 
     public void populateUI(String category) {
         if (!swipeLayout.isRefreshing()) {
