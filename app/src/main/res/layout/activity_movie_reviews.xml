@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/background"
     android:id="@+id/movie_reviews_layout"
-    tools:context=".movieActivity">
+    tools:context="my.movie.me.movies.movieActivity">
 
     <TextView
         android:textDirection="locale"

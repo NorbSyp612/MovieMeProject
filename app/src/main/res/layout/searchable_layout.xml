@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_text_primary"
-    tools:context=".utilities.SearchActivity">
+    tools:context="my.movie.me.movies.utilities.SearchActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/refresh_fab"

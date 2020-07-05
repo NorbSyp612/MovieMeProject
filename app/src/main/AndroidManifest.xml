@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-    package="com.example.android.movies">
+    package="my.movie.me.movies">
 
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,7 +18,7 @@
             android:value=".utilities.SearchActivity"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="my.movie.me.movies.MainActivity"
             android:theme="@style/AppThemeWithoutTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".utilities.SearchActivity"
+            android:name="my.movie.me.movies.utilities.SearchActivity"
             android:theme="@style/AppTheme"
             android:launchMode="singleTask">
 
@@ -40,12 +40,12 @@
         </activity>
 
         <activity
-            android:name=".movieActivity"
+            android:name="my.movie.me.movies.movieActivity"
             android:theme="@style/AppThemeWithoutTitle">
         </activity>
 
         <service
-            android:name=".utilities.MovieMeFirebaseMessageService"
+            android:name="my.movie.me.movies.utilities.MovieMeFirebaseMessageService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

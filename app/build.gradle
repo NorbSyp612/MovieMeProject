@@ -3,16 +3,16 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            storeFile file('mmKeyStore.jks')
-            storePassword 'Mountain1'
-            keyAlias = 'NorbSyp612'
-            keyPassword 'Mountain1'
+            storeFile file('C:\\Users\\Norb\\Desktop\\MM\\NS_Key.jks')
+            storePassword 'Seshomaj2u3p2@!'
+            keyAlias = 'dupasquet'
+            keyPassword 'Seshomaj2u3p2@!'
         }
     }
 
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.example.android.movies"
+        applicationId "my.movie.me.movies"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
