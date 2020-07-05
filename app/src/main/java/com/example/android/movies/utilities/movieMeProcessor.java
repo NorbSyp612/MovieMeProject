@@ -88,7 +88,6 @@ public class movieMeProcessor {
         String Thriller = sharedPreferences.getString(context.getString(R.string.Thriller), "");
         String Western = sharedPreferences.getString(context.getString(R.string.Western), "");
         String returnedRating = sharedPreferences.getString(context.getString(R.string.Return_Ratings), "");
-        Timber.d(returnedRating);
 
         probAction = Double.parseDouble(Action);
         probAdv = Double.parseDouble(Adv);
@@ -103,19 +102,6 @@ public class movieMeProcessor {
         probThriller = Double.parseDouble(Thriller);
         probWestern = Double.parseDouble(Western);
 
-
-        Timber.d("Prob action is: %s", probAction);
-        Timber.d("Prob adv is: %s", probAdv);
-        Timber.d("Prob comedy is: %s", probComedy);
-        Timber.d("Prob history is: %s", probHistory);
-        Timber.d("Prob horror is: %s", probHorror);
-        Timber.d("Prob Drama is: %s", probDrama);
-        Timber.d("Prob fantasy is: %s", probFantasy);
-        Timber.d("Prob mystery is: %s", probMystery);
-        Timber.d("Prob romance is: %s", probRomance);
-        Timber.d("Prob scifi is: %s", probScifi);
-        Timber.d("Prob thriller is: %s", probThriller);
-        Timber.d("Prob western is: %s", probWestern);
 
         map.put(context.getString(R.string.Action), probAction);
         map.put(context.getString(R.string.Adventure), probAdv);
@@ -159,9 +145,6 @@ public class movieMeProcessor {
 
         finalGenreAndRating.add(finalCategory);
         finalGenreAndRating.add(finaRating);
-
-        Timber.d(finalCategory);
-        Timber.d(finaRating);
 
         return finalGenreAndRating;
     }

@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             goToMovieActivity.putExtra(context.getString(R.string.Is_Fav_Key), context.getString(R.string.No));
             startActivity(goToMovieActivity);
         } else if (extras != null && extras.containsKey(getString(R.string.ID))) {
-            Timber.d("FCM movie id is: %s", extras.getString(getString(R.string.ID)));
             String movieIDQuery = getString(R.string.API_Query_Fav_Base) + extras.getString(getString(R.string.ID)) + "?" + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
             URL movieURL = null;
@@ -628,8 +627,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 editor.putString(getString(R.string.Thriller), probThriller);
                 editor.putString(getString(R.string.Western), probWestern);
 
-                Timber.d(probAction);
-                Timber.d(probAdv);
 
                 editor.apply();
 
@@ -719,7 +716,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void populateUI(String category) {
         if (!swipeLayout.isRefreshing()) {
-            Timber.d("populating UI from category");
             swipeLayout.setRefreshing(true);
             current_Category = category;
             if (category.equals(getString(R.string.Most_Popular))) {
@@ -806,7 +802,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (MoviesCategory.equals(getString(R.string.History))) {
             resumeCode = 7;
             sortedBy = getString(R.string.API_Query_Genre_History) + getString(R.string.API_Search_Part5);
-            Timber.d(sortedBy);
         } else if (MoviesCategory.equals(getString(R.string.Horror))) {
             resumeCode = 8;
             sortedBy = getString(R.string.API_Query_Genre_Horror) + getString(R.string.API_Search_Part5);
@@ -842,7 +837,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     public void setMoviesFromCategory(String category) {
 
-        Timber.d("setting movies from category");
 
 
         movies = new ArrayList<>();
@@ -867,7 +861,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (category.equals(getString(R.string.History))) {
             resumeCode = 7;
             sortedBy = getString(R.string.API_Query_Genre_History) + getString(R.string.API_Search_Part5);
-            Timber.d(sortedBy);
         } else if (category.equals(getString(R.string.Horror))) {
             resumeCode = 8;
             sortedBy = getString(R.string.API_Query_Genre_Horror) + getString(R.string.API_Search_Part5);
@@ -917,7 +910,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 String movieIDQuery = getString(R.string.API_Query_Fav_Base) + favID + getString(R.string.API_key_append) + getString(R.string.API_key) + "&" + getString(R.string.API_Query_Videos_End);
 
-                Timber.d(movieIDQuery);
 
                 URL movieURL = null;
                 try {
@@ -953,7 +945,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         for (FavEntry a : favorites) {
             if (a.getId().equals(movieID)) {
                 isFavorite = context.getString(R.string.Yes);
-                Timber.d("onListItemClick marking favorite as YES");
             }
         }
 
@@ -967,8 +958,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (!movies.isEmpty()) {
             Context context = MainActivity.this;
             Class destination = movieActivity.class;
-
-            Timber.d("Viewholder position is: %s", clickedItemIndex);
 
             final Intent goToMovieActivity = new Intent(context, destination);
 
@@ -988,15 +977,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             for (FavEntry a : favorites) {
                 if (a.getId().equals(movieID)) {
                     isFavorite = getString(R.string.Yes);
-                    Timber.d("onListItemClick marking favorite as YES");
                 }
             }
 
             goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
 
             startActivity(goToMovieActivity);
-        } else {
-            Timber.d("ERROR");
         }
     }
 
@@ -1032,7 +1018,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
                     favorite = getString(R.string.Yes);
                     movieEntry = a;
-                    Timber.d("Movie is a favorite");
                 }
             }
 
@@ -1050,7 +1035,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             });
         } else {
-            Timber.d("ERROR");
         }
 
     }
@@ -1060,7 +1044,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void initiateFAB(Context context) {
-        Timber.d("FAB CLICKED");
 
         if (!movies.isEmpty()) {
 
@@ -1073,8 +1056,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 String movieIDQuery;
                 movieMeProcessor processor = new movieMeProcessor();
                 ArrayList<String> result = processor.process(context);
-                Timber.d("Scucess");
-                Timber.d(result.get(0));
                 Random rand = new Random();
 
 
@@ -1082,7 +1063,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         + (rand.nextInt(10) + 1) + context.getString(R.string.API_Search_Part3) + result.get(1) + context.getString(R.string.API_Search_Part4) + result.get(0)
                         + context.getString(R.string.API_Search_Part5);
 
-                Timber.d(movieIDQuery);
 
                 URL testURL = null;
                 try {
@@ -1092,10 +1072,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
                 new apiCallButton(this).execute(testURL);
 
-                Timber.d(movieIDQuery);
             }
-        } else {
-            Timber.d("ERROR");
         }
     }
 
@@ -1158,7 +1135,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     public void execute() {
-        Timber.d("is empty: %s", favMovies.isEmpty());
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
@@ -1297,7 +1273,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
                     favorite = getString(R.string.Yes);
                     movieEntry = a;
-                    Timber.d("Movie is a favorite");
                 }
             }
 
@@ -1314,8 +1289,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
             });
-        } else {
-            Timber.d("ERROR");
         }
     }
 
@@ -1325,7 +1298,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             Context context = MainActivity.this;
             Class destination = movieActivity.class;
 
-            Timber.d("Viewholder position is: %s", clickedItemIndex);
 
             final Intent goToMovieActivity = new Intent(context, destination);
 
@@ -1345,7 +1317,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             for (FavEntry a : favorites) {
                 if (a.getId().equals(movieID)) {
                     isFavorite = getString(R.string.Yes);
-                    Timber.d("onListItemClick marking favorite as YES");
                 }
             }
 
@@ -1353,7 +1324,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             startActivity(goToMovieActivity);
         } else {
-            Timber.d("ERROR");
         }
     }
 
@@ -1368,7 +1338,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected String doInBackground(URL... urls) {
-            Timber.d("doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
 
@@ -1410,7 +1379,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         protected String doInBackground(URL... urls) {
             String apiResult = null;
 
-            //    Log.d("T7", "Trying URL: " + this.link.toString());
 
             try {
                 apiResult = NetworkUtils.getResponseFromHttpUrl(this.link);
@@ -1439,12 +1407,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 for (FavEntry a : favorites) {
                     if (a.getName().equals(movie.getMovieName())) {
-                        Timber.d("YES");
                         movie.setFav(activity.getString(R.string.Yes));
                     }
                 }
                 movies.add(movie);
-                //   Timber.d("movies size is: %s", movies.size());
             }
 
             this.onAsyncFinished.onAsyncFinished(movies, this.link.toString());
@@ -1494,7 +1460,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                 for (FavEntry a : favorites) {
                     if (a.getName().equals(movie.getMovieName())) {
-                        Timber.d("YES");
                         movie.setFav(activity.mContext.getString(R.string.Yes));
                     }
                 }
@@ -1518,7 +1483,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         @Override
         protected String doInBackground(URL... urls) {
-            Timber.d("doing in background");
             URL apiCall = urls[0];
             String apiResult = null;
 

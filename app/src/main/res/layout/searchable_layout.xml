@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:src="@drawable/ic_logo"
-        app:maxImageSize="56dp"
+        app:maxImageSize="52dp"
         android:backgroundTint="@color/color_text_primary"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"

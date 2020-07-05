@@ -100,7 +100,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
-                Timber.d("onChanged viewModel");
                 favorites = favEntries;
 
                 favMovies.clear();
@@ -174,11 +173,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                 }
 
                 int genreSize = genres.size() + 1;
-                Timber.d("Genre size is : %s", String.valueOf(genreSize));
                 ratingsTotal = ratingsTotal / genreSize;
-                Timber.d("ratings total is: %s", ratingsTotal);
                 String returnRatings = "" + ratingsTotal;
-                Timber.d("return ratins is: %s", returnRatings);
 
                 probAction = "" + (numAction / genreSize);
                 probAdv = "" + (numAdv / genreSize);
@@ -211,8 +207,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                 editor.putString(getString(R.string.Thriller), probThriller);
                 editor.putString(getString(R.string.Western), probWestern);
 
-                Timber.d(probAction);
-                Timber.d(probAdv);
 
                 editor.apply();
 
@@ -240,7 +234,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             String movieIDQuery;
             movieMeProcessor processor = new movieMeProcessor();
             ArrayList<String> result = processor.process(bContext);
-            Timber.d(result.get(0));
             Random rand = new Random();
 
 
@@ -248,7 +241,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                     + (rand.nextInt(10) + 1) + bContext.getString(R.string.API_Search_Part3) + result.get(1) + bContext.getString(R.string.API_Search_Part4) + result.get(0)
                     + bContext.getString(R.string.API_Search_Part5);
 
-            Timber.d(movieIDQuery);
 
             URL testURL = null;
             try {
@@ -263,7 +255,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                 e.printStackTrace();
             }
 
-            Timber.d(movieIDQuery);
         }
 
     }
@@ -293,13 +284,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                 if (movieMe.getBackdropURL().equals("")) {
                     favCheck = 0;
                 }
-
-                if (favCheck == 1) {
-                    Timber.d(movieMe.getMovieName());
-                } else {
-                    Timber.d("Recommended a favorite starting over");
-                }
-
             }
 
             if (movieMe.getMovieName() != null) {
@@ -338,7 +322,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         mAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
         mRecycle.setAdapter(mAdapter);
         mRecycle.setHasFixedSize(false);
-        Timber.d("Setting position to %s", position);
         mRecycle.scrollToPosition(position);
 
         setupViewModel();
@@ -413,7 +396,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             for (FavEntry a : favorites) {
                 if (a.getId().equals(movieID)) {
                     isFavorite = getString(R.string.Yes);
-                    Timber.d("onListItemClick marking favorite as YES");
                 }
             }
 
@@ -421,8 +403,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
 
             startActivity(goToMovieActivity);
-        } else {
-            Timber.d("ERROR");
         }
     }
 
@@ -438,7 +418,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             if (a.getId().equals(movies.get(clickedItemIndex).getId())) {
                 favorite = getString(R.string.Yes);
                 movieEntry = a;
-                Timber.d("Movie is a favorite");
             }
         }
 

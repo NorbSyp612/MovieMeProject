@@ -74,9 +74,6 @@ public class WidgetUpdateService extends JobIntentService {
         ArrayList<Movie> movieMeResults;
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
-        for (Movie a : movieMeResults) {
-            Timber.d(a.getMovieName());
-        }
 
         if (movieMeResults == null) {
             initiate();
@@ -112,7 +109,6 @@ public class WidgetUpdateService extends JobIntentService {
         }
         new apiForWidget(this).execute(testURL);
 
-        Timber.d(movieIDQuery);
     }
 }
 
@@ -125,14 +121,11 @@ class apiForWidget extends AsyncTask<URL, Void, String> {
         mainReference = new WeakReference<>(context);
         service = mainReference.get();
 
-        if (service == null) {
-            Timber.d("Null 1");
-        }
+
     }
 
     @Override
     protected String doInBackground(URL... urls) {
-        Timber.d("doing in background");
         URL apiCall = urls[0];
         String apiResult = null;
 
@@ -143,11 +136,8 @@ class apiForWidget extends AsyncTask<URL, Void, String> {
             e.printStackTrace();
         }
 
-        Timber.d(apiResult);
         service = mainReference.get();
-        if (service == null) {
-            Timber.d("Null 2");
-        }
+
 
         return apiResult;
     }

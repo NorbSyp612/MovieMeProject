@@ -57,9 +57,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
 
     public void setFavMovies(ArrayList<Movie> favs) {
         favMovies = favs;
-        for (Movie a : favMovies) {
-            Timber.d(a.getMovieName());
-        }
     }
 
     @Override
@@ -113,13 +110,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            Timber.d(movies.get(clickedPosition).getMovieName());
             if (favButton.isPressed()) {
-                Timber.d("ACTIVIATED");
                 if (star_yellow.getVisibility() == View.INVISIBLE) {
                     star_yellow.setVisibility(View.VISIBLE);
                 } else {
-                    Timber.d("INVISIBLE");
                     star_yellow.setVisibility(View.INVISIBLE);
                 }
                 onButtonClickListener.onButtonClick(v, clickedPosition);

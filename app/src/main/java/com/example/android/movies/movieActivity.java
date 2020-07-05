@@ -81,13 +81,12 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     private ArrayList<String> movieReviews;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)        {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
         mContext = getApplicationContext();
 
-        Timber.d("On Create");
 
         Intent fromMain = getIntent();
 
@@ -168,7 +167,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         mSynopsis.setText(fromMain.getStringExtra(movieSynopsis));
 
         String backdropImgURL = getString(R.string.API_IMG_URL_BASE_342) + fromMain.getStringExtra(getString(R.string.Movie_Backdrop));
-        Timber.d(backdropImgURL);
         Picasso.get().load(backdropImgURL).into(mToolbarPoster);
         mToolbarPoster.setContentDescription(mMovieName);
 
@@ -198,7 +196,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Timber.d("Destroy");
         mPlayer = null;
     }
 
@@ -207,7 +204,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         viewModel.getFavs().observe(this, new Observer<List<FavEntry>>() {
             @Override
             public void onChanged(@Nullable List<FavEntry> favEntries) {
-                Timber.d("onChanged viewModel");
                 favorites = favEntries;
                 setFavButton();
 
@@ -261,7 +257,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         outState.putString(INSTANCE_FAV, favorite);
         outState.putString(INSTANCE_MOVIE_ID, mMovieID);
         outState.putInt("TESTER", buttonPressed);
-        Timber.d("OUT STATE: %s", mMovieID);
         super.onSaveInstanceState(outState);
     }
 
@@ -307,7 +302,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
             if (a.getId().equals(mMovieID)) {
                 favorite = getString(R.string.Yes);
                 movieEntry = a;
-                Timber.d("Movie is a favorite");
             }
         }
 
@@ -317,12 +311,10 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                 if (favorite.equals(getString(R.string.Yes))) {
                     mDb.favDao().deleteFav(movieEntry);
                     favorite = getString(R.string.No);
-                    Timber.d("Removing from favorites");
                 } else {
                     FavEntry enterNewFavorite = new FavEntry(mMovieID, mMovieName, mMovieGenre, mMovieRating, mMovieGenre);
                     mDb.favDao().insertFav(enterNewFavorite);
                     favorite = getString(R.string.Yes);
-                    Timber.d("Adding to favorites");
                 }
             }
         });
@@ -335,7 +327,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
     }
 
     public void initiateFAB(Context context) {
-        Timber.d("Fav clicked");
 
         if (MainActivity.getNumFavs() < 10)
             Toast.makeText(context, "Please select at least 10 favs first!", Toast.LENGTH_LONG).show();
@@ -350,7 +341,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     + (rand.nextInt(10) + 1) + context.getString(R.string.API_Search_Part3) + result.get(1) + context.getString(R.string.API_Search_Part4) + result.get(0)
                     + context.getString(R.string.API_Search_Part5);
 
-            Timber.d(movieIDQuery);
 
             URL testURL = null;
             try {
@@ -391,11 +381,6 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
                     favCheck = 0;
                 }
 
-                if (favCheck == 1) {
-                    Timber.d(movieMe.getMovieName());
-                } else {
-                    Timber.d("Recommended a favorite starting over");
-                }
 
             }
 
@@ -410,13 +395,11 @@ public class movieActivity extends AppCompatActivity implements YouTubePlayer.On
         Context context = mContext;
         Class destination = movieActivity.class;
 
-        Timber.d("Reloading movieActivity");
 
         final Intent goToMovieActivity = new Intent(context, destination);
         goToMovieActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Name), movieMe.getMovieName());
-        Timber.d(movieMe.getMovieName());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Img_Url), movieMe.getImageURL());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Synopsis), movieMe.getSynopsis());
         goToMovieActivity.putExtra(mContext.getString(R.string.Movie_Rating), movieMe.getUserRating());

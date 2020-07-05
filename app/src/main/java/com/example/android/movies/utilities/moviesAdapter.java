@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.example.android.movies.Items.Movie;
 import com.example.android.movies.R;
@@ -55,9 +54,7 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
     public void setMovies(ArrayList<Movie> moviesArray) {
         movies.clear();
-        Timber.d("Cleaing movies array");
         if (movies.isEmpty()) {
-            Timber.d("Movies is clear");
         }
         movies = moviesArray;
     }
@@ -67,19 +64,16 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
     }
 
     public void addMovies(ArrayList<Movie> newMoviesArray) {
-        Timber.d("Movies array size is: %s", newMoviesArray.size());
 
         int start = newMoviesArray.size() - 100;
         int end = newMoviesArray.size();
 
 
         while (start < end) {
-            Timber.d("adding %s", start + " " + newMoviesArray.get(start).getMovieName());
             movies.add(newMoviesArray.get(start));
             start++;
         }
 
-        Timber.d("Movies size is adapter is %s", movies.size());
     }
 
 
@@ -130,7 +124,6 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
             int clickedPosition = getAdapterPosition();
 
             if (favButton.isPressed()) {
-                Timber.d("ACTIVIATED");
                 if (star_yellow.getVisibility() == View.INVISIBLE) {
                     star_yellow.setVisibility(View.VISIBLE);
                 } else if (star_yellow.getVisibility() == View.VISIBLE) {
@@ -158,15 +151,12 @@ public class moviesAdapter extends RecyclerView.Adapter<moviesAdapter.NumberView
 
             if (!movies.isEmpty()) {
                 String imgURL = context.getString(R.string.API_Img_URL_185) + movies.get(listIndex).getImageURL();
-                Timber.d(imgURL);
 
                 Movie test = movies.get(listIndex);
 
-                Timber.d("TEST %s", test.getFav());
 
                 for (Movie a : favMovies) {
                     if (test.getMovieName().equals(a.getMovieName())) {
-                        Timber.d("FAVORITE FOUND: %s", test.getMovieName());
                         star_yellow.setVisibility(View.VISIBLE);
                     }
                 }

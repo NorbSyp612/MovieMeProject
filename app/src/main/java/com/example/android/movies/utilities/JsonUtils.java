@@ -1,26 +1,12 @@
 package com.example.android.movies.utilities;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.os.AsyncTask;
-import android.util.Log;
-
 import com.example.android.movies.Items.Movie;
-import com.example.android.movies.MainActivity;
-import com.example.android.movies.R;
-import com.example.android.movies.database.AppDatabase;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 public class JsonUtils {
@@ -118,7 +104,6 @@ public class JsonUtils {
     public static Movie parseFavoriteMovie(String apiResult) {
         Movie movie = new Movie();
 
-        Log.d("T9", "Parsing fav movie");
 
         try {
 
@@ -132,7 +117,6 @@ public class JsonUtils {
 
 
             String movieName = jResult.getString("title");
-            Log.d("T9", movieName);
             String movieImageURL = jResult.getString("poster_path");
             String movieSynopsis = jResult.getString("overview");
             String movieUserRating = jResult.getString("vote_average");
@@ -145,13 +129,12 @@ public class JsonUtils {
 
             JSONArray genres = jResult.getJSONArray("genres");
 
-            int genreNum = 0;
+            int genreNum;
             int testNum;
 
             for (int b = 0; b < genres.length(); b++) {
                 JSONObject genreObject = genres.getJSONObject(b);
                 genreNum = genreObject.getInt("id");
-                Log.d("T9", "genreNum is " + genreNum);
 
                 if (genreNum == 28) {
                     movieGenre = "Action";
@@ -199,7 +182,6 @@ public class JsonUtils {
                 }
             }
 
-            Log.d("T9", genreString);
 
             movie.setMovieName(movieName);
             movie.setImageURL(movieImageURL);
