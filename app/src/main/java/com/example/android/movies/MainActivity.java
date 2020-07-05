@@ -209,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
 
-
         int orientation = getResources().getConfiguration().orientation;
         int spanCount = 2;
 
@@ -666,8 +665,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         if (!swipeLayout.isRefreshing()) {
             switch (item.getItemId()) {
                 case R.id.grid_view:
-                    if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid)) ||
-                            sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+                    if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+                        return true;
+                    } else if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+                        editor.putString(getString(R.string.View_Key), getString(R.string.Grid));
                         return true;
                     }
                     editor.putString(getString(R.string.View_Key), getString(R.string.Grid));
@@ -683,8 +684,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
                     return true;
                 case R.id.list_view:
-                    if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list)) ||
-                            sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+                    if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
                         return true;
                     }
                     editor.putString(getString(R.string.View_Key), getString(R.string.list));

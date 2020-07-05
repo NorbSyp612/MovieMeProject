@@ -90,7 +90,7 @@
     <string name="Trailers">Trailer</string>
     <string name="Trailer_One">Trailer 1</string>
     <string name="Trailer_Two">Trailer 2</string>
-    <string name="User_Score">User Score</string>
+    <string name="User_Score">TMDb Score</string>
     <string name="Overview">Overview</string>
     <string name="Out_of_ten"> /10</string>
     <string name="GoToMovie">GoToMovie</string>

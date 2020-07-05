@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android.movies.database.AppDatabase;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MovieDetailViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final AppDatabase mDb;
@@ -15,8 +17,9 @@ public class MovieDetailViewModelFactory extends ViewModelProvider.NewInstanceFa
         mMovieID = MovieID;
     }
 
+    @NotNull
     @Override
-    public <T extends ViewModel> T create(Class<T> modelClass) {
+    public <T extends ViewModel> T create(@NotNull Class<T> modelClass) {
         //noinspection unchecked
         return (T) new MovieDetailViewModel(mDb, mMovieID);
     }

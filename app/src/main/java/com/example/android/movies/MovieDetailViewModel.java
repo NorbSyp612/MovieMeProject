@@ -14,7 +14,4 @@ public class MovieDetailViewModel extends ViewModel {
         fav = database.favDao().loadFavById(movieID);
     }
 
-    public LiveData<FavEntry> getFav() {
-        return fav;
-    }
 }
