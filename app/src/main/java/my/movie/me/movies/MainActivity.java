@@ -771,7 +771,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 setMoviesFromCategory(getString(R.string.Western));
                 Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Western));
             }
-            swipeLayout.setRefreshing(false);
         }
     }
 
