@@ -25,11 +25,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
 import my.movie.me.movies.R;
 import my.movie.me.movies.Items.Movie;
 
@@ -42,6 +44,7 @@ import my.movie.me.movies.utilities.OnAsyncFinished;
 import my.movie.me.movies.utilities.SearchAdapter;
 import my.movie.me.movies.utilities.movieMeProcessor;
 import my.movie.me.movies.utilities.moviesAdapter;
+
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
@@ -88,10 +91,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private Context mContext;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.d("TEST", "OnCreate");
 
         Timber.plant(new Timber.DebugTree());
 
@@ -202,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
         });
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_RESUME_CODE)) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_CATEGORY)) {
             resumeCode = savedInstanceState.getInt(INSTANCE_RESUME_CODE);
             current_Category = savedInstanceState.getString(INSTANCE_CATEGORY);
         } else {
@@ -229,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-
                     if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                         moviesGrid.setHasFixedSize(false);
                         mAdapter.setNumberMovies(movies.size() + 100);
@@ -280,7 +285,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
         mDb = AppDatabase.getInstance(getApplicationContext());
 
-        current_Category = getString(R.string.Most_Popular);
+        if (savedInstanceState == null) {
+            current_Category = getString(R.string.Most_Popular);
+        }
 
         setupViewModel();
         populateUI(current_Category);
@@ -647,12 +654,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return movies;
     }
 
-    //  public static ArrayList<Movie> getFavs() {
-    //      return favMovies;
-    //  }
 
     @Override
     protected void onResume() {
+        Log.d("TEST", "OnResume");
         super.onResume();
     }
 
@@ -722,49 +727,49 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             current_Category = category;
             if (category.equals(getString(R.string.Most_Popular))) {
                 setMoviesFromCategory(getString(R.string.Most_Popular));
-                setTitle(getString(R.string.Most_Popular));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Most_Popular);
             } else if (category.equals(getString(R.string.Top_Rated))) {
                 setMoviesFromCategory(getString(R.string.Top_Rated));
-                setTitle(getString(R.string.Top_Rated));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Top_Rated));
             } else if (category.equals(getString(R.string.Favorites))) {
                 setMoviesFavorites();
-                setTitle(getString(R.string.Favorites));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Favorites));
             } else if (category.equals(getString(R.string.Action))) {
                 setMoviesFromCategory(getString(R.string.Action));
-                setTitle(getString(R.string.Action));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Action));
             } else if (category.equals(getString(R.string.Adventure))) {
                 setMoviesFromCategory(getString(R.string.Adventure));
-                setTitle(getString(R.string.Adventure));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Adventure));
             } else if (category.equals(getString(R.string.Comedy))) {
                 setMoviesFromCategory(getString(R.string.Comedy));
-                setTitle(getString(R.string.Comedy));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Comedy));
             } else if (category.equals(getString(R.string.History))) {
                 setMoviesFromCategory(getString(R.string.History));
-                setTitle(getString(R.string.History));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.History));
             } else if (category.equals(getString(R.string.Horror))) {
                 setMoviesFromCategory(getString(R.string.Horror));
-                setTitle(getString(R.string.Horror));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Horror));
             } else if (category.equals(getString(R.string.Drama))) {
                 setMoviesFromCategory(getString(R.string.Drama));
-                setTitle(getString(R.string.Drama));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Drama));
             } else if (category.equals(getString(R.string.Fantasy))) {
                 setMoviesFromCategory(getString(R.string.Fantasy));
-                setTitle(getString(R.string.Fantasy));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Fantasy));
             } else if (category.equals(getString(R.string.Mystery))) {
                 setMoviesFromCategory(getString(R.string.Mystery));
-                setTitle(getString(R.string.Mystery));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Mystery));
             } else if (category.equals(getString(R.string.Romance))) {
                 setMoviesFromCategory(getString(R.string.Romance));
-                setTitle(getString(R.string.Romance));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Romance));
             } else if (category.equals(getString(R.string.Science_Fiction))) {
                 setMoviesFromCategory(getString(R.string.Science_Fiction));
-                setTitle(getString(R.string.Science_Fiction));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Science_Fiction));
             } else if (category.equals(getString(R.string.Thriller))) {
                 setMoviesFromCategory(getString(R.string.Thriller));
-                setTitle(getString(R.string.Thriller));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Thriller));
             } else if (category.equals(getString(R.string.Western))) {
                 setMoviesFromCategory(getString(R.string.Western));
-                setTitle(getString(R.string.Western));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.Western));
             }
             swipeLayout.setRefreshing(false);
         }
@@ -840,7 +845,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void setMoviesFromCategory(String category) {
 
 
-
         movies = new ArrayList<>();
 
         String sortedBy = "";
@@ -902,7 +906,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         movies = new ArrayList<>();
 
         if (favorites.isEmpty()) {
-            setTitle(getString(R.string.Most_Popular));
             Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Most_Popular);
             setMoviesFromCategory(getString(R.string.Most_Popular));
         } else {
