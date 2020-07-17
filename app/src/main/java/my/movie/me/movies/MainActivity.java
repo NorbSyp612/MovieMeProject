@@ -32,7 +32,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import my.movie.me.movies.R;
 import my.movie.me.movies.Items.Movie;
 
 
@@ -75,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private static int resumeCode;
     private String INSTANCE_RESUME_CODE = "RESUME_CODE";
     private static String INSTANCE_CATEGORY;
+    private String INSTANCE_VIEW_POSITION = "VIEW_POSITION";
     private static String current_Category;
     private String favorite;
     private FavEntry movieEntry;
@@ -87,9 +87,13 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private boolean first;
     private MenuItem grid_check;
     private MenuItem list_check;
+    private int viewPosition;
+    private boolean viewChange;
+    private int viewChangePosition;
+    private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
 
     private Context mContext;
-
 
 
     @Override
@@ -97,15 +101,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("TEST", "OnCreate");
-
         Timber.plant(new Timber.DebugTree());
 
         drawerLayout = findViewById(R.id.drawer);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation_view);
         navigationView.bringToFront();
-        INSTANCE_CATEGORY = "";
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         navigationView.setNavigationItemSelectedListener(this);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
 
+        viewChange = false;
 
         Bundle extras = getIntent().getExtras();
 
@@ -215,6 +217,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             resumeCode = 1;
         }
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_VIEW_POSITION)) {
+            viewPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION);
+        }
+
 
         int orientation = getResources().getConfiguration().orientation;
         int spanCount = 2;
@@ -225,8 +231,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
             moviesGrid = findViewById(R.id.movie_items);
-            GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
-            moviesGrid.setLayoutManager(layoutManager);
+            gridLayoutManager = new GridLayoutManager(mContext, spanCount);
+            moviesGrid.setLayoutManager(gridLayoutManager);
             mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
 
             moviesGrid.setAdapter(mAdapter);
@@ -235,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
+                    viewPosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
                     if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                         moviesGrid.setHasFixedSize(false);
                         mAdapter.setNumberMovies(movies.size() + 100);
@@ -244,8 +251,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             });
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
             moviesGrid = findViewById(R.id.movie_items);
-            GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
-            moviesGrid.setLayoutManager(layoutManager);
+            gridLayoutManager = new GridLayoutManager(mContext, spanCount);
+            moviesGrid.setLayoutManager(gridLayoutManager);
             mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
 
             moviesGrid.setAdapter(mAdapter);
@@ -254,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-
+                    viewPosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
                     if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                         moviesGrid.setHasFixedSize(false);
                         mAdapter.setNumberMovies(movies.size() + 100);
@@ -264,8 +271,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             });
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             moviesGrid = findViewById(R.id.movie_items);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-            moviesGrid.setLayoutManager(layoutManager);
+            linearLayoutManager = new LinearLayoutManager(mContext);
+            moviesGrid.setLayoutManager(linearLayoutManager);
             int numMovies = movies.size();
             sAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
             moviesGrid.setAdapter(sAdapter);
@@ -274,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-
+                    viewPosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                     if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                         moviesGrid.setHasFixedSize(false);
                         setMoviesExtra(current_Category);
@@ -300,14 +307,17 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         int orientation = getResources().getConfiguration().orientation;
         int spanCount = 2;
 
+        viewChange = true;
+
+
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             spanCount = 4;
         }
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
             moviesGrid = findViewById(R.id.movie_items);
-            GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
-            moviesGrid.setLayoutManager(layoutManager);
+            gridLayoutManager = new GridLayoutManager(mContext, spanCount);
+            moviesGrid.setLayoutManager(gridLayoutManager);
             mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
             moviesGrid.setAdapter(mAdapter);
             moviesGrid.setHasFixedSize(false);
@@ -315,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-
+                    viewPosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
                     if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                         moviesGrid.setHasFixedSize(false);
                         mAdapter.setNumberMovies(movies.size() + 100);
@@ -325,8 +335,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             });
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
             moviesGrid = findViewById(R.id.movie_items);
-            GridLayoutManager layoutManager = new GridLayoutManager(mContext, spanCount);
-            moviesGrid.setLayoutManager(layoutManager);
+            gridLayoutManager = new GridLayoutManager(mContext, spanCount);
+            moviesGrid.setLayoutManager(gridLayoutManager);
             mAdapter = new moviesAdapter(NUM_LIST_MOVIES, this, this, movies, favMovies);
             moviesGrid.setAdapter(mAdapter);
             moviesGrid.setHasFixedSize(false);
@@ -334,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-
+                    viewPosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
                     if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                         moviesGrid.setHasFixedSize(false);
                         mAdapter.setNumberMovies(movies.size() + 100);
@@ -344,8 +354,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             });
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             moviesGrid = findViewById(R.id.movie_items);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-            moviesGrid.setLayoutManager(layoutManager);
+            linearLayoutManager = new LinearLayoutManager(mContext);
+            moviesGrid.setLayoutManager(linearLayoutManager);
             int numMovies = movies.size();
             sAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
             moviesGrid.setAdapter(sAdapter);
@@ -354,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-
+                    viewPosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                     if (!swipeLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && !current_Category.equals(getString(R.string.Favorites))) {
                         moviesGrid.setHasFixedSize(false);
                         mAdapter.setNumberMovies(movies.size() + 100);
@@ -404,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         Toast.makeText(this, getString(R.string.AddFavPls), Toast.LENGTH_SHORT).show();
                         swipeLayout.setRefreshing(false);
                     } else {
+                        viewPosition = 0;
                         populateUIFavorites();
                         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Favorites);
                         current_Category = getString(R.string.Favorites);
@@ -412,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_pop:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Most_Popular));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Most_Popular);
                     current_Category = getString(R.string.Most_Popular);
@@ -419,6 +431,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_top:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Top_Rated));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Top_Rated);
                     current_Category = getString(R.string.Top_Rated);
@@ -426,6 +439,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_action:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Action));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Action);
                     current_Category = getString(R.string.Action);
@@ -433,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_adventure:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Adventure));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Adventure);
                     current_Category = getString(R.string.Adventure);
@@ -440,6 +455,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_comedy:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Comedy));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Comedy);
                     current_Category = getString(R.string.Comedy);
@@ -447,6 +463,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_History:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.History));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.History);
                     current_Category = getString(R.string.History);
@@ -454,6 +471,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_horror:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Horror));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Horror);
                     current_Category = getString(R.string.Horror);
@@ -461,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_drama:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Drama));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Drama);
                     current_Category = getString(R.string.Drama);
@@ -468,6 +487,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_fantasy:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Fantasy));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Fantasy);
                     current_Category = getString(R.string.Fantasy);
@@ -475,6 +495,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_mystery:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Mystery));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Mystery);
                     current_Category = getString(R.string.Mystery);
@@ -482,6 +503,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_romance:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Romance));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Romance);
                     current_Category = getString(R.string.Romance);
@@ -489,6 +511,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_scifi:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Science_Fiction));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.SciFi);
                     current_Category = getString(R.string.SciFi);
@@ -496,6 +519,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_thriller:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Thriller));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Thriller);
                     current_Category = getString(R.string.Thriller);
@@ -503,6 +527,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 }
             case R.id.drawer_western:
                 if (!swipeLayout.isRefreshing()) {
+                    viewPosition = 0;
                     populateUI(getString(R.string.Western));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.Western);
                     current_Category = getString(R.string.Western);
@@ -519,6 +544,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(INSTANCE_RESUME_CODE, resumeCode);
         outState.putString(INSTANCE_CATEGORY, current_Category);
+        outState.putInt(INSTANCE_VIEW_POSITION, viewPosition);
         super.onSaveInstanceState(outState);
     }
 
@@ -657,7 +683,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     @Override
     protected void onResume() {
-        Log.d("TEST", "OnResume");
         super.onResume();
     }
 
@@ -683,9 +708,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         item.setChecked(true);
                         list_check.setChecked(false);
                     }
+                    viewChangePosition = viewPosition;
+                    Log.d("TEST", "viewchangepos is : " + viewChangePosition);
                     setUIType();
                     populateUI(current_Category);
-
                     return true;
                 case R.id.list_view:
                     if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
@@ -699,6 +725,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         item.setChecked(true);
                         grid_check.setChecked(false);
                     }
+                    viewChangePosition = viewPosition;
+                    Log.d("TEST", "viewchangepos is : " + viewChangePosition);
                     setUIType();
                     populateUI(current_Category);
                     return true;
@@ -1125,15 +1153,33 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mAdapter.setMovies(movies);
             moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
+            if (viewChange) {
+                moviesGrid.scrollToPosition(viewChangePosition);
+                viewChange = false;
+            } else {
+                moviesGrid.scrollToPosition(viewPosition);
+            }
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
             mAdapter.setNumberMovies(favMovies.size());
             mAdapter.setMovies(movies);
             moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
+            if (viewChange) {
+                moviesGrid.scrollToPosition(viewChangePosition);
+                viewChange = false;
+            } else {
+                moviesGrid.scrollToPosition(viewPosition);
+            }
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
             moviesGrid.setAdapter(sAdapter);
             swipeLayout.setRefreshing(false);
+            if (viewChange) {
+                moviesGrid.scrollToPosition(viewChangePosition);
+                viewChange = false;
+            } else {
+                moviesGrid.scrollToPosition(viewPosition);
+            }
         }
 
     }
@@ -1147,18 +1193,33 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mAdapter.setMovies(movies);
             moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
-            moviesGrid.scrollToPosition(0);
+            if (viewChange) {
+                moviesGrid.scrollToPosition(viewChangePosition);
+                viewChange = false;
+            } else {
+                moviesGrid.scrollToPosition(viewPosition);
+            }
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
             mAdapter.setNumberMovies(NUM_LIST_MOVIES);
             mAdapter.setMovies(movies);
             moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
-            moviesGrid.scrollToPosition(0);
+            if (viewChange) {
+                moviesGrid.scrollToPosition(viewChangePosition);
+                viewChange = false;
+            } else {
+                moviesGrid.scrollToPosition(viewPosition);
+            }
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             sAdapter = new SearchAdapter(movies.size(), this, this, movies, favMovies);
             moviesGrid.setAdapter(sAdapter);
             swipeLayout.setRefreshing(false);
-            moviesGrid.scrollToPosition(0);
+            if (viewChange) {
+                moviesGrid.scrollToPosition(viewChangePosition);
+                viewChange = false;
+            } else {
+                moviesGrid.scrollToPosition(viewPosition);
+            }
         }
 
     }
