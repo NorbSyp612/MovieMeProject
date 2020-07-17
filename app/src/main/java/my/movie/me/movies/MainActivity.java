@@ -542,9 +542,18 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+            outState.putInt(INSTANCE_VIEW_POSITION, gridLayoutManager.findFirstVisibleItemPosition());
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            outState.putInt(INSTANCE_VIEW_POSITION, gridLayoutManager.findFirstVisibleItemPosition());
+        } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+            outState.putInt(INSTANCE_VIEW_POSITION, linearLayoutManager.findFirstVisibleItemPosition());
+        }
         outState.putInt(INSTANCE_RESUME_CODE, resumeCode);
         outState.putString(INSTANCE_CATEGORY, current_Category);
-        outState.putInt(INSTANCE_VIEW_POSITION, viewPosition);
+
         super.onSaveInstanceState(outState);
     }
 
