@@ -692,6 +692,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if (!swipeLayout.isRefreshing()) {
+            moviesGrid.stopScroll();
             switch (item.getItemId()) {
                 case R.id.grid_view:
                     if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
@@ -708,7 +709,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         item.setChecked(true);
                         list_check.setChecked(false);
                     }
-                    viewChangePosition = viewPosition;
+                    viewChangePosition = linearLayoutManager.findFirstVisibleItemPosition();
                     Log.d("TEST", "viewchangepos is : " + viewChangePosition);
                     setUIType();
                     populateUI(current_Category);
@@ -725,7 +726,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         item.setChecked(true);
                         grid_check.setChecked(false);
                     }
-                    viewChangePosition = viewPosition;
+                    viewChangePosition = gridLayoutManager.findFirstVisibleItemPosition();
                     Log.d("TEST", "viewchangepos is : " + viewChangePosition);
                     setUIType();
                     populateUI(current_Category);
