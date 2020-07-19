@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private boolean viewSelect;
+    private static int viewSelectSize;
     private Context mContext;
 
 
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         viewChange = false;
         viewSelect = false;
+        viewSelectSize = 0;
 
         Bundle extras = getIntent().getExtras();
 
@@ -701,8 +703,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if (movies.size() > 100) {
+        Log.d("TEST", "View position is: " + viewPosition);
+        Log.d("TEST", "View change position is: " + viewChangePosition);
+
+        if (viewPosition > 100 || viewChangePosition > 100) {
             viewSelect = true;
+            viewSelectSize = movies.size();
         }
 
         if (!swipeLayout.isRefreshing()) {
@@ -1305,7 +1311,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             String pageNum = Integer.toString(pageNumber);
             int remove;
 
-            if (pageNumber > 9) {
+            if (pageNumber > 10) {
                 remove = 2;
             } else {
                 remove = 1;
@@ -1552,7 +1558,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             String pageNum = Integer.toString(pageNumber);
             int remove;
 
-            if (pageNumber > 9) {
+            if (pageNumber > 10) {
                 remove = 2;
             } else {
                 remove = 1;
@@ -1563,9 +1569,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             if (url.length() > 0) {
                 result = ((url.substring(0, url.length() - remove)) + pageNum);
+                Log.d("TEST", result);
             }
 
-            if (movies.size() < 200) {
+            if (movies.size() < viewSelectSize) {
                 URL newUrl = NetworkUtils.jsonRequest(apiResults, pageNum);
                 try {
                     newUrl = new URL(result);
@@ -1573,9 +1580,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     e.printStackTrace();
                 }
                 new apiCallOver(activity, activity, newUrl).execute();
-                Log.d("TEST", "Doing apicall over again");
             } else {
-                Log.d("TEST", "Executing with movies size of: " + movies.size());
                 this.onAsyncFinished.onAsyncFinished(movies, "Over");
             }
         }
@@ -1591,6 +1596,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mainReference = new WeakReference<>(context);
             this.onAsyncFinished = on;
             this.link = url;
+            Log.d("TEST", url.toString());
         }
 
         @Override
