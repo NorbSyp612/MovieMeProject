@@ -545,11 +545,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
-            outState.putInt(INSTANCE_VIEW_POSITION, gridLayoutManager.findFirstVisibleItemPosition());
+            outState.putInt(INSTANCE_VIEW_POSITION, gridLayoutManager.findFirstCompletelyVisibleItemPosition());
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
-            outState.putInt(INSTANCE_VIEW_POSITION, gridLayoutManager.findFirstVisibleItemPosition());
+            outState.putInt(INSTANCE_VIEW_POSITION, gridLayoutManager.findFirstCompletelyVisibleItemPosition());
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
-            outState.putInt(INSTANCE_VIEW_POSITION, linearLayoutManager.findFirstVisibleItemPosition());
+            outState.putInt(INSTANCE_VIEW_POSITION, linearLayoutManager.findFirstCompletelyVisibleItemPosition());
         }
         outState.putInt(INSTANCE_RESUME_CODE, resumeCode);
         outState.putString(INSTANCE_CATEGORY, current_Category);
@@ -718,8 +718,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         item.setChecked(true);
                         list_check.setChecked(false);
                     }
-                    viewChangePosition = linearLayoutManager.findFirstVisibleItemPosition();
-                    Log.d("TEST", "viewchangepos is : " + viewChangePosition);
+                    viewChangePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                     setUIType();
                     populateUI(current_Category);
                     return true;
@@ -735,8 +734,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                         item.setChecked(true);
                         grid_check.setChecked(false);
                     }
-                    viewChangePosition = gridLayoutManager.findFirstVisibleItemPosition();
-                    Log.d("TEST", "viewchangepos is : " + viewChangePosition);
+                    viewChangePosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
                     setUIType();
                     populateUI(current_Category);
                     return true;
@@ -1238,7 +1236,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
+
+
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
+            mAdapter.notifyDataSetChanged();
             mAdapter.notifyItemInserted(movies.size() - 99);
             mAdapter.notifyItemInserted(movies.size() - 98);
             mAdapter.notifyItemInserted(movies.size() - 97);
@@ -1251,6 +1252,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mAdapter.notifyItemInserted(movies.size() - 90);
             swipeLayout.setRefreshing(false);
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
+            mAdapter.notifyDataSetChanged();
             mAdapter.notifyItemInserted(movies.size() - 99);
             mAdapter.notifyItemInserted(movies.size() - 98);
             mAdapter.notifyItemInserted(movies.size() - 97);
@@ -1263,6 +1265,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mAdapter.notifyItemInserted(movies.size() - 90);
             swipeLayout.setRefreshing(false);
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
+            sAdapter.notifyDataSetChanged();
             sAdapter.notifyItemInserted(movies.size() - 99);
             sAdapter.notifyItemInserted(movies.size() - 98);
             sAdapter.notifyItemInserted(movies.size() - 97);
@@ -1276,6 +1279,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             swipeLayout.setRefreshing(false);
         }
 
+        moviesGrid.scrollToPosition(viewPosition);
 
     }
 
