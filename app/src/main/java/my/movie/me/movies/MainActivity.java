@@ -535,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     viewPosition = 0;
                     populateUI(getString(R.string.Science_Fiction));
                     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.SciFi);
-                    current_Category = getString(R.string.SciFi);
+                    current_Category = getString(R.string.Science_Fiction);
                     break;
                 }
             case R.id.drawer_thriller:
