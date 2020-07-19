@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     Toolbar toolbar;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
-    private int pageNumber;
+    private static int pageNumber;
     private int extraTest;
     private boolean first;
     private MenuItem grid_check;
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private int viewChangePosition;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-
+    private boolean viewSelect;
     private Context mContext;
 
 
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
 
         viewChange = false;
+        viewSelect = false;
 
         Bundle extras = getIntent().getExtras();
 
@@ -700,6 +701,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        if (movies.size() > 100) {
+            viewSelect = true;
+        }
+
         if (!swipeLayout.isRefreshing()) {
             moviesGrid.stopScroll();
             switch (item.getItemId()) {
@@ -744,18 +749,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         return super.onOptionsItemSelected(item);
     }
 
-    // public static int checkFav(Movie movie) {
-    //      int check = 0;
-    //
-    //     for (FavEntry a : favorites) {
-    //        if (a.getId().equals(movie.getId())) {
-    //            check = 1;
-    //            break;
-    //        }
-    //    }
-    //
-    //     return check;
-    // }
 
     public void populateUI(String category) {
         if (!swipeLayout.isRefreshing()) {
@@ -932,7 +925,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         pageNumber = 1;
         String pageNum = Integer.toString(pageNumber);
         URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
-        new apiCall(this, this, testURL).execute();
+        if (viewSelect) {
+            Log.d("TEST", "DOING API OVER");
+            new apiCallOver(this, this, testURL).execute();
+        } else {
+            new apiCall(this, this, testURL).execute();
+        }
 
     }
 
@@ -1190,6 +1188,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
         }
 
+        viewSelect = false;
+
     }
 
     public void execute() {
@@ -1197,7 +1197,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
-            mAdapter.setNumberMovies(NUM_LIST_MOVIES);
+            mAdapter.setNumberMovies(movies.size());
             mAdapter.setMovies(movies);
             moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
@@ -1208,7 +1208,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 moviesGrid.scrollToPosition(viewPosition);
             }
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
-            mAdapter.setNumberMovies(NUM_LIST_MOVIES);
+            mAdapter.setNumberMovies(movies.size());
             mAdapter.setMovies(movies);
             moviesGrid.setAdapter(mAdapter);
             swipeLayout.setRefreshing(false);
@@ -1230,12 +1230,12 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
         }
 
+        viewSelect = false;
     }
 
     public void executeExtra() {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-
 
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
@@ -1297,6 +1297,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (url.equals("Key")) {
             executeFavs();
+        } else if (url.equals("Over")) {
+            execute();
         } else {
             String result = "";
             pageNumber++;
@@ -1493,6 +1495,89 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             }
 
             this.onAsyncFinished.onAsyncFinished(movies, this.link.toString());
+        }
+    }
+
+    public static class apiCallOver extends AsyncTask<URL, Void, String> {
+
+        private WeakReference<MainActivity> mainReference;
+        private OnAsyncFinished onAsyncFinished;
+        private URL link;
+
+        apiCallOver(MainActivity context, OnAsyncFinished onAsyncFinished, URL url) {
+            mainReference = new WeakReference<>(context);
+            this.onAsyncFinished = onAsyncFinished;
+            this.link = url;
+        }
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            String apiResult = null;
+
+
+            try {
+                apiResult = NetworkUtils.getResponseFromHttpUrl(this.link);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return apiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String apiResults) {
+
+            MainActivity activity = mainReference.get();
+            activity.first = true;
+
+            if (apiResults == null) {
+                Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+            }
+
+
+            ArrayList<Movie> moviesAdd;
+            moviesAdd = JsonUtils.parseApiResult(apiResults);
+
+            for (Movie movie : moviesAdd) {
+
+                for (FavEntry a : favorites) {
+                    if (a.getName().equals(movie.getMovieName())) {
+                        movie.setFav(activity.getString(R.string.Yes));
+                    }
+                }
+                movies.add(movie);
+            }
+
+            pageNumber++;
+            String pageNum = Integer.toString(pageNumber);
+            int remove;
+
+            if (pageNumber > 9) {
+                remove = 2;
+            } else {
+                remove = 1;
+            }
+
+            String result = "";
+            String url = this.link.toString();
+
+            if (url.length() > 0) {
+                result = ((url.substring(0, url.length() - remove)) + pageNum);
+            }
+
+            if (movies.size() < 200) {
+                URL newUrl = NetworkUtils.jsonRequest(apiResults, pageNum);
+                try {
+                    newUrl = new URL(result);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                new apiCallOver(activity, activity, newUrl).execute();
+                Log.d("TEST", "Doing apicall over again");
+            } else {
+                Log.d("TEST", "Executing with movies size of: " + movies.size());
+                this.onAsyncFinished.onAsyncFinished(movies, "Over");
+            }
         }
     }
 
