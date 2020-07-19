@@ -23,12 +23,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import my.movie.me.movies.AppExecutors;
 import my.movie.me.movies.Items.Movie;
+import my.movie.me.movies.MainActivity;
 import my.movie.me.movies.MainViewModel;
 import my.movie.me.movies.database.AppDatabase;
 import my.movie.me.movies.database.FavEntry;
 import my.movie.me.movies.movieActivity;
 import my.movie.me.movies.R;
+
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ import java.util.concurrent.ExecutionException;
 public class SearchActivity extends AppCompatActivity implements SearchAdapter.ListItemClickListener, SearchAdapter.ButtonItemClickListener, OnAsyncFinished {
 
     private RecyclerView mRecycle;
-    private ArrayList<Movie> movies;
+    private static ArrayList<Movie> movies;
     private SearchAdapter mAdapter;
     private FavEntry movieEntry;
     static List<FavEntry> favorites;
@@ -48,11 +51,15 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private AppDatabase mDb;
     private int clicks;
     private String instance_clicks;
-    private int pageCount;
+    private static int pageCount;
     private SwipeRefreshLayout swipeLayout;
-    private String baseQuery;
+    private static String baseQuery;
     private static boolean done;
     private String INSTANCE_POSITION_CODE = "IPC";
+    private String INSTANCE_EXTRA = "IEX";
+    private String INSTANCE_SIZE = "ISIZE";
+    private static int finalSize;
+    private String extra;
     private int viewPosition;
     private LinearLayoutManager layoutManager;
 
@@ -70,6 +77,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         mRecycle = findViewById(R.id.search_results);
         done = false;
         viewPosition = 0;
+        finalSize = 0;
 
         swipeLayout = findViewById(R.id.search_refresh);
         swipeLayout.setRefreshing(true);
@@ -81,6 +89,14 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_POSITION_CODE)) {
             viewPosition = savedInstanceState.getInt(INSTANCE_POSITION_CODE);
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_EXTRA)) {
+            extra = savedInstanceState.getString(INSTANCE_EXTRA);
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_SIZE)) {
+            finalSize = savedInstanceState.getInt(INSTANCE_SIZE);
         }
 
         Context mContext = getApplicationContext();
@@ -273,26 +289,26 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         movieMeResults = JsonUtils.parseApiResult(apiResults);
 
         while (favCheck == 0) {
-                movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
+            movieMe = movieMeResults.get(rand.nextInt(movieMeResults.size()));
 
-                favCheck = 1;
+            favCheck = 1;
 
-                for (Movie b : favMovies) {
-                    if (b.getMovieName().equals(movieMe.getMovieName())) {
-                        favCheck = 0;
-                        break;
-                    }
-
-                }
-
-                if (movieMe.getBackdropURL().equals("")) {
+            for (Movie b : favMovies) {
+                if (b.getMovieName().equals(movieMe.getMovieName())) {
                     favCheck = 0;
+                    break;
                 }
+
             }
 
-            if (movieMe.getMovieName() != null) {
-                goToMovieMeDetail(movieMe);
+            if (movieMe.getBackdropURL().equals("")) {
+                favCheck = 0;
             }
+        }
+
+        if (movieMe.getMovieName() != null) {
+            goToMovieMeDetail(movieMe);
+        }
 
     }
 
@@ -322,6 +338,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     }
 
     public void populateUI() {
+        Log.d("TEST", "Populating UI");
         int numMovies = movies.size();
         mAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
         mRecycle.setAdapter(mAdapter);
@@ -360,6 +377,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         outState.putInt(instance_clicks, clicks);
         viewPosition = layoutManager.findFirstCompletelyVisibleItemPosition();
         outState.putInt(INSTANCE_POSITION_CODE, viewPosition);
+        outState.putString(INSTANCE_EXTRA, extra);
+        outState.putInt(INSTANCE_SIZE, movies.size());
+        Log.d("TEST", "OUTSTATE size: " + movies.size());
         super.onSaveInstanceState(outState);
     }
 
@@ -371,7 +391,13 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(pageCount);
             URL testURL = NetworkUtils.jsonRequest(baseQuery, one);
-            new search(this, testURL).execute();
+            if (extra != null && extra.equals("Yes")) {
+                Log.d("TEST", "Doing Extra");
+                new searchExtra(this, this, testURL).execute();
+            } else {
+                Log.d("TEST", "Doing search");
+                new search(this, testURL).execute();
+            }
         }
     }
 
@@ -450,10 +476,16 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         } else {
             if (!o.isEmpty()) {
                 if (key.equals("Key")) {
+                    Log.d("TEST", "Doing extra in finish");
                     pageCount++;
                     movies.addAll(o);
+                    mAdapter.notifyItemInserted(movies.size() - 1);
                     mAdapter.notifyDataSetChanged();
                     swipeLayout.setRefreshing(false);
+                    extra = "Yes";
+                } else if (key.equals("searchExtra")) {
+                    extra = "Yes";
+                    populateUI();
                 } else {
                     if (pageCount < 5) {
                         pageCount++;
@@ -463,10 +495,12 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
                         new search(this, tester).execute();
                     } else {
                         populateUI();
+                        extra = "";
                     }
                 }
             } else {
                 populateUI();
+                extra = "";
             }
         }
     }
@@ -501,6 +535,51 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         }
     }
 
+    static class searchExtra extends AsyncTask<URL, Void, ArrayList<Movie>> {
+
+        private WeakReference<SearchActivity> reference;
+        private OnAsyncFinished onAsyncFinished;
+        private ArrayList<Movie> moviesResult;
+        private URL testURL;
+
+        public searchExtra(SearchActivity Context, OnAsyncFinished onAsyncFinished, URL url) {
+            reference = new WeakReference<>(Context);
+            this.onAsyncFinished = onAsyncFinished;
+            this.testURL = url;
+
+        }
+
+        @Override
+        protected ArrayList<Movie> doInBackground(URL... urls) {
+            try {
+                String apiResult = NetworkUtils.getResponseFromHttpUrl(this.testURL);
+                moviesResult = JsonUtils.parseSearchResult(apiResult);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return moviesResult;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Movie> o) {
+            SearchActivity activity = reference.get();
+
+            Log.d("TEST", "Post Execute");
+            Log.d("TEST", "movies array size: " + movies.size());
+            Log.d("TEST", "final size: " + finalSize);
+
+            if (movies.size() < finalSize) {
+                pageCount++;
+                movies.addAll(o);
+                String page = Integer.toString(pageCount);
+                URL tester = NetworkUtils.jsonRequest(baseQuery, page);
+                new searchExtra(activity, activity, tester).execute();
+            } else {
+                onAsyncFinished.onAsyncFinished(movies, "searchExtra");
+            }
+        }
+    }
+
     static class extra extends AsyncTask<URL, Void, ArrayList<Movie>> {
         private OnAsyncFinished onAsyncFinished;
         private ArrayList<Movie> moviesResult = new ArrayList<>();
@@ -515,7 +594,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         protected ArrayList<Movie> doInBackground(URL... urls) {
             try {
                 String apiResult = NetworkUtils.getResponseFromHttpUrl(this.testURL);
-                moviesResult.addAll(JsonUtils.parseSearchResult(apiResult));
+                moviesResult = JsonUtils.parseSearchResult(apiResult);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -523,12 +602,11 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
-            super.onPostExecute(movies);
-            if (movies.isEmpty()) {
+        protected void onPostExecute(ArrayList<Movie> o) {
+            if (o.isEmpty()) {
                 SearchActivity.done = true;
             }
-            onAsyncFinished.onAsyncFinished(movies, "Key");
+            onAsyncFinished.onAsyncFinished(o, "Key");
         }
     }
 

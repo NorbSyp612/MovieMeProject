@@ -1,5 +1,7 @@
 package my.movie.me.movies.utilities;
 
+import android.util.Log;
+
 import my.movie.me.movies.Items.Movie;
 
 import org.json.JSONArray;
@@ -312,6 +314,7 @@ public class JsonUtils {
         try {
 
             if (apiResult == null) {
+                Log.d("TEST", "SEARCH NULL");
                 return parsedResults;
             }
 
@@ -411,6 +414,8 @@ public class JsonUtils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+      //  Log.d("TEST", "Movie 1 is: " + parsedResults.get(0).getMovieName());
 
         return parsedResults;
     }
