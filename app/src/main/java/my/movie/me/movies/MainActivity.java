@@ -73,8 +73,11 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     static List<FavEntry> favorites;
     private static int resumeCode;
     private String INSTANCE_RESUME_CODE = "RESUME_CODE";
+    private String INSTANCE_VIEW_POSITION_CHANGE = "V_P_CHANGE";
     private static String INSTANCE_CATEGORY;
     private String INSTANCE_VIEW_POSITION = "VIEW_POSITION";
+    private String INSTANCE_EXTRA = "EXTRA_CHANGE";
+    private String INSTANCE_VIEW_SELECT = "VIEW_SELECT";
     private static String current_Category;
     private String favorite;
     private FavEntry movieEntry;
@@ -84,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     ActionBarDrawerToggle toggle;
     private static int pageNumber;
     private int extraTest;
-    private boolean first;
+    private static boolean first;
     private MenuItem grid_check;
     private MenuItem list_check;
     private int viewPosition;
@@ -95,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private boolean viewSelect;
     private static int viewSelectSize;
     private Context mContext;
+    private String extra;
 
 
     @Override
@@ -121,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         viewChange = false;
         viewSelect = false;
         viewSelectSize = 0;
+        extra = "";
 
         Bundle extras = getIntent().getExtras();
 
@@ -222,8 +227,21 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_VIEW_POSITION)) {
             viewPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION);
+            Log.d("TEST", "Viewposition is: " + viewPosition);
         }
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_VIEW_POSITION_CHANGE)) {
+            viewChangePosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CHANGE);
+            Log.d("TEST", "ViewpositionChange is: " + viewChangePosition);
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_EXTRA)) {
+            extra = savedInstanceState.getString(INSTANCE_EXTRA);
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_VIEW_SELECT)) {
+            viewSelectSize = savedInstanceState.getInt(INSTANCE_VIEW_SELECT);
+        }
 
         int orientation = getResources().getConfiguration().orientation;
         int spanCount = 2;
@@ -549,13 +567,28 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
             outState.putInt(INSTANCE_VIEW_POSITION, gridLayoutManager.findFirstCompletelyVisibleItemPosition());
+            outState.putInt(INSTANCE_VIEW_POSITION_CHANGE, gridLayoutManager.findFirstCompletelyVisibleItemPosition());
+            viewChangePosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
+            viewPosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.Grid))) {
             outState.putInt(INSTANCE_VIEW_POSITION, gridLayoutManager.findFirstCompletelyVisibleItemPosition());
+            outState.putInt(INSTANCE_VIEW_POSITION_CHANGE, gridLayoutManager.findFirstCompletelyVisibleItemPosition());
+            viewChangePosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
+            viewPosition = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
         } else if (sharedPreferences.getString(getString(R.string.View_Key), "").equals(getString(R.string.list))) {
             outState.putInt(INSTANCE_VIEW_POSITION, linearLayoutManager.findFirstCompletelyVisibleItemPosition());
+            outState.putInt(INSTANCE_VIEW_POSITION_CHANGE, linearLayoutManager.findFirstCompletelyVisibleItemPosition());
+            viewChangePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+            viewPosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
         }
         outState.putInt(INSTANCE_RESUME_CODE, resumeCode);
         outState.putString(INSTANCE_CATEGORY, current_Category);
+
+        if (viewChangePosition > 100 || viewPosition > 100) {
+            outState.putString(INSTANCE_EXTRA, "Yes");
+        }
+
+        outState.putInt(INSTANCE_VIEW_SELECT, movies.size());
 
         super.onSaveInstanceState(outState);
     }
@@ -821,6 +854,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void setMoviesExtra(String MoviesCategory) {
         resumeCode = 2;
 
+        Log.d("TEST", "Setting movies extra from category: " + MoviesCategory);
+
         swipeLayout.setRefreshing(true);
 
         String sortedBy = "";
@@ -870,8 +905,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
         extraTest = movies.size() + 100;
+        Log.d("TEST", "extra test is: " + extraTest);
         String pageNum = Integer.toString(pageNumber);
         URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
+        Log.d("TEST", testURL.toString());
         new apiCallExtra(this, this, testURL).execute();
 
     }
@@ -931,7 +968,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         pageNumber = 1;
         String pageNum = Integer.toString(pageNumber);
         URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
-        if (viewSelect) {
+        if (viewSelect || extra.equals("Yes")) {
             Log.d("TEST", "DOING API OVER");
             new apiCallOver(this, this, testURL).execute();
         } else {
@@ -1237,6 +1274,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
         viewSelect = false;
+        extra = "";
     }
 
     public void executeExtra() {
@@ -1320,6 +1358,9 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             if (url.length() > 0) {
                 result = ((url.substring(0, url.length() - remove)) + pageNum);
             }
+
+            Log.d("TEST", "First is: " + first);
+            Log.d("TEST", "O size is: " + o.size());
 
             if (first && o.size() < 100) {
                 URL newUrl = NetworkUtils.jsonRequest(result, pageNum);
@@ -1569,8 +1610,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             if (url.length() > 0) {
                 result = ((url.substring(0, url.length() - remove)) + pageNum);
-                Log.d("TEST", result);
             }
+
+            Log.d("TEST", "Movie size is: " + movies.size());
+            Log.d("TEST", "View Select Size is: " + viewSelectSize);
 
             if (movies.size() < viewSelectSize) {
                 URL newUrl = NetworkUtils.jsonRequest(apiResults, pageNum);
@@ -1596,7 +1639,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             mainReference = new WeakReference<>(context);
             this.onAsyncFinished = on;
             this.link = url;
-            Log.d("TEST", url.toString());
+            first = false;
         }
 
         @Override
@@ -1634,6 +1677,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
                 movies.add(movie);
+                Log.d("TEST", movie.getMovieName());
             }
 
 
