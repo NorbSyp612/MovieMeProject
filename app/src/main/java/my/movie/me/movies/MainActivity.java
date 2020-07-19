@@ -25,7 +25,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -57,6 +56,8 @@ import java.util.Random;
 
 import android.app.SearchManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import timber.log.Timber;
 
 
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     private static int resumeCode;
     private String INSTANCE_RESUME_CODE = "RESUME_CODE";
     private String INSTANCE_VIEW_POSITION_CHANGE = "V_P_CHANGE";
-    private static String INSTANCE_CATEGORY;
+    private static String INSTANCE_CATEGORY = "CAT";
     private String INSTANCE_VIEW_POSITION = "VIEW_POSITION";
     private String INSTANCE_EXTRA = "EXTRA_CHANGE";
     private String INSTANCE_VIEW_SELECT = "VIEW_SELECT";
@@ -227,12 +228,10 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_VIEW_POSITION)) {
             viewPosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION);
-            Log.d("TEST", "Viewposition is: " + viewPosition);
         }
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_VIEW_POSITION_CHANGE)) {
             viewChangePosition = savedInstanceState.getInt(INSTANCE_VIEW_POSITION_CHANGE);
-            Log.d("TEST", "ViewpositionChange is: " + viewChangePosition);
         }
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_EXTRA)) {
@@ -562,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         if (sharedPreferences.getString(getString(R.string.View_Key), "").isEmpty()) {
@@ -736,9 +735,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        Log.d("TEST", "View position is: " + viewPosition);
-        Log.d("TEST", "View change position is: " + viewChangePosition);
-
         if (viewPosition > 100 || viewChangePosition > 100) {
             viewSelect = true;
             viewSelectSize = movies.size();
@@ -854,8 +850,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
     public void setMoviesExtra(String MoviesCategory) {
         resumeCode = 2;
 
-        Log.d("TEST", "Setting movies extra from category: " + MoviesCategory);
-
         swipeLayout.setRefreshing(true);
 
         String sortedBy = "";
@@ -893,7 +887,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         } else if (MoviesCategory.equals(getString(R.string.Romance))) {
             resumeCode = 12;
             sortedBy = getString(R.string.API_Query_Genre_Romance) + getString(R.string.API_Search_Part5);
-        } else if (MoviesCategory.equals(getString(R.string.SciFi))) {
+        } else if (MoviesCategory.equals(getString(R.string.Science_Fiction))) {
             resumeCode = 13;
             sortedBy = getString(R.string.API_Query_Genre_Science_Fiction) + getString(R.string.API_Search_Part5);
         } else if (MoviesCategory.equals(getString(R.string.Thriller))) {
@@ -905,10 +899,8 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         }
 
         extraTest = movies.size() + 100;
-        Log.d("TEST", "extra test is: " + extraTest);
         String pageNum = Integer.toString(pageNumber);
         URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
-        Log.d("TEST", testURL.toString());
         new apiCallExtra(this, this, testURL).execute();
 
     }
@@ -969,7 +961,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         String pageNum = Integer.toString(pageNumber);
         URL testURL = NetworkUtils.jsonRequest(sortedBy, pageNum);
         if (viewSelect || extra.equals("Yes")) {
-            Log.d("TEST", "DOING API OVER");
             new apiCallOver(this, this, testURL).execute();
         } else {
             new apiCall(this, this, testURL).execute();
@@ -1115,7 +1106,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
             });
-        } else {
         }
 
     }
@@ -1359,9 +1349,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                 result = ((url.substring(0, url.length() - remove)) + pageNum);
             }
 
-            Log.d("TEST", "First is: " + first);
-            Log.d("TEST", "O size is: " + o.size());
-
             if (first && o.size() < 100) {
                 URL newUrl = NetworkUtils.jsonRequest(result, pageNum);
                 try {
@@ -1451,7 +1438,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             goToMovieActivity.putExtra(getString(R.string.Is_Fav_Key), isFavorite);
 
             startActivity(goToMovieActivity);
-        } else {
         }
     }
 
@@ -1521,7 +1507,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         protected void onPostExecute(String apiResults) {
 
             MainActivity activity = mainReference.get();
-            activity.first = true;
+            first = true;
 
             if (apiResults == null) {
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
@@ -1575,7 +1561,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
         protected void onPostExecute(String apiResults) {
 
             MainActivity activity = mainReference.get();
-            activity.first = true;
+            first = true;
 
             if (apiResults == null) {
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
@@ -1611,9 +1597,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
             if (url.length() > 0) {
                 result = ((url.substring(0, url.length() - remove)) + pageNum);
             }
-
-            Log.d("TEST", "Movie size is: " + movies.size());
-            Log.d("TEST", "View Select Size is: " + viewSelectSize);
 
             if (movies.size() < viewSelectSize) {
                 URL newUrl = NetworkUtils.jsonRequest(apiResults, pageNum);
@@ -1677,7 +1660,6 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
                     }
                 }
                 movies.add(movie);
-                Log.d("TEST", movie.getMovieName());
             }
 
 
