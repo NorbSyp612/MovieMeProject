@@ -1511,6 +1511,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             if (apiResults == null) {
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+                return;
             }
 
 
@@ -1565,6 +1566,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             if (apiResults == null) {
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+                return;
             }
 
 
@@ -1646,6 +1648,7 @@ public class MainActivity extends AppCompatActivity implements moviesAdapter.Lis
 
             if (apiResults == null) {
                 Toast.makeText(activity.mContext, activity.mContext.getString(R.string.Error_Try_Again), Toast.LENGTH_SHORT).show();
+                return;
             }
 
             ArrayList<Movie> moviesAdd;

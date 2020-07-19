@@ -137,12 +137,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.NumberView
                 if (date.length() > 4) {
                     date = date.substring(0, 4);
                 }
-                String genre = test.getGenre();
+                String genre = test.getGenresString();
                 String rating = test.getUserRating();
                 String details = "";
 
                 if (!genre.isEmpty()) {
-                    details = date + " - " + genre + " - " + rating + "/10";
+                 //   details = date + " - " + genre + " - " + rating + "/10";
+                    details = date + " - " + rating + "/10 - " + genre;
                 } else {
                     details = date + " - " + rating + "/10";
                 }

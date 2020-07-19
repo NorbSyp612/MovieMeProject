@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -43,7 +44,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private FavEntry movieEntry;
     static List<FavEntry> favorites;
     private static ArrayList<Movie> favMovies = new ArrayList<>();
-    private int position;
     private String favorite;
     private AppDatabase mDb;
     private int clicks;
@@ -52,7 +52,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     private SwipeRefreshLayout swipeLayout;
     private String baseQuery;
     private static boolean done;
-
+    private String INSTANCE_POSITION_CODE = "IPC";
+    private int viewPosition;
+    private LinearLayoutManager layoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         pageCount = 1;
         mRecycle = findViewById(R.id.search_results);
         done = false;
+        viewPosition = 0;
 
         swipeLayout = findViewById(R.id.search_refresh);
         swipeLayout.setRefreshing(true);
@@ -76,9 +79,13 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             clicks = savedInstanceState.getInt(instance_clicks, 0);
         }
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_POSITION_CODE)) {
+            viewPosition = savedInstanceState.getInt(INSTANCE_POSITION_CODE);
+        }
+
         Context mContext = getApplicationContext();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        layoutManager = new LinearLayoutManager(mContext);
         mRecycle.setLayoutManager(layoutManager);
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -319,7 +326,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
         mAdapter = new SearchAdapter(numMovies, this, this, movies, favMovies);
         mRecycle.setAdapter(mAdapter);
         mRecycle.setHasFixedSize(false);
-        mRecycle.scrollToPosition(position);
+        mRecycle.scrollToPosition(viewPosition);
 
         setupViewModel();
 
@@ -349,9 +356,11 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(instance_clicks, clicks);
-        super.onSaveInstanceState(outState, outPersistentState);
+        viewPosition = layoutManager.findFirstCompletelyVisibleItemPosition();
+        outState.putInt(INSTANCE_POSITION_CODE, viewPosition);
+        super.onSaveInstanceState(outState);
     }
 
     private void handleSearch() {
@@ -361,7 +370,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
             setTitle(searchQuery);
             baseQuery = getString(R.string.API_Search_Query_Base) + searchQuery + getString(R.string.API_Search_Query_End);
             String one = Integer.toString(pageCount);
-            //  pageCount++;
             URL testURL = NetworkUtils.jsonRequest(baseQuery, one);
             new search(this, testURL).execute();
         }
@@ -371,7 +379,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     public void onListItemClick(View itemView, int clickedItemIndex) {
         if (!movies.isEmpty()) {
             clicks++;
-            position = clickedItemIndex - 1;
             Context context = SearchActivity.this;
             Class destination = movieActivity.class;
 
@@ -407,7 +414,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.L
     public void onButtonClick(View itemView, final int clickedItemIndex) {
 
         clicks++;
-        position = clickedItemIndex - 1;
         favorite = getString(R.string.No);
 
 
